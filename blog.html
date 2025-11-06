@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Cik0Xploit · Blog</title>
+  <link rel="icon" href="assets/images/avatar.jpeg" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="frame">
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar-left">
+      <figure class="avatar-wrap">
+        <img src="assets/images/survivors.jpg" alt="avatar" class="avatar-img">
+        <span class="emoji">🐱</span>
+      </figure>
+      <div class="profile-meta">
+        <h1 class="profile-name">0xG10D</h1>
+        <p class="profile-desc">CySec GMI Cybersecurity Club · CTF Player</p>
+      </div>
+
+      <nav class="nav-list">
+        <a class="nav-item" href="index.html">Home</a>
+        <a class="nav-item active" href="blog.html">Blog</a>
+        <a class="nav-item" href="#archives">Archives</a>
+      </nav>
+
+      <div class="dark-toggle">
+        <label class="switch">
+          <input id="theme-toggle" type="checkbox">
+          <span class="slider"></span>
+        </label>
+        <span>Dark Mode</span>
+      </div>
+    </aside>
+
+    <!-- CENTER CONTENT -->
+    <main class="center">
+      <section class="article-list">
+        <!-- Post card template -->
+        <article class="post-card">
+          <div class="post-tags">
+            <span class="badge blue">SunCTF 2025</span>
+            <span class="badge green">CTF Writeup</span>
+          </div>
+          <h2 class="post-title">Sustainable Development Goals</h2>
+          <p class="post-excerpt">The objective of this challenge is to analyze a memory dump to identify post-exploitation artifacts, uncover suspicious process behavior, decrypt and execute in-memory payloads, and extract the attacker’s intended shellcode or flag.</p>
+          <footer class="post-meta">
+            <time datetime="2025-08-31">Aug 31, 2025</time>
+            <span class="readtime">2 minute read</span>
+          </footer>
+        </article>
+
+        <article class="post-card">
+          <div class="post-tags">
+            <span class="badge">Certifications</span>
+          </div>
+          <h2 class="post-title">2025 Certifications</h2>
+          <p class="post-excerpt">This page contains my review on the certifications I took this year, including CMPen (iOS & Android), Pentest+, CRTA, PT1 and CPTS.</p>
+          <footer class="post-meta">
+            <time datetime="2025-08-12">Aug 12, 2025</time>
+            <span class="readtime">4 minute read</span>
+          </footer>
+        </article>
+
+        <article class="post-card">
+          <div class="post-tags">
+            <span class="badge teal">CTF Writeup</span>
+          </div>
+          <h2 class="post-title">Get Clawed</h2>
+          <p class="post-excerpt">Analyze a disk image and network capture to uncover hidden data exfiltration techniques, reverse custom encryption and retrieve the attacker payload.</p>
+          <footer class="post-meta">
+            <time datetime="2025-08-31">Aug 31, 2025</time>
+            <span class="readtime">2 minute read</span>
+          </footer>
+        </article>
+        <!-- add more articles as needed -->
+      </section>
+    </main>
+
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar-right">
+      <div class="widget card-sm">
+        <input id="search-input-2" class="search-input" placeholder="Search posts..." />
+      </div>
+
+      <div class="widget card-sm">
+        <h4 class="widget-title">Archives</h4>
+        <div class="archives">
+          <a class="archive-row"><span>2025</span><span class="count">18</span></a>
+          <a class="archive-row"><span>2024</span><span class="count">56</span></a>
+          <a class="archive-row"><span>2023</span><span class="count">29</span></a>
+        </div>
+      </div>
+
+      <div class="widget card-sm">
+        <h4 class="widget-title">Categories</h4>
+        <div class="tagcloud">
+          <a class="tag">CTF Writeup</a>
+          <a class="tag">HackTheBox</a>
+          <a class="tag">TryHackMe</a>
+          <a class="tag">Forensics</a>
+        </div>
+      </div>
+
+      <div class="widget card-sm">
+        <h4 class="widget-title">Tags</h4>
+        <div class="tagcloud">
+          <a class="tag">Forensics</a><a class="tag">Web</a><a class="tag">Crypto</a><a class="tag">Rev</a>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

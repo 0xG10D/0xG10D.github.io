@@ -2,6 +2,7 @@
 description: >-
   A personal lab for penetration testing notes, CTF writeups, exploits, and
   study prep.
+coverY: 0
 metaLinks:
   alternates:
     - https://app.gitbook.com/s/2AwfWOGBWBxQmyvHedqW/

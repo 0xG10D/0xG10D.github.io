@@ -13,7 +13,7 @@ description: >-
   reverse engineering challenges, and technical documentation.
 
 url: "https://g10d.github.io"
-baseurl: "/g10d.github.io"
+baseurl: ""
 
 github:
   username: 0xG10D

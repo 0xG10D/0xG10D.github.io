@@ -1,11 +1,13 @@
 ---
 title: DiceCTF 2026 - Leadgate [ Misc ]
-date: 2026-03-14 22:30:00 +0800
+date: 2026-03-08 22:30:00 +0800
 categories: [DiceCTF2026, Misc, Leadgate]
 tags: [dicectf, misc, ml, gpt2, safetensors, model-inversion]
 render_with_liquid: false
 description: Writeup for the DiceCTF 2026 misc/ML challenge "leadgate", solved by inverting the fine-tuning perturbation of a modified GPT-2 small checkpoint.
 toc: true
+image:
+  path: https://dice26-quals.storage.googleapis.com/uploads/ee7c99b0f55d18bd845daa7335f47634fbb4fcb065014089ef9386a3c06c6396/dice.svg
 ---
 
 The `leadgate` challenge looked simple at first: one `model.safetensors` file and a short clue about an ancient artifact and an alchemist in Assisi. In reality, the challenge was not about prompting the model correctly, but about understanding what the fine-tuning did to the base GPT-2 checkpoint and then reversing it.

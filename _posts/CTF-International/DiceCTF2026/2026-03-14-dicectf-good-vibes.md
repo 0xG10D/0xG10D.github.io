@@ -1,10 +1,12 @@
 ---
 title: DiceCTF2026 – Good Vibes [ Forensics ]
-date: 2026-03-14 21:30:00 +0800
+date: 2026-03-08 21:30:00 +0800
 categories: [DiceCTF2026, Forensics, Good Vibes]
 tags: [ctf, reverse, pcap, crypto, aes, networking]
 description: Full solution and analysis of the DiceCTF "Good Vibes" challenge involving reversing a custom VPN client and decrypting AES-GCM traffic.
 toc: true
+image:
+  path: https://dice26-quals.storage.googleapis.com/uploads/ee7c99b0f55d18bd845daa7335f47634fbb4fcb065014089ef9386a3c06c6396/dice.svg
 ---
 
 ## Challenge Overview

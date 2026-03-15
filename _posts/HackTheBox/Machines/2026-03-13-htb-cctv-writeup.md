@@ -1,8 +1,8 @@
 ---
-title: Hack The Box - CCTV Walkthrough
+title: Hack The Box - CCTV
 toc: true
 date: 2026-03-13 22:30:00 +0800
-categories: [HackTheBox, HTB-Writeup]
+categories: [HackTheBox, Machines]
 tags: [ctf, pentesting, sql-injection, privilege-escalation, linux]
 description: Full penetration testing walkthrough of the CCTV machine on Hack The Box from initial access to root.
 image:

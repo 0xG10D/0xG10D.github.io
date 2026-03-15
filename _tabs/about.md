@@ -1,85 +1,76 @@
 ---
-# the default layout is 'page'
 icon: fas fa-info-circle
 order: 4
 ---
 
 # About Me
 
-Hi, I’m **Irfan Shah**, also known as **G10D**.
+Hi, I'm **Irfan Shah** (**G10D**), Diploma in Cybersecurity Technology student at German-Malaysian Institute.
 
-I’m a **Diploma in Cybersecurity Technology** student with a strong interest in **penetration testing, Capture The Flag (CTF), reverse engineering, digital forensics, and system hardening**. I like learning by doing, breaking things in labs, fixing them, and documenting the process clearly.
+Hands-on enthusiast: pentesting, CTF, reverse engineering, forensics, system hardening.
 
-## What I Do
+## Focus
 
-My focus areas include:
+- Web app & network security
+- Enumeration & priv esc
+- Binary RE & incident analysis
+- CTF/labs (Kali, Docker, Linux)
 
-- Web application security
-- Network reconnaissance and enumeration
-- Privilege escalation
-- Reverse engineering
-- Forensics and incident analysis
-- CTF challenges and hands-on labs
-- Security tooling in Kali Linux, Docker, and Linux environments
+## Certifications
 
-I spend a lot of time practicing through labs, challenge platforms, and real technical exercises to strengthen both offensive and defensive security skills.
+### Networking & Security
 
-## What You’ll Find Here
+| Certification                                     | Provider | Date     |
+| ------------------------------------------------- | -------- | -------- |
+| CCNA: Enterprise Networking, Security, Automation | Cisco    | Aug 2025 |
+| CCNA: Switching, Routing, Wireless Essentials     | Cisco    | Jan 2025 |
+| CCNA: Introduction to Networks                    | Cisco    | Jun 2024 |
+| Ethical Hacker Certification                      | Cisco    | Aug 2025 |
+| Wireless Network Security                         | HRD Corp | Jun 2025 |
 
-This site is where I document my learning journey and technical work, including:
+### Cybersecurity
 
-- CTF write-ups
-- Lab notes
-- Pentesting walkthroughs
-- Reverse engineering notes
-- Forensics investigations
-- Tool troubleshooting
-- Cybersecurity project documentation
+| Certification                          | Status    |
+| -------------------------------------- | --------- |
+| Certified AI Email Security Specialist | Completed |
+| Cyber Foundations Certificate          | Completed |
+| Malware Analysis Certificate           | Completed |
+| Networking Fundamentals (NTC1123)      | Completed |
+| IT Essentials                          | Completed |
 
-The goal is simple: build, break, learn, document, improve.
+## CTF Competitions
 
-## Current Interests
+| Event                      | Organizer                  | Date     | Placement |
+| -------------------------- | -------------------------- | -------- | --------- |
+| Break the Enigma CTF 2025  | German-Malaysian Institute | Mar 2025 | [TBD]     |
+| Rising Phoenix 3.0 CTF     | WARZONE                    | Mar 2025 | [TBD]     |
+| Intro to CyberSecurity CTF | Google Developers Group    | May 2025 | [TBD]     |
+| DEADFACE CTF 2025          | -                          | 2025     | [TBD]     |
+| SunCTF 2025                | -                          | 2025     | [TBD]     |
 
-Right now, I’m especially interested in:
+## Workshops & Events
 
-- Offensive security workflows
-- Real-world attack paths
-- Malware and binary analysis
-- Detection engineering
-- SOC-related investigations
-- Building practical cybersecurity projects
+| Event                                          | Organizer                 | Date     |
+| ---------------------------------------------- | ------------------------- | -------- |
+| Cyber Edge: CyberSecurity 101                  | OWASP Malaysia Federation | Feb 2025 |
+| How Hackers Break Into Networks                | 0day Technology           | Jun 2025 |
+| Social Engineering & Phishing in the Age of AI | 0day Technology           | Mar 2025 |
+| Cloud Computing Introduction                   | BlackBerry                | Jul 2025 |
 
-## My Approach
+## Currently Pursuing
 
-I prefer a hands-on approach over pure theory. For me, the best way to learn cybersecurity is to:
-
-1. Understand how something works
-2. Test it in a lab
-3. Break it safely
-4. Analyze the result
-5. Write it down clearly
-
-That process helps me turn raw practice into usable skill.
-
-## Goals
-
-My long-term goal is to grow into a strong cybersecurity professional with solid practical skills in:
-
-- Penetration testing
-- Red teaming fundamentals
-- Threat detection
-- Digital forensics
-- Security research
-
-I’m also working toward building the depth needed for future certifications and technical roles in the cybersecurity field.
+| Certification                        | Provider          |
+| ------------------------------------ | ----------------- |
+| CompTIA Security+                    | CompTIA           |
+| ISC2 Certified in Cybersecurity (CC) | ISC2              |
+| Certified Red Team Analyst (CRTA)    | CyberWarFare Labs |
 
 ## Connect
-
-You can find me here:
 
 - [GitHub](https://github.com/0xG10D)
 - [LinkedIn](https://www.linkedin.com/in/irfanshahrizan/)
 
 ---
 
-> This blog is a collection of notes, write-ups, experiments, and lessons learned throughout my cybersecurity journey.
+> Blog: CTF write-ups, labs, pentests, RE notes, forensics.
+

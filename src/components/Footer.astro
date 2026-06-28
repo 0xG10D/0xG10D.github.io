@@ -1,0 +1,270 @@
+---
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <!-- Brand & Description -->
+      <div class="footer-brand">
+        <a class="brand" href="/" aria-label="0xG10D Home">
+          <span class="brand-bracket">[</span>
+          <span class="brand-name">0xG10D</span>
+          <span class="brand-bracket">]</span>
+        </a>
+        <p class="footer-description">
+          Cybersecurity portfolio documenting CTF writeups, security tool development, and professional learning.
+        </p>
+        <div class="footer-status">
+          <span class="status-indicator status-active" aria-label="Portfolio active"></span>
+          <span class="status-text">PORTFOLIO ACTIVE</span>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="footer-section">
+        <h3 class="footer-heading">Navigation</h3>
+        <ul class="footer-links">
+          <li><a href="/" class="footer-link">Home</a></li>
+          <li><a href="/writeups/" class="footer-link">Writeups</a></li>
+          <li><a href="/projects/" class="footer-link">Projects</a></li>
+          <li><a href="/achievements/" class="footer-link">Achievements</a></li>
+          <li><a href="/about/" class="footer-link">About</a></li>
+        </ul>
+      </div>
+
+      <!-- Content Categories -->
+      <div class="footer-section">
+        <h3 class="footer-heading">Content</h3>
+        <ul class="footer-links">
+          <li><a href="/writeups/?category=hack-the-box" class="footer-link">Hack The Box</a></li>
+          <li><a href="/writeups/?category=tryhackme" class="footer-link">TryHackMe</a></li>
+          <li><a href="/writeups/?category=international-ctf" class="footer-link">International CTF</a></li>
+          <li><a href="/writeups/?category=local-ctf" class="footer-link">Local CTF</a></li>
+          <li><a href="/writeups/?category=research" class="footer-link">Research</a></li>
+        </ul>
+      </div>
+
+      <!-- Connect -->
+      <div class="footer-section">
+        <h3 class="footer-heading">Connect</h3>
+        <ul class="footer-links">
+          <li><a href="https://github.com/0xG10D" class="footer-link" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+          <li><a href="https://app.hackthebox.com/profile/1228382" class="footer-link" target="_blank" rel="noopener noreferrer">Hack The Box</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+      <div class="footer-copyright">
+        <p>&copy; {currentYear} 0xG10D Portfolio. All content created for educational and documentation purposes.</p>
+        <p class="footer-disclaimer">
+          This portfolio documents security learning through authorized platforms (HTB, THM) and personal labs.
+          All techniques are demonstrated in controlled environments.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* Footer Base */
+  .site-footer {
+    background: var(--deep-matte-grey);
+    border-top: 1px solid var(--border-subtle);
+    padding: 4rem 0 2rem;
+    margin-top: auto;
+  }
+
+  /* Footer Grid */
+  .footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  /* Footer Brand */
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .footer-brand .brand {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--silver-text);
+  }
+
+  .footer-brand .brand-bracket {
+    color: var(--accent-blue);
+  }
+
+  .footer-description {
+    color: var(--silver-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  .footer-status {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    width: fit-content;
+  }
+
+  .status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--status-success);
+    animation: statusPulse 2s ease-in-out infinite;
+  }
+
+  .status-active {
+    background: var(--status-success);
+  }
+
+  @keyframes statusPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+
+  .status-text {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--silver-text);
+    letter-spacing: 0.05em;
+  }
+
+  /* Footer Sections */
+  .footer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  .footer-heading {
+    font-size: 1.125rem;
+    color: var(--silver-text);
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+  }
+
+  .footer-heading::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 30px;
+    height: 2px;
+    background: var(--accent-blue);
+    border-radius: 1px;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .footer-link {
+    color: var(--silver-muted);
+    font-size: 0.95rem;
+    transition: all var(--motion-fast) var(--motion-ease);
+    position: relative;
+    padding-left: 0;
+    display: inline-block;
+  }
+
+  .footer-link::before {
+    content: ">";
+    position: absolute;
+    left: -1rem;
+    opacity: 0;
+    transition: all var(--motion-fast) var(--motion-ease);
+    color: var(--accent-blue);
+  }
+
+  .footer-link:hover {
+    color: var(--accent-blue);
+    padding-left: 1rem;
+  }
+
+  .footer-link:hover::before {
+    opacity: 1;
+    left: 0;
+  }
+
+  /* Footer Bottom */
+  .footer-bottom {
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 2rem;
+  }
+
+  .footer-terminal {
+    background: var(--dark-slate);
+    border: 1px solid var(--border-medium);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+  }
+
+  .terminal-line {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .terminal-prompt {
+    color: var(--accent-blue);
+    font-weight: 700;
+  }
+
+  .terminal-command {
+    color: var(--silver-text);
+  }
+
+  .terminal-output {
+    color: var(--status-info);
+  }
+
+  .footer-copyright {
+    text-align: center;
+    color: var(--silver-muted);
+    font-size: 0.875rem;
+  }
+
+  .footer-disclaimer {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    color: var(--silver-muted);
+    opacity: 0.7;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    .site-footer {
+      padding: 3rem 0 1.5rem;
+    }
+  }
+</style>

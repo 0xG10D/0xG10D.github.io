@@ -1,0 +1,473 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SecurityIcon from '../components/SecurityIcon.astro';
+import type { SecurityIconName } from '../data/security-icons';
+
+const allWriteups = await getCollection('writeups', ({ data }) => !data.draft);
+
+const profile = {
+  name: '0xG10D',
+  alias: '0xG10D',
+  role: 'Cybersecurity Student & CTF Player',
+  location: 'Malaysia',
+  status: 'Active Learner'
+};
+
+const focusAreas: {
+  icon: SecurityIconName;
+  title: string;
+  description: string;
+}[] = [
+  {
+    icon: 'target',
+    title: 'Penetration Testing',
+    description: 'Network exploitation, web application security, and Active Directory attacks with detailed methodology documentation.'
+  },
+  {
+    icon: 'archive',
+    title: 'CTF Challenges',
+    description: 'Binary exploitation, reverse engineering, cryptography, web exploitation, and forensics challenges.'
+  },
+  {
+    icon: 'radar',
+    title: 'Defensive Security',
+    description: 'Security monitoring, incident response, threat hunting, and defensive tool development.'
+  },
+  {
+    icon: 'automation',
+    title: 'Security Automation',
+    description: 'Building security tools, automation scripts, and monitoring solutions.'
+  }
+];
+
+const platforms: {
+  name: string;
+  icon: SecurityIconName;
+  url: string;
+}[] = [
+  { name: 'Hack The Box', icon: 'target', url: 'https://app.hackthebox.com/' },
+  { name: 'TryHackMe', icon: 'platform', url: 'https://tryhackme.com/' },
+  { name: 'PortSwigger Academy', icon: 'code', url: 'https://portswigger.net/web-security' },
+  { name: 'picoCTF', icon: 'file', url: 'https://picoctf.org/' }
+];
+
+const contactLinks: {
+  platform: string;
+  handle: string;
+  url: string;
+  icon: SecurityIconName;
+}[] = [
+  { platform: 'GitHub', handle: '@0xG10D', url: 'https://github.com/0xG10D', icon: 'github' },
+  { platform: 'Hack The Box', handle: '1228382', url: 'https://app.hackthebox.com/profile/1228382', icon: 'target' }
+];
+
+const technicalSkills = [
+  { category: 'Languages', skills: ['Python', 'JavaScript', 'Bash', 'PowerShell', 'SQL'] },
+  { category: 'Security Tools', skills: ['Nmap', 'Burp Suite', 'Metasploit', 'Wireshark', 'John the Ripper'] },
+  { category: 'Platforms', skills: ['Linux', 'Windows Server', 'Active Directory', 'Docker', 'AWS'] },
+  { category: 'Concepts', skills: ['Network Security', 'Web App Security', 'Cryptography', 'Forensics', 'Incident Response'] }
+];
+
+const currentFocus = [
+  'Publishing structured HTB, TryHackMe, and CTF writeups',
+  'Building defensive monitoring and security automation projects',
+  'Practicing offensive methodology in authorized lab environments',
+  'Improving malware, SOC, and forensics documentation quality'
+];
+---
+
+<BaseLayout title="About" description="Professional cybersecurity operator profile for 0xG10D.">
+  <main class="about-page">
+    <section class="operator-hero section">
+      <div class="container">
+        <div class="operator-grid">
+          <article class="operator-card">
+            <div class="operator-badge">
+              <SecurityIcon name="profile" size={18} />
+              <span>Operator profile</span>
+            </div>
+            <h1>{profile.name}</h1>
+            <p class="operator-role">{profile.role}</p>
+            <div class="operator-meta">
+              <div><span>Alias</span><strong>@{profile.alias}</strong></div>
+              <div><span>Status</span><strong>{profile.status}</strong></div>
+              <div><span>Location</span><strong>{profile.location}</strong></div>
+            </div>
+          </article>
+
+          <article class="mission-panel">
+            <span class="eyebrow-tag">Learning system</span>
+            <h2>Documented practice across offensive and defensive security.</h2>
+            <p>
+              Building a comprehensive cybersecurity portfolio through practical application,
+              continuous learning, and detailed documentation of offensive and defensive security techniques.
+            </p>
+            <div class="mission-stats">
+              <div><strong>{allWriteups.length}</strong><span>writeups</span></div>
+              <div><strong>{focusAreas.length}</strong><span>focus areas</span></div>
+              <div><strong>{platforms.length}</strong><span>platforms</span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section current-focus-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Current focus</h2>
+          <p class="section-subtitle">A concise view of what this portfolio is actively documenting.</p>
+        </div>
+        <div class="current-focus-grid">
+          {currentFocus.map((item) => (
+            <article class="current-focus-card">
+              <SecurityIcon name="shield" size={20} />
+              <span>{item}</span>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Focus areas</h2>
+          <p class="section-subtitle">Practical disciplines tracked through labs, CTFs, notes, and tooling.</p>
+        </div>
+        <div class="focus-grid">
+          {focusAreas.map((area) => (
+            <article class="focus-card">
+              <div class="icon-box"><SecurityIcon name={area.icon} /></div>
+              <h3>{area.title}</h3>
+              <p>{area.description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Technical skills</h2>
+          <p class="section-subtitle">Tools and concepts used across writeups and projects.</p>
+        </div>
+        <div class="skills-grid">
+          {technicalSkills.map((group) => (
+            <article class="skill-card">
+              <h3>{group.category}</h3>
+              <div class="skill-tags">
+                {group.skills.map((skill) => <span>{skill}</span>)}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container platform-connect-grid">
+        <div>
+          <div class="section-header align-left">
+            <h2 class="section-title">Learning platforms</h2>
+            <p class="section-subtitle">Authorized environments used for cybersecurity education and practice.</p>
+          </div>
+          <div class="platform-grid">
+            {platforms.map((platform) => (
+              <a href={platform.url} class="link-card" target="_blank" rel="noopener noreferrer">
+                <SecurityIcon name={platform.icon} />
+                <span>{platform.name}</span>
+                <SecurityIcon name="external" size={16} />
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <div class="section-header align-left">
+            <h2 class="section-title">Connect</h2>
+            <p class="section-subtitle">Public technical profiles.</p>
+          </div>
+          <div class="platform-grid">
+            {contactLinks.map((contact) => (
+              <a href={contact.url} class="link-card" target="_blank" rel="noopener noreferrer">
+                <SecurityIcon name={contact.icon} />
+                <span>{contact.platform}</span>
+                <small>{contact.handle}</small>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="disclaimer-section">
+      <div class="container">
+        <div class="disclaimer-card">
+          <SecurityIcon name="shield" />
+          <p>
+            This portfolio documents security learning through authorized platforms such as Hack The Box and TryHackMe.
+            All techniques are demonstrated in controlled, legal environments for educational purposes only.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .about-page {
+    padding-top: 80px;
+  }
+
+  .operator-hero {
+    padding-top: calc(var(--section-spacing) * 1.25);
+  }
+
+  .operator-grid,
+  .platform-connect-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+    gap: 2rem;
+    align-items: stretch;
+  }
+
+  .operator-card,
+  .mission-panel,
+  .focus-card,
+  .skill-card,
+  .link-card,
+  .disclaimer-card {
+    background: linear-gradient(180deg, rgba(16, 42, 76, 0.88), rgba(11, 29, 58, 0.92));
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    box-shadow: var(--shadow-medium);
+  }
+
+  .operator-card,
+  .mission-panel {
+    padding: clamp(2rem, 4vw, 3rem);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .operator-card::before,
+  .mission-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 0%, rgba(56, 189, 248, 0.16), transparent 42%);
+    pointer-events: none;
+  }
+
+  .operator-badge,
+  .eyebrow-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: fit-content;
+    color: var(--accent-blue);
+    background: var(--accent-blue-subtle);
+    border: 1px solid var(--border-medium);
+    border-radius: 8px;
+    padding: 0.45rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  .operator-card h1,
+  .mission-panel h2 {
+    position: relative;
+    margin-top: 1.25rem;
+    text-wrap: balance;
+  }
+
+  .operator-role,
+  .mission-panel p {
+    position: relative;
+    color: var(--text-secondary);
+    font-size: 1.08rem;
+    max-width: 62ch;
+  }
+
+  .operator-meta,
+  .mission-stats {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+
+  .operator-meta div,
+  .mission-stats div {
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    padding: 1rem;
+    background: rgba(8, 20, 47, 0.58);
+  }
+
+  .operator-meta span,
+  .mission-stats span {
+    display: block;
+    color: var(--muted-text);
+    font-size: 0.78rem;
+    text-transform: uppercase;
+  }
+
+  .operator-meta strong,
+  .mission-stats strong {
+    display: block;
+    color: var(--text-primary);
+    font-size: clamp(1.05rem, 2vw, 1.7rem);
+  }
+
+  .current-focus-grid,
+  .focus-grid,
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.25rem;
+  }
+
+  .current-focus-card,
+  .focus-card,
+  .skill-card {
+    padding: 1.5rem;
+  }
+
+  .current-focus-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.9rem;
+    align-items: start;
+    background: linear-gradient(180deg, rgba(16, 42, 76, 0.86), rgba(11, 29, 58, 0.92));
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    color: var(--text-secondary);
+  }
+
+  .current-focus-card svg {
+    color: var(--accent-blue);
+    margin-top: 0.1rem;
+  }
+
+  .icon-box {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 1rem;
+    color: var(--accent-blue);
+    background: var(--accent-blue-subtle);
+    border: 1px solid var(--border-medium);
+    border-radius: 10px;
+  }
+
+  .focus-card h3,
+  .skill-card h3 {
+    margin: 0 0 0.75rem;
+    font-size: 1.1rem;
+  }
+
+  .focus-card p {
+    margin: 0;
+    color: var(--text-secondary);
+  }
+
+  .skill-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .skill-tags span {
+    color: var(--text-secondary);
+    background: rgba(8, 20, 47, 0.72);
+    border: 1px solid var(--border-subtle);
+    border-radius: 7px;
+    padding: 0.45rem 0.65rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+  }
+
+  .section-header.align-left {
+    text-align: left;
+  }
+
+  .section-header.align-left .section-title::after {
+    left: 0;
+    transform: none;
+  }
+
+  .section-header.align-left .section-subtitle {
+    margin-left: 0;
+  }
+
+  .platform-grid {
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .link-card {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1rem;
+    color: var(--text-primary);
+    transition: transform var(--motion-medium) var(--motion-ease), border-color var(--motion-medium) var(--motion-ease);
+  }
+
+  .link-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-medium);
+  }
+
+  .link-card svg {
+    color: var(--accent-blue);
+  }
+
+  .link-card small {
+    color: var(--muted-text);
+    font-family: var(--font-mono);
+  }
+
+  .disclaimer-section {
+    padding: 2rem 0 4rem;
+  }
+
+  .disclaimer-card {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    padding: 1.25rem;
+    color: var(--text-secondary);
+  }
+
+  .disclaimer-card svg {
+    flex: 0 0 auto;
+    color: var(--accent-blue);
+  }
+
+  .disclaimer-card p {
+    margin: 0;
+  }
+
+  @media (max-width: 900px) {
+    .operator-grid,
+    .platform-connect-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .operator-meta,
+    .mission-stats {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

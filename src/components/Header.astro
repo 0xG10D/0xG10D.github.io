@@ -1,0 +1,363 @@
+---
+import IconHome from './icons/IconHome.astro';
+import IconFile from './icons/IconFile.astro';
+import IconTerminal from './icons/IconTerminal.astro';
+import IconProject from './icons/IconProject.astro';
+import IconAward from './icons/IconAward.astro';
+import IconUser from './icons/IconUser.astro';
+
+const Icons = {
+  home: IconHome,
+  writeups: IconFile,
+  cheatsheets: IconTerminal,
+  projects: IconProject,
+  achievements: IconAward,
+  about: IconUser
+};
+
+type IconName = keyof typeof Icons;
+type NavLink = {
+  href: string;
+  label: string;
+  icon: IconName;
+};
+
+const currentPath = Astro.url.pathname;
+const links: NavLink[] = [
+  { href: '/', label: 'Home', icon: 'home' },
+  { href: '/writeups/', label: 'Writeups', icon: 'writeups' },
+  { href: '/cheatsheets/', label: 'Cheat Sheets', icon: 'cheatsheets' },
+  { href: '/projects/', label: 'Projects', icon: 'projects' },
+  { href: '/achievements/', label: 'Achievements', icon: 'achievements' },
+  { href: '/about/', label: 'About', icon: 'about' }
+];
+---
+
+<header class="site-header">
+  <div class="container">
+    <nav class="nav" aria-label="Main navigation">
+      <!-- Brand -->
+      <a class="brand" href="/" aria-label="0xG10D Home">
+        <span class="brand-bracket">[</span>
+        <span class="brand-name">0xG10D</span>
+        <span class="brand-bracket">]</span>
+        <span class="brand-tagline">// SECURITY PORTFOLIO</span>
+      </a>
+
+      <!-- Desktop Navigation -->
+      <div class="nav-desktop">
+        {
+          links.map((link) => {
+            const isHome = link.href === '/';
+            const isActive = isHome
+              ? currentPath === '/'
+              : currentPath === link.href || currentPath.startsWith(link.href);
+
+            const IconComp = Icons[link.icon];
+
+            return (
+              <a
+                href={link.href}
+                class={`nav-link ${isActive ? 'nav-link-active' : ''}`}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                <span class="nav-link-icon"><IconComp /></span>
+                <span class="nav-link-label">{link.label}</span>
+                {isActive && <span class="nav-link-indicator" aria-hidden="true"></span>}
+              </a>
+            );
+          })
+        }
+      </div>
+
+      <!-- Mobile Navigation Toggle -->
+      <button class="nav-mobile-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-navigation">
+        <div class="nav-mobile-toggle-inner">
+          <span class="nav-mobile-line"></span>
+          <span class="nav-mobile-line"></span>
+          <span class="nav-mobile-line"></span>
+        </div>
+      </button>
+
+      <!-- Mobile Navigation Panel -->
+      <div class="nav-mobile-panel" id="mobile-navigation" aria-hidden="true">
+        <div class="nav-mobile-content">
+          {
+            links.map((link) => {
+              const isHome = link.href === '/';
+              const isActive = isHome
+                ? currentPath === '/'
+                : currentPath === link.href || currentPath.startsWith(link.href);
+
+              const IconComp = Icons[link.icon];
+
+              return (
+                <a
+                  href={link.href}
+                  class={`nav-mobile-link ${isActive ? 'nav-mobile-link-active' : ''}`}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  <span class="nav-mobile-link-icon"><IconComp /></span>
+                  <span class="nav-mobile-link-label">{link.label}</span>
+                </a>
+              );
+            })
+          }
+        </div>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<style>
+  /* Header Base */
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(5, 11, 31, 0.82);
+    backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(125, 211, 252, 0.16);
+    box-shadow: 0 10px 30px rgba(2, 8, 23, 0.28);
+    padding: 0.8rem 0;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  /* Brand */
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--text-primary);
+    transition: color var(--motion-fast) var(--motion-ease);
+  }
+
+  .brand:hover {
+    color: var(--accent-blue);
+  }
+
+  .brand-bracket {
+    color: var(--accent-blue);
+  }
+
+  .brand-tagline {
+    font-size: 0.75rem;
+    color: var(--muted-text);
+    margin-left: 0.75rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* Desktop Navigation */
+  .nav-desktop {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .nav-link {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.75rem 1.25rem;
+    color: var(--silver-muted);
+    border-radius: 8px;
+    transition: all var(--motion-medium) var(--motion-ease);
+    position: relative;
+  }
+
+  .nav-link:hover {
+    color: var(--accent-blue);
+    background: rgba(56, 189, 248, 0.1);
+  }
+
+  .nav-link-active {
+    color: var(--accent-blue);
+    background: rgba(56, 189, 248, 0.12);
+    box-shadow: inset 0 0 0 1px rgba(125, 211, 252, 0.16);
+  }
+
+  .nav-link-icon {
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+
+  .nav-link-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .nav-link-indicator {
+    position: absolute;
+    bottom: -0.8rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 3px;
+    background: linear-gradient(90deg, var(--primary-blue), var(--electric-blue));
+    border-radius: 2px;
+    animation: indicatorPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes indicatorPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+  }
+
+  /* Mobile Navigation Toggle */
+  .nav-mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    color: var(--text-primary);
+  }
+
+  .nav-mobile-toggle-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    width: 24px;
+  }
+
+  .nav-mobile-line {
+    height: 2px;
+    background: currentColor;
+    border-radius: 1px;
+    transition: all var(--motion-medium) var(--motion-ease);
+  }
+
+  .nav-mobile-toggle[aria-expanded="true"] .nav-mobile-line:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+
+  .nav-mobile-toggle[aria-expanded="true"] .nav-mobile-line:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav-mobile-toggle[aria-expanded="true"] .nav-mobile-line:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+
+  /* Mobile Navigation Panel */
+  .nav-mobile-panel {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(8, 20, 47, 0.98);
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 1rem 0;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all var(--motion-medium) var(--motion-ease);
+  }
+
+  .nav-mobile-panel[aria-hidden="false"] {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .nav-mobile-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    padding: 0 var(--container-padding);
+  }
+
+  .nav-mobile-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    color: var(--text-secondary);
+    border-radius: 8px;
+    transition: all var(--motion-fast) var(--motion-ease);
+  }
+
+  .nav-mobile-link:hover,
+  .nav-mobile-link-active {
+    color: var(--accent-blue);
+    background: rgba(56, 189, 248, 0.12);
+  }
+
+  .nav-mobile-link-icon {
+    font-size: 1.25rem;
+    width: 24px;
+    text-align: center;
+  }
+
+  .nav-mobile-link-label {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .nav-desktop {
+      display: none;
+    }
+
+    .nav-mobile-toggle {
+      display: block;
+    }
+
+    .brand-tagline {
+      display: none;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .brand {
+      font-size: 1rem;
+    }
+  }
+</style>
+
+<script>
+  // Mobile navigation toggle
+  const mobileToggle = document.querySelector('.nav-mobile-toggle');
+  const mobilePanel = document.querySelector('.nav-mobile-panel');
+
+  if (mobileToggle instanceof HTMLButtonElement && mobilePanel instanceof HTMLElement) {
+    const setMobileMenuState = (isOpen: boolean) => {
+      mobileToggle.setAttribute('aria-expanded', String(isOpen));
+      mobilePanel.setAttribute('aria-hidden', String(!isOpen));
+    };
+
+    mobileToggle.addEventListener('click', () => {
+      const isExpanded = mobileToggle.getAttribute('aria-expanded') === 'true';
+      setMobileMenuState(!isExpanded);
+    });
+
+    mobilePanel.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => setMobileMenuState(false));
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') setMobileMenuState(false);
+    });
+
+    // Close mobile menu when clicking outside.
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      if (target instanceof Node && !mobileToggle.contains(target) && !mobilePanel.contains(target)) {
+        setMobileMenuState(false);
+      }
+    });
+  }
+</script>

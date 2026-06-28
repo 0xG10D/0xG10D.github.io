@@ -1,0 +1,41 @@
+---
+interface Props {
+  items: {
+    id: string;
+    title: string;
+    issuer: string;
+    date: string;
+    type: 'certification' | 'achievement' | 'award' | 'training';
+    status: 'earned' | 'in-progress';
+    credentialUrl?: string;
+    summary?: string;
+  }[];
+}
+
+const { items } = Astro.props;
+const formatDate = (date: string) =>
+  new Date(date).toLocaleDateString('en', {
+    year: 'numeric',
+    month: 'short'
+  });
+---
+
+<div class="timeline">
+  {
+    items.map((item) => (
+      <article class="timeline-item">
+        <div class="timeline-card">
+          <div class="meta-row">
+            <span class="pill accent">{item.type}</span>
+            <span class="pill">{formatDate(item.date)}</span>
+            <span class="pill">{item.status}</span>
+          </div>
+          <h3>{item.title}</h3>
+          <p>{item.issuer}</p>
+          {item.summary && <p>{item.summary}</p>}
+          {item.credentialUrl && <a class="button" href={item.credentialUrl}>View credential</a>}
+        </div>
+      </article>
+    ))
+  }
+</div>

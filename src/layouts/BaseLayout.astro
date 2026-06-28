@@ -1,0 +1,189 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = 'Cybersecurity portfolio documenting CTF writeups, penetration testing methodology, security tool development, and professional learning progress.'
+} = Astro.props;
+const pageTitle = `${title} | 0xG10D Security Portfolio`;
+---
+
+<!doctype html>
+<html lang="en" class="dark-theme">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="robots" content="index,follow" />
+
+    <!-- Open Graph / Social Meta -->
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <title>{pageTitle}</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Additional meta for security portfolio -->
+    <meta name="theme-color" content="#050B1F" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- Structured Data for Security Portfolio -->
+    <script type="application/ld+json" is:inline>
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "0xG10D Security Portfolio",
+        "description": "Cybersecurity portfolio documenting CTF writeups, penetration testing methodology, and security tool development.",
+        "url": "https://portfolio.0xg10d.dev",
+        "author": {
+          "@type": "Person",
+          "name": "0xG10D"
+        },
+        "keywords": ["cybersecurity", "CTF", "writeups", "penetration testing", "security tools"]
+      }
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <div class="page-wrapper">
+      <Header />
+
+      <main id="main-content" class="main-content" tabindex="-1">
+        <slot />
+      </main>
+
+      <Footer />
+    </div>
+
+    <!-- Global JavaScript for enhanced interactions -->
+    <script>
+      // Add loading animation removal
+      document.addEventListener('DOMContentLoaded', () => {
+        document.body.classList.add('loaded');
+
+        const findHashTarget = (hash: string) => {
+          try {
+            return document.getElementById(decodeURIComponent(hash));
+          } catch {
+            return document.getElementById(hash);
+          }
+        };
+
+        // Smooth scroll for same-page anchor links without hijacking external links.
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          if (!(anchor instanceof HTMLAnchorElement)) return;
+
+          anchor.addEventListener('click', (event) => {
+            if (anchor.pathname !== window.location.pathname) return;
+
+            const targetId = anchor.hash.slice(1);
+            if (!targetId) return;
+
+            const targetElement = findHashTarget(targetId);
+            if (!targetElement) return;
+
+            event.preventDefault();
+            targetElement.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+            targetElement.focus({ preventScroll: true });
+          });
+        });
+      });
+
+      // Performance optimization: lazy load images
+      if ('IntersectionObserver' in window) {
+        const imageObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              if (!(img instanceof HTMLImageElement)) return;
+              const source = img.dataset.src;
+              if (!source) return;
+              img.src = source;
+              img.classList.add('loaded');
+              imageObserver.unobserve(img);
+            }
+          });
+        });
+
+        document.querySelectorAll('img[data-src]').forEach(img => {
+          imageObserver.observe(img);
+        });
+      }
+    </script>
+  </body>
+</html>
+
+<style>
+  .page-wrapper {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .main-content {
+    flex: 1;
+  }
+
+  .main-content:focus {
+    outline: none;
+  }
+
+  .skip-link {
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 10000;
+    transform: translateY(-140%);
+    padding: 0.75rem 1rem;
+    border-radius: 999px;
+    background: var(--electric-blue);
+    color: var(--bg-main);
+    font-weight: 800;
+    box-shadow: var(--shadow-medium);
+  }
+
+  .skip-link:focus-visible {
+    transform: translateY(0);
+  }
+
+  /* Smooth page transitions */
+  body {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    to {
+      opacity: 1;
+    }
+  }
+
+  /* Image loading animation */
+  img[data-src] {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  img[data-src].loaded {
+    opacity: 1;
+  }
+</style>

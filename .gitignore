@@ -1,0 +1,61 @@
+# Dependencies
+node_modules/
+
+# Build output and framework caches
+dist/
+.astro/
+.cache/
+.tmp/
+.netlify/
+
+# Local agent/tooling state
+.agents/
+.codex/
+.backups/
+skills-lock.json
+
+# Local preview and monitor runtime files
+.astro-dev-server.pid
+dev-server*.log
+astro-preview*.log
+local-preview*.log
+preview*.log
+monitor-*.log
+project-monitor.log
+monitor-state.json
+monitor-runtime/
+.monitor/
+MONITORING-GUIDE.md
+monitor-config.json
+monitor.bat
+project-monitor.ps1
+
+# Environment and secret material
+.env
+.env.*
+!.env.example
+*.local.env
+*.token
+*.secret
+secrets.local.*
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Temporary extraction/scratch output
+*.tmp
+*.temp
+pdf-pages/
+pdf-extracts/
+extracted-pages/
+tmp-pages/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

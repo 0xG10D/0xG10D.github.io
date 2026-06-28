@@ -1,0 +1,980 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import WriteupCard from '../components/WriteupCard.astro';
+import SecurityIcon from '../components/SecurityIcon.astro';
+import { projects } from '../data/projects';
+import type { SecurityIconName } from '../data/security-icons';
+
+// Get writeups
+const allWriteups = await getCollection('writeups', ({ data }) => !data.draft);
+const latestWriteups = allWriteups
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 6);
+
+// Get featured projects
+const featuredProjects = projects.filter((project) =>
+  ['awd-watchdog', 'wavesentinel-wids'].includes(project.id)
+);
+
+// Get stats
+const writeupStats = {
+  total: allWriteups.length,
+  htb: allWriteups.filter(w => w.data.platform === 'hackthebox').length,
+  thm: allWriteups.filter(w => w.data.platform === 'tryhackme').length,
+  ctf: allWriteups.filter(w => w.data.category.includes('ctf')).length
+};
+
+// Focus areas for expertise
+const focusAreas: {
+  icon: SecurityIconName;
+  title: string;
+  description: string;
+  color: string;
+}[] = [
+  {
+    icon: 'target',
+    title: 'Penetration Testing',
+    description: 'Network, web, and Active Directory exploitation with detailed methodology documentation.',
+    color: 'rgba(56, 189, 248, 0.18)'
+  },
+  {
+    icon: 'archive',
+    title: 'CTF',
+    description: 'Challenge analysis across web, reverse engineering, binary exploitation, cryptography, and forensics.',
+    color: 'rgba(125, 211, 252, 0.16)'
+  },
+  {
+    icon: 'radar',
+    title: 'SOC / Threat Hunting',
+    description: 'Alert triage, detection thinking, forensic review, and defensive security practice in simulated environments.',
+    color: 'rgba(37, 99, 235, 0.2)'
+  },
+  {
+    icon: 'flask',
+    title: 'Malware Analysis',
+    description: 'Static and dynamic analysis notes focused on behavior, indicators, and reproducible lab practice.',
+    color: 'rgba(147, 197, 253, 0.16)'
+  },
+  {
+    icon: 'tool',
+    title: 'System Hardening',
+    description: 'Security tooling, service monitoring, evidence collection, and practical hardening workflows.',
+    color: 'rgba(96, 165, 250, 0.18)'
+  }
+];
+
+// Quick stats
+const quickStats = [
+  { label: 'Writeups Published', value: writeupStats.total, change: '+3 this month' },
+  { label: 'HTB Machines', value: writeupStats.htb, change: 'Easy to Hard' },
+  { label: 'CTF Challenges', value: writeupStats.ctf, change: 'Multiple categories' },
+  { label: 'Projects Active', value: featuredProjects.length, change: '2 featured' }
+];
+---
+
+<BaseLayout title="Home">
+  <main class="homepage">
+
+    <!-- ===== HERO SECTION ===== -->
+    <section class="hero section">
+      <div class="container">
+        <div class="hero-grid">
+          <!-- Hero Content -->
+          <div class="hero-content">
+            <div class="hero-eyebrow">
+              <span class="eyebrow-tag">CYBERSECURITY PORTFOLIO</span>
+              <span class="status-indicator active" aria-label="Active"></span>
+            </div>
+
+            <h1 class="hero-title">
+              <span class="hero-title-main">0xG10D</span>
+              <span class="hero-title-sub">Security Research & Documentation</span>
+            </h1>
+
+            <p class="hero-description">
+              A technical portfolio documenting penetration testing methodology,
+              CTF challenge analysis, security tool development, and professional
+              cybersecurity learning through authorized platforms.
+            </p>
+
+            <div class="hero-actions">
+              <a href="/writeups/" class="button button-primary">
+                <span>Browse Writeups</span>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M6 15l4-4-4-4"/>
+                </svg>
+              </a>
+              <a href="/projects/" class="button button-secondary">
+                <span>View Projects</span>
+              </a>
+              <a href="/about/" class="button button-ghost">
+                <span>About Me</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Hero Terminal -->
+          <div class="hero-visual" aria-label="Portfolio capability dashboard">
+          <div class="hero-terminal">
+            <div class="terminal-header">
+              <div class="terminal-dots">
+                <span class="dot red"></span>
+                <span class="dot blue-mid"></span>
+                <span class="dot green"></span>
+              </div>
+              <span class="terminal-title">portfolio_status.sh</span>
+            </div>
+
+            <div class="terminal-content">
+              <div class="terminal-line">
+                <span class="prompt">$</span>
+                <span class="command">./portfolio --status --detailed</span>
+              </div>
+
+              <div class="terminal-line">
+                <span class="output">[ok] Portfolio initialized: 0xG10D</span>
+              </div>
+
+              <div class="terminal-line">
+                <span class="output">[ok] Writeups indexed: {writeupStats.total} entries</span>
+              </div>
+
+              <div class="terminal-line">
+                <span class="output">[ok] Active projects: {featuredProjects.length} running</span>
+              </div>
+
+              <div class="terminal-line">
+                <span class="output">[ok] Last update: {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+              </div>
+
+              <div class="terminal-line">
+                <span class="output">[ok] System integrity: <span class="status-success">SECURE</span></span>
+              </div>
+
+              <div class="terminal-line">
+                <span class="prompt">$</span>
+                <span class="command">./portfolio --recommendation</span>
+              </div>
+
+              <div class="terminal-line">
+                <span class="output">[next] Recommended: Review latest HTB writeup</span>
+              </div>
+            </div>
+          </div>
+
+            <div class="signal-grid" aria-label="Security focus overview">
+              <div class="signal-card">
+                <span class="signal-label">Archive</span>
+                <strong>{writeupStats.total}</strong>
+                <span>technical reports</span>
+              </div>
+              <div class="signal-card">
+                <span class="signal-label">Practice</span>
+                <strong>HTB / THM</strong>
+                <span>authorized labs</span>
+              </div>
+              <div class="signal-card">
+                <span class="signal-label">Builds</span>
+                <strong>{featuredProjects.length}</strong>
+                <span>security tools</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== QUICK STATS ===== -->
+    <section class="stats section">
+      <div class="container">
+        <div class="stats-grid">
+          {quickStats.map((stat, index) => (
+            <div class="stat-card">
+              <div class="stat-value">{stat.value}</div>
+              <div class="stat-label">{stat.label}</div>
+              <div class="stat-change">{stat.change}</div>
+              <div class="stat-glow" style={`--stat-index: ${index}`}></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FOCUS AREAS ===== -->
+    <section class="focus section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Core Focus Areas</h2>
+          <p class="section-subtitle">
+            Specialized cybersecurity disciplines practiced through labs, challenges, and tool development.
+          </p>
+        </div>
+
+        <div class="focus-grid">
+          {focusAreas.map((area) => (
+            <div class="focus-card" style={`--focus-color: ${area.color}`}>
+              <div class="focus-icon"><SecurityIcon name={area.icon} size={28} /></div>
+              <h3 class="focus-title">{area.title}</h3>
+              <p class="focus-description">{area.description}</p>
+              <div class="focus-glow"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== LATEST WRITEUPS ===== -->
+    <section class="writeups section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Latest Writeups</h2>
+          <p class="section-subtitle">
+            Recent CTF challenge documentation and penetration testing methodology.
+          </p>
+        </div>
+
+        {latestWriteups.length > 0 ? (
+          <div class="writeups-grid">
+            {latestWriteups.map((post) => (
+              <WriteupCard post={post} />
+            ))}
+          </div>
+
+          <div class="section-actions">
+            <a href="/writeups/" class="button button-secondary">
+              <span>View All Writeups</span>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 14l4-4-4-4"/>
+              </svg>
+            </a>
+          </div>
+        ) : (
+          <div class="empty-state">
+            <p>No writeups available yet. Check back soon!</p>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- ===== FEATURED PROJECTS ===== -->
+    <section class="projects section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Featured Security Tools</h2>
+          <p class="section-subtitle">
+            Practical security utilities and monitoring tools developed for defensive and offensive security.
+          </p>
+        </div>
+
+        {featuredProjects.length > 0 ? (
+          <div class="projects-grid">
+            {featuredProjects.map((project) => (
+              <article class="project-card">
+                <div class="project-header">
+                  <div class="project-badge">{project.type}</div>
+                  <h3 class="project-title">{project.name}</h3>
+                </div>
+
+                <p class="project-description">{project.summary}</p>
+
+                <div class="project-tech">
+                  {project.stack.slice(0, 4).map((tech) => (
+                    <span class="tech-tag">{tech}</span>
+                  ))}
+                </div>
+
+                <div class="project-actions">
+                  <a href={`/projects/#${project.id}`} class="project-link">
+                    View Details
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M6 12l4-4-4-4"/>
+                    </svg>
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div class="section-actions">
+            <a href="/projects/" class="button button-secondary">
+              <span>Explore All Projects</span>
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10 14l4-4-4-4"/>
+              </svg>
+            </a>
+          </div>
+        ) : (
+          <div class="empty-state">
+            <p>No featured projects available. Check back soon!</p>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <!-- ===== CALL TO ACTION ===== -->
+    <section class="cta section">
+      <div class="container">
+        <div class="cta-card">
+          <div class="cta-content">
+            <h2 class="cta-title">Ready to Dive Deeper?</h2>
+            <p class="cta-description">
+              Explore comprehensive writeups, security tool documentation, and professional
+              learning progress in cybersecurity.
+            </p>
+            <div class="cta-actions">
+              <a href="/writeups/" class="button button-primary">Browse Writeups</a>
+              <a href="/about/" class="button button-secondary">Learn About Me</a>
+            </div>
+          </div>
+
+          <div class="cta-terminal">
+            <div class="terminal-line">
+              <span class="prompt">$</span>
+              <span class="command">curl -X GET https://portfolio.0xg10d.dev/engagement</span>
+            </div>
+            <div class="terminal-line">
+              <span class="output">{"{"}</span>
+            </div>
+            <div class="terminal-line">
+              <span class="output indent-1">"status": "active",</span>
+            </div>
+            <div class="terminal-line">
+              <span class="output indent-1">"writeups_available": {writeupStats.total},</span>
+            </div>
+            <div class="terminal-line">
+              <span class="output indent-1">"last_update": "{new Date().toISOString().split('T')[0]}"</span>
+            </div>
+            <div class="terminal-line">
+              <span class="output">{"}"}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</BaseLayout>
+
+<style>
+  /* ===== HOMEPAGE LAYOUT ===== */
+  .homepage {
+    padding-top: 80px; /* Account for fixed header */
+  }
+
+  .section {
+    padding: var(--section-spacing) 0;
+  }
+
+  /* ===== HERO SECTION ===== */
+  .hero {
+    padding-top: calc(var(--section-spacing) * 1.5);
+    padding-bottom: calc(var(--section-spacing) * 1.5);
+  }
+
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .hero-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .eyebrow-tag {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--accent-blue);
+    background: var(--accent-blue-subtle);
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-medium);
+    letter-spacing: 0.05em;
+  }
+
+  .status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .status-indicator.active {
+    background: var(--status-success);
+    animation: statusPulse 2s ease-in-out infinite;
+  }
+
+  .hero-title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .hero-title-main {
+    font-size: clamp(3rem, 5vw, 4.5rem);
+    font-weight: 900;
+    color: var(--silver-text);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .hero-title-sub {
+    font-size: clamp(1.25rem, 2vw, 1.75rem);
+    font-weight: 400;
+    color: var(--silver-muted);
+    line-height: 1.3;
+  }
+
+  .hero-description {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--silver-muted);
+    max-width: 600px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .hero-actions .button {
+    min-width: 150px;
+  }
+
+  .button-ghost {
+    color: var(--text-secondary);
+    border-color: transparent;
+    background: rgba(16, 42, 76, 0.42);
+  }
+
+  .button-ghost:hover {
+    color: var(--accent-blue);
+    border-color: var(--border-medium);
+    background: var(--accent-blue-subtle);
+    transform: translateY(-2px);
+  }
+
+  /* Hero Terminal */
+  .hero-visual {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .hero-terminal {
+    background: var(--dark-slate);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .terminal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.5rem;
+    background: var(--surface-elevated);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .terminal-dots {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .terminal-dots .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+  }
+
+  .terminal-dots .dot.red { background: #2563EB; }
+  .terminal-dots .dot.blue-mid { background: #38BDF8; }
+  .terminal-dots .dot.green { background: #7DD3FC; }
+
+  .terminal-title {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--silver-text);
+  }
+
+  .terminal-content {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .terminal-line {
+    display: flex;
+    gap: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+  }
+
+  .prompt {
+    color: var(--accent-blue);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .command {
+    color: var(--silver-text);
+  }
+
+  .output {
+    color: var(--status-info);
+  }
+
+  .status-success {
+    color: var(--status-success);
+    font-weight: 700;
+  }
+
+  .indent-1 { padding-left: 1rem; }
+
+  .signal-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .signal-card {
+    padding: 1rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: rgba(16, 42, 76, 0.66);
+    box-shadow: inset 0 1px 0 rgba(125, 211, 252, 0.08);
+  }
+
+  .signal-card strong,
+  .signal-card span {
+    display: block;
+  }
+
+  .signal-card strong {
+    margin: 0.25rem 0;
+    color: var(--text-primary);
+    font-size: 1.15rem;
+  }
+
+  .signal-card span:last-child {
+    color: var(--muted-text);
+    font-size: 0.82rem;
+  }
+
+  .signal-label {
+    color: var(--accent-blue) !important;
+    font-family: var(--font-mono);
+    font-size: 0.68rem !important;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* ===== STATS SECTION ===== */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .stat-card {
+    position: relative;
+    background: var(--deep-matte-grey);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    transition: all var(--motion-medium) var(--motion-ease);
+    overflow: hidden;
+  }
+
+  .stat-card:hover {
+    border-color: var(--border-medium);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+  }
+
+  .stat-value {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: var(--accent-blue);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.95rem;
+    color: var(--silver-text);
+    font-weight: 600;
+  }
+
+  .stat-change {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--silver-muted);
+  }
+
+  .stat-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      400px circle at 50% 50%,
+      rgba(56, 189, 248, calc(0.05 + var(--stat-index) * 0.02)) 0%,
+      transparent 50%
+    );
+    opacity: 0;
+    transition: opacity var(--motion-medium) var(--motion-ease);
+    pointer-events: none;
+  }
+
+  .stat-card:hover .stat-glow {
+    opacity: 1;
+  }
+
+  /* ===== FOCUS AREAS ===== */
+  .focus-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+
+  .focus-card {
+    position: relative;
+    background: var(--deep-matte-grey);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition: all var(--motion-medium) var(--motion-ease);
+    overflow: hidden;
+  }
+
+  .focus-card:hover {
+    border-color: var(--border-medium);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-elevated);
+  }
+
+  .focus-icon {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .focus-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--silver-text);
+    margin: 0;
+  }
+
+  .focus-description {
+    color: var(--silver-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .focus-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      400px circle at 50% 50%,
+      var(--focus-color, var(--accent-blue-subtle)) 0%,
+      transparent 50%
+    );
+    opacity: 0;
+    transition: opacity var(--motion-medium) var(--motion-ease);
+    pointer-events: none;
+  }
+
+  .focus-card:hover .focus-glow {
+    opacity: 0.1;
+  }
+
+  /* ===== WRITEUPS SECTION ===== */
+  .writeups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .section-actions {
+    display: flex;
+    justify-content: center;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--silver-muted);
+    background: var(--surface-elevated);
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+  }
+
+  /* ===== PROJECTS SECTION ===== */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+
+  .project-card {
+    background: var(--deep-matte-grey);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    padding: 1.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    transition: all var(--motion-medium) var(--motion-ease);
+  }
+
+  .project-card:hover {
+    border-color: var(--border-medium);
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
+  }
+
+  .project-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .project-badge {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--accent-blue);
+    background: var(--accent-blue-subtle);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .project-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--silver-text);
+    margin: 0;
+    flex: 1;
+  }
+
+  .project-description {
+    color: var(--silver-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .project-tech {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: auto;
+  }
+
+  .tech-tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--silver-muted);
+    background: var(--surface-elevated);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-subtle);
+  }
+
+  .project-actions {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .project-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--accent-blue);
+    text-decoration: none;
+    transition: all var(--motion-fast) var(--motion-ease);
+  }
+
+  .project-link:hover {
+    gap: 0.75rem;
+  }
+
+  .project-link svg {
+    transition: transform var(--motion-fast) var(--motion-ease);
+  }
+
+  .project-link:hover svg {
+    transform: translateX(2px);
+  }
+
+  /* ===== CTA SECTION ===== */
+  .cta-card {
+    background: var(--deep-matte-grey);
+    border: 1px solid var(--border-medium);
+    border-radius: 16px;
+    padding: 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      800px circle at 80% 20%,
+      rgba(56, 189, 248, 0.1) 0%,
+      transparent 50%
+    );
+    pointer-events: none;
+  }
+
+  .cta-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--silver-text);
+    line-height: 1.2;
+    margin: 0;
+  }
+
+  .cta-description {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    color: var(--silver-muted);
+    margin: 0;
+  }
+
+  .cta-actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+
+  .cta-terminal {
+    background: var(--dark-slate);
+    border: 1px solid var(--border-medium);
+    border-radius: 8px;
+    padding: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ===== RESPONSIVE DESIGN ===== */
+  @media (max-width: 1024px) {
+    .hero-grid {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .signal-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cta-card {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+      padding: 3rem;
+    }
+
+    .writeups-grid,
+    .projects-grid {
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero {
+      padding-top: calc(var(--section-spacing) * 0.75);
+      padding-bottom: calc(var(--section-spacing) * 0.75);
+    }
+
+    .hero-actions {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .hero-actions .button {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .stats-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .focus-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .writeups-grid,
+    .projects-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cta-card {
+      padding: 2rem;
+    }
+
+    .cta-actions {
+      flex-direction: column;
+    }
+
+    .cta-actions .button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero-title-main {
+      font-size: 2.5rem;
+    }
+
+    .hero-title-sub {
+      font-size: 1.25rem;
+    }
+  }
+</style>

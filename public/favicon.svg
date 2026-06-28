@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="0xG10D favicon">
+  <rect width="64" height="64" rx="10" fill="#050B1F"/>
+  <path d="M12 18h40v28H12z" fill="#0B1D3A" stroke="#38BDF8" stroke-width="2"/>
+  <path d="M21 28l-5 4 5 4M43 28l5 4-5 4" fill="none" stroke="#7DD3FC" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter"/>
+  <path d="M28 42l8-20" fill="none" stroke="#F8FAFC" stroke-width="3" stroke-linecap="square"/>
+</svg>

@@ -1,0 +1,715 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import WriteupCard from '../../components/WriteupCard.astro';
+import SecurityIcon from '../../components/SecurityIcon.astro';
+
+const allWriteups = await getCollection('writeups');
+const writeups = allWriteups
+  .filter((post) => !post.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const tags = [...new Set(writeups.flatMap((post) => post.data.tags))].sort();
+const categories = [...new Set(writeups.map((post) => post.data.category))].sort();
+const difficulties = [...new Set(writeups.map((post) => post.data.difficulty))].sort();
+const platforms = [...new Set(writeups.map((post) => post.data.platform))].sort();
+
+const platformLabels: Record<string, string> = {
+  hackthebox: 'Hack The Box',
+  'hack-the-box': 'Hack The Box',
+  tryhackme: 'TryHackMe',
+  portswigger: 'PortSwigger',
+  picoctf: 'picoCTF',
+  'international-ctf': 'International CTF',
+  'local-ctf': 'Local CTF',
+  ctf: 'CTF',
+  other: 'Other'
+};
+
+const difficultyLabels: Record<string, string> = {
+  easy: 'Easy',
+  medium: 'Medium',
+  hard: 'Hard',
+  insane: 'Insane',
+  info: 'Information'
+};
+
+const totalWriteups = writeups.length;
+const latestWriteupDate = writeups[0]?.data.date
+  ? writeups[0].data.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+  : 'N/A';
+
+const platformCounts = platforms.map((platform) => ({
+  platform,
+  label: platformLabels[platform] || platform.replaceAll('-', ' '),
+  count: writeups.filter((post) => post.data.platform === platform).length
+}));
+---
+
+<BaseLayout title="Writeups" description="Security research archive of CTF writeups, lab notes, and penetration testing methodology.">
+  <main class="writeups-page">
+    <section class="archive-hero section">
+      <div class="container">
+        <div class="archive-hero-grid">
+          <div>
+            <div class="hero-eyebrow">
+              <SecurityIcon name="archive" size={18} />
+              <span>Security research archive</span>
+            </div>
+            <h1>Writeups built like technical reports.</h1>
+            <p>
+              CTF challenge documentation, lab methodology, and security research notes from authorized learning platforms.
+              Search by platform, category, difficulty, or tag.
+            </p>
+          </div>
+          <div class="archive-metrics">
+            <div><strong>{totalWriteups}</strong><span>Total writeups</span></div>
+            <div><strong>{platforms.length}</strong><span>Platforms</span></div>
+            <div><strong>{categories.length}</strong><span>Categories</span></div>
+            <div><strong>{latestWriteupDate}</strong><span>Latest update</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section filters-section">
+      <div class="container">
+        <div class="filters-card">
+          <div class="filters-header">
+            <div>
+              <h2><SecurityIcon name="search" size={20} /> Filter archive</h2>
+              <p>Use precise filters to find a report quickly.</p>
+            </div>
+            <div class="filters-status">
+              <strong id="results-count">{totalWriteups}</strong>
+              <span>visible</span>
+            </div>
+          </div>
+
+          <div class="filters-grid">
+            <label class="filter-group">
+              <span>Search</span>
+              <input type="search" id="search-input" class="filter-input" placeholder="Title, summary, platform, or tag" data-filter="search" aria-label="Search writeups" autocomplete="off" />
+            </label>
+
+            <label class="filter-group">
+              <span>Platform</span>
+              <select id="platform-filter" class="filter-select" data-filter="platform" aria-label="Filter by platform">
+                <option value="">All platforms</option>
+                {platformCounts.map(({ platform, label, count }) => (
+                  <option value={platform}>{label} ({count})</option>
+                ))}
+              </select>
+            </label>
+
+            <label class="filter-group">
+              <span>Category</span>
+              <select id="category-filter" class="filter-select" data-filter="category" aria-label="Filter by category">
+                <option value="">All categories</option>
+                {categories.map((category) => (
+                  <option value={category}>{category.replaceAll('-', ' ')} ({writeups.filter((post) => post.data.category === category).length})</option>
+                ))}
+              </select>
+            </label>
+
+            <label class="filter-group">
+              <span>Difficulty</span>
+              <select id="difficulty-filter" class="filter-select" data-filter="difficulty" aria-label="Filter by difficulty">
+                <option value="">All difficulties</option>
+                {difficulties.map((difficulty) => (
+                  <option value={difficulty}>{difficultyLabels[difficulty] || difficulty} ({writeups.filter((post) => post.data.difficulty === difficulty).length})</option>
+                ))}
+              </select>
+            </label>
+
+            <label class="filter-group">
+              <span>Tag</span>
+              <select id="tag-filter" class="filter-select" data-filter="tag" aria-label="Filter by tag">
+                <option value="">All tags</option>
+                {tags.map((tag) => (
+                  <option value={tag}>#{tag} ({writeups.filter((post) => post.data.tags.includes(tag)).length})</option>
+                ))}
+              </select>
+            </label>
+
+            <div class="filter-actions">
+              <button class="filter-button" data-filter="clear" type="button">Clear filters</button>
+              <button class="filter-button secondary" data-filter="reset" type="button">Reset</button>
+            </div>
+          </div>
+          <div class="active-filters" id="active-filters" aria-live="polite"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        {writeups.length > 0 ? (
+          <>
+            <div class="writeups-grid" id="writeups-grid">
+              {writeups.map((post) => <WriteupCard post={post} />)}
+            </div>
+            <div class="writeups-empty" id="writeups-empty" hidden>
+              <div class="empty-state">
+                <SecurityIcon name="search" size={34} />
+                <h3>No matching writeups</h3>
+                <p>Adjust the filters or clear the current search.</p>
+                <button class="button button-primary" data-filter="clear" type="button">Clear all filters</button>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div class="empty-state">
+            <SecurityIcon name="file" size={34} />
+            <h3>No writeups available</h3>
+            <p>Writeups are currently being prepared.</p>
+          </div>
+        )}
+      </div>
+    </section>
+
+    <section class="section platform-section">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title">Platform breakdown</h2>
+          <p class="section-subtitle">A quick view of where the current archive is concentrated.</p>
+        </div>
+        <div class="platforms-grid">
+          {platformCounts.map(({ platform, label, count }) => {
+            const percentage = totalWriteups > 0 ? Math.round((count / totalWriteups) * 100) : 0;
+            return (
+              <article class="platform-card" data-platform={platform}>
+                <div class="platform-header">
+                  <SecurityIcon name="platform" size={20} />
+                  <h3>{label}</h3>
+                  <strong>{count}</strong>
+                </div>
+                <div class="platform-progress" aria-label={`${label} ${percentage}%`}>
+                  <span style={`width: ${percentage}%`}></span>
+                </div>
+                <a href={`/writeups/?platform=${platform}`} data-filter-platform={platform}>
+                  View reports
+                  <SecurityIcon name="external" size={14} />
+                </a>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  </main>
+</BaseLayout>
+
+<style>
+  .writeups-page {
+    padding-top: 80px;
+  }
+
+  .archive-hero {
+    padding-top: calc(var(--section-spacing) * 1.25);
+    background:
+      radial-gradient(circle at 78% 20%, rgba(56, 189, 248, 0.16), transparent 34%),
+      linear-gradient(135deg, rgba(8, 20, 47, 0.78), rgba(5, 11, 31, 0));
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .archive-hero-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+    gap: 2rem;
+    align-items: end;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    color: var(--accent-blue);
+    background: var(--accent-blue-subtle);
+    border: 1px solid var(--border-medium);
+    border-radius: 8px;
+    padding: 0.45rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+  }
+
+  .archive-hero h1 {
+    max-width: 900px;
+    margin-top: 1.2rem;
+    text-wrap: balance;
+  }
+
+  .archive-hero p {
+    max-width: 68ch;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+  }
+
+  .archive-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .archive-metrics div,
+  .filters-card,
+  .platform-card,
+  .empty-state {
+    background: linear-gradient(180deg, rgba(16, 42, 76, 0.86), rgba(11, 29, 58, 0.92));
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    box-shadow: var(--shadow-medium);
+  }
+
+  .archive-metrics div {
+    padding: 1.1rem;
+  }
+
+  .archive-metrics strong {
+    display: block;
+    color: var(--accent-blue);
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    line-height: 1.1;
+  }
+
+  .archive-metrics span {
+    display: block;
+    color: var(--muted-text);
+    font-size: 0.76rem;
+    text-transform: uppercase;
+  }
+
+  .filters-section {
+    padding-bottom: 1rem;
+  }
+
+  .filters-card {
+    padding: clamp(1.25rem, 3vw, 2rem);
+  }
+
+  .filters-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    border-bottom: 1px solid var(--border-subtle);
+    padding-bottom: 1.25rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .filters-header h2 {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    margin: 0;
+    font-size: 1.35rem;
+  }
+
+  .filters-header p {
+    margin: 0.35rem 0 0;
+    color: var(--muted-text);
+  }
+
+  .filters-status {
+    text-align: right;
+    min-width: 86px;
+  }
+
+  .filters-status strong {
+    display: block;
+    color: var(--accent-blue);
+    font-size: 2rem;
+    line-height: 1;
+  }
+
+  .filters-status span {
+    color: var(--muted-text);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+  }
+
+  .filters-grid {
+    display: grid;
+    grid-template-columns: 1.4fr repeat(4, minmax(150px, 1fr)) auto;
+    gap: 1rem;
+    align-items: end;
+  }
+
+  .filter-group {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .filter-group span {
+    color: var(--text-secondary);
+    font-size: 0.82rem;
+    font-weight: 600;
+  }
+
+  .filter-input,
+  .filter-select {
+    min-height: 44px;
+    width: 100%;
+    color: var(--text-primary);
+    background: rgba(8, 20, 47, 0.86);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    padding: 0.65rem 0.8rem;
+    font: inherit;
+  }
+
+  .filter-input:focus,
+  .filter-select:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px var(--accent-blue-subtle);
+  }
+
+  .filter-actions {
+    display: flex;
+    gap: 0.6rem;
+  }
+
+  .filter-button {
+    min-height: 44px;
+    padding: 0.65rem 0.9rem;
+    color: var(--text-primary);
+    background: linear-gradient(135deg, var(--primary-blue), var(--electric-blue));
+    border: 1px solid rgba(125, 211, 252, 0.35);
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .filter-button.secondary {
+    color: var(--text-secondary);
+    background: rgba(8, 20, 47, 0.72);
+  }
+
+  .active-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    min-height: 2.4rem;
+    margin-top: 1rem;
+  }
+
+  .active-filter {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--accent-blue);
+    background: var(--accent-blue-subtle);
+    border: 1px solid var(--border-medium);
+    border-radius: 8px;
+    padding: 0.45rem 0.7rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+
+  .active-filter-remove {
+    display: grid;
+    place-items: center;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+  }
+
+  .writeups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 3rem 1.5rem;
+  }
+
+  .empty-state svg {
+    color: var(--accent-blue);
+    margin-bottom: 1rem;
+  }
+
+  .empty-state h3 {
+    margin: 0 0 0.5rem;
+  }
+
+  .platforms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1rem;
+  }
+
+  .platform-card {
+    padding: 1.25rem;
+  }
+
+  .platform-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 0.75rem;
+    align-items: center;
+  }
+
+  .platform-header svg,
+  .platform-card a svg {
+    color: var(--accent-blue);
+  }
+
+  .platform-header h3 {
+    margin: 0;
+    font-size: 1rem;
+  }
+
+  .platform-header strong {
+    color: var(--accent-blue);
+    font-family: var(--font-mono);
+  }
+
+  .platform-progress {
+    height: 7px;
+    margin: 1rem 0;
+    background: rgba(8, 20, 47, 0.9);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .platform-progress span {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-blue), var(--electric-blue));
+    border-radius: inherit;
+  }
+
+  .platform-card a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    color: var(--text-secondary);
+    font-weight: 700;
+  }
+
+  .platform-card a:hover {
+    color: var(--accent-blue);
+  }
+
+  @media (max-width: 1100px) {
+    .filters-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 780px) {
+    .archive-hero-grid,
+    .filters-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .filters-header {
+      flex-direction: column;
+    }
+
+    .filters-status {
+      text-align: left;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .archive-metrics {
+      grid-template-columns: 1fr;
+    }
+
+    .writeups-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    type FilterKey = 'search' | 'platform' | 'category' | 'difficulty' | 'tag';
+    type FilterControl = HTMLInputElement | HTMLSelectElement;
+
+    const filterKeys: FilterKey[] = ['search', 'platform', 'category', 'difficulty', 'tag'];
+    const isFilterKey = (value: string): value is FilterKey => filterKeys.includes(value as FilterKey);
+    const writeupCards = Array.from(document.querySelectorAll('.writeup-card'))
+      .filter((card): card is HTMLElement => card instanceof HTMLElement);
+    const filters: Record<FilterKey, FilterControl | null> = {
+      search: document.querySelector('[data-filter="search"]'),
+      platform: document.querySelector('[data-filter="platform"]'),
+      category: document.querySelector('[data-filter="category"]'),
+      difficulty: document.querySelector('[data-filter="difficulty"]'),
+      tag: document.querySelector('[data-filter="tag"]')
+    };
+
+    const resultsCount = document.getElementById('results-count');
+    const writeupsGrid = document.getElementById('writeups-grid');
+    const writeupsEmpty = document.getElementById('writeups-empty');
+    const activeFiltersContainer = document.getElementById('active-filters');
+    const platformLinks = document.querySelectorAll('[data-filter-platform]');
+    let activeFilters: Partial<Record<FilterKey, string>> = {};
+
+    function updateResultsCount(count = writeupCards.length) {
+      if (resultsCount) resultsCount.textContent = String(count);
+    }
+
+    function checkCardMatches(card: HTMLElement) {
+      const cardData = {
+        search: card.dataset.search || '',
+        title: card.querySelector('.card-title')?.textContent?.toLowerCase() || '',
+        summary: card.querySelector('.card-summary')?.textContent?.toLowerCase() || '',
+        platform: card.dataset.platform || '',
+        difficulty: card.dataset.difficulty || '',
+        category: card.dataset.category || '',
+        tags: (card.dataset.tags || '').split(',').map((tag) => tag.toLowerCase()).filter(Boolean)
+      };
+
+      if (activeFilters.search) {
+        const searchTerm = activeFilters.search.toLowerCase();
+        if (!cardData.search.includes(searchTerm) &&
+          !cardData.title.includes(searchTerm) &&
+          !cardData.summary.includes(searchTerm) &&
+          !cardData.tags.some((tag) => tag.includes(searchTerm))) {
+          return false;
+        }
+      }
+
+      if (activeFilters.platform && cardData.platform !== activeFilters.platform.toLowerCase()) return false;
+      if (activeFilters.category && cardData.category !== activeFilters.category.toLowerCase()) return false;
+      if (activeFilters.difficulty && cardData.difficulty !== activeFilters.difficulty.toLowerCase()) return false;
+      if (activeFilters.tag && !cardData.tags.some((tag) => tag.includes(activeFilters.tag!.toLowerCase()))) return false;
+      return true;
+    }
+
+    function createRemoveIcon() {
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('width', '12');
+      svg.setAttribute('height', '12');
+      svg.setAttribute('viewBox', '0 0 12 12');
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('stroke', 'currentColor');
+      svg.setAttribute('stroke-width', '2');
+      svg.setAttribute('stroke-linecap', 'round');
+
+      const firstLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      firstLine.setAttribute('x1', '3');
+      firstLine.setAttribute('y1', '3');
+      firstLine.setAttribute('x2', '9');
+      firstLine.setAttribute('y2', '9');
+
+      const secondLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+      secondLine.setAttribute('x1', '9');
+      secondLine.setAttribute('y1', '3');
+      secondLine.setAttribute('x2', '3');
+      secondLine.setAttribute('y2', '9');
+
+      svg.append(firstLine, secondLine);
+      return svg;
+    }
+
+    function updateActiveFiltersDisplay() {
+      if (!activeFiltersContainer) return;
+      activeFiltersContainer.replaceChildren();
+
+      Object.entries(activeFilters).forEach(([key, value]) => {
+        if (!value || !isFilterKey(key)) return;
+
+        const filterElement = document.createElement('div');
+        filterElement.className = 'active-filter';
+
+        const label = document.createElement('span');
+        label.textContent = `${key}: ${value}`;
+
+        const removeButton = document.createElement('button');
+        removeButton.className = 'active-filter-remove';
+        removeButton.type = 'button';
+        removeButton.dataset.filterKey = key;
+        removeButton.setAttribute('aria-label', `Remove ${key} filter`);
+        removeButton.append(createRemoveIcon());
+
+        filterElement.append(label, removeButton);
+        activeFiltersContainer.append(filterElement);
+      });
+    }
+
+    function filterWriteups() {
+      let visibleCount = 0;
+      writeupCards.forEach((card) => {
+        const matches = checkCardMatches(card);
+        card.style.display = matches ? 'flex' : 'none';
+        if (matches) visibleCount++;
+      });
+
+      if (writeupsGrid && writeupsEmpty) {
+        writeupsGrid.hidden = visibleCount === 0;
+        writeupsEmpty.hidden = visibleCount !== 0;
+      }
+
+      updateResultsCount(visibleCount);
+      updateActiveFiltersDisplay();
+    }
+
+    Object.entries(filters).forEach(([key, element]) => {
+      if (!element || !isFilterKey(key)) return;
+      const eventName = element.type === 'search' ? 'input' : 'change';
+      element.addEventListener(eventName, () => {
+        activeFilters[key] = element.value;
+        filterWriteups();
+      });
+    });
+
+    document.querySelectorAll('[data-filter="clear"], [data-filter="reset"]').forEach((button) => {
+      if (!(button instanceof HTMLButtonElement)) return;
+      button.addEventListener('click', () => {
+        activeFilters = {};
+        Object.values(filters).forEach((filter) => {
+          if (filter) filter.value = '';
+        });
+        filterWriteups();
+      });
+    });
+
+    activeFiltersContainer?.addEventListener('click', (event) => {
+      if (!(event.target instanceof Element)) return;
+
+      const button = event.target.closest('.active-filter-remove');
+      if (!(button instanceof HTMLButtonElement)) return;
+
+      const key = button.dataset.filterKey;
+      if (!key || !isFilterKey(key)) return;
+
+      activeFilters[key] = '';
+      if (filters[key]) filters[key].value = '';
+      filterWriteups();
+    });
+
+    platformLinks.forEach((link) => {
+      if (!(link instanceof HTMLElement)) return;
+
+      link.addEventListener('click', (event) => {
+        event.preventDefault();
+        const platform = link.dataset.filterPlatform;
+        if (!platform) return;
+
+        activeFilters.platform = platform;
+        if (filters.platform) filters.platform.value = platform;
+        filterWriteups();
+        document.querySelector('.filters-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    filterKeys.forEach((key) => {
+      const value = urlParams.get(key);
+      if (value && filters[key]) {
+        activeFilters[key] = value;
+        filters[key].value = value;
+      }
+    });
+
+    filterWriteups();
+  });
+</script>

@@ -1,0 +1,263 @@
+{
+  "overview": {
+    "identity": "0xG10D",
+    "summary": "0xG10D is a cybersecurity student documenting practical learning through penetration testing labs, CTF competitions, reverse engineering, digital forensics, and system hardening.",
+    "focusAreas": [
+      "Web & Network Security",
+      "Privilege Escalation & Reverse Engineering",
+      "Digital Forensics & Incident Response",
+      "CTF & Practical Labs",
+      "Kali Linux, Docker, Linux, and security tooling"
+    ]
+  },
+  "certifications": {
+    "networkingSecurity": [
+      {
+        "name": "CCNA: Enterprise Networking, Security, and Automation",
+        "provider": "Cisco",
+        "date": "Jan 2026"
+      },
+      {
+        "name": "CCNA: Switching, Routing, and Wireless Essentials",
+        "provider": "Cisco",
+        "date": "Nov 2025"
+      },
+      {
+        "name": "CCNAv7: Introduction to Networks",
+        "provider": "Cisco",
+        "date": "Feb 2025"
+      },
+      {
+        "name": "Ethical Hacker",
+        "provider": "Cisco",
+        "date": "Jan 2026"
+      },
+      {
+        "name": "Wireless Network Security",
+        "provider": "NTW",
+        "date": "Jun 2025"
+      }
+    ],
+    "cybersecurity": [
+      {
+        "name": "SOC Level 1",
+        "provider": "TryHackMe",
+        "date": "Apr 2026"
+      },
+      {
+        "name": "Certified Red Team Analyst (CRTA)",
+        "provider": "CyberWarFare Labs",
+        "date": "Feb 2026"
+      },
+      {
+        "name": "Foundations of Log Analysis for Cyber Defense",
+        "provider": "Red Team Leaders",
+        "date": "Jan 2026"
+      },
+      {
+        "name": "Malware Analysis Introduction v1",
+        "provider": "Red Team Leaders",
+        "date": "Feb 2026"
+      },
+      {
+        "name": "CAPIJ - Certified API Hacking Junior",
+        "provider": "TheXSSRat",
+        "date": "Mar 2026"
+      },
+      {
+        "name": "AI Email Security Specialist",
+        "provider": "Proofpoint",
+        "date": "Sep 2025"
+      },
+      {
+        "name": "Network Penetration Tester Course",
+        "provider": "0day Technology",
+        "date": "Aug 2025"
+      },
+      {
+        "name": "Incident Management & Response",
+        "provider": "WARZONE",
+        "date": "Nov 2025"
+      },
+      {
+        "name": "Cyber Threat Actor",
+        "provider": "WARZONE",
+        "date": "May 2025"
+      },
+      {
+        "name": "Social Engineering",
+        "provider": "WARZONE",
+        "date": "May 2025"
+      },
+      {
+        "name": "Social Engineering & Phishing in the Age of AI",
+        "provider": "0day Technology",
+        "date": "Mar 2025"
+      },
+      {
+        "name": "How Hackers Break Into Networks",
+        "provider": "0day Technology",
+        "date": "Jun 2025"
+      },
+      {
+        "name": "Web Defacement",
+        "provider": "Cyber Security Ops",
+        "date": "Feb 2026"
+      },
+      {
+        "name": "IT Essentials",
+        "provider": "Cisco",
+        "date": "Feb 2025"
+      },
+      {
+        "name": "Introduction to Cybersecurity",
+        "provider": "Cisco",
+        "date": "Nov 2024"
+      }
+    ]
+  },
+  "ctfCompetitions": [
+    {
+      "event": "UMCS 2026 Final Attack-Defense",
+      "organizer": "UM",
+      "date": "May 2026",
+      "placement": "8th"
+    },
+    {
+      "event": "UMCS 2026 Preliminary",
+      "organizer": "UM",
+      "date": "Apr 2026",
+      "placement": "16th"
+    },
+    {
+      "event": "HACK@10 CTF",
+      "organizer": "UNITEN",
+      "date": "Mar 2026",
+      "placement": "27th"
+    },
+    {
+      "event": "RamadhanCTF",
+      "organizer": "VULN BYDEFAULT",
+      "date": "Mar 2026",
+      "placement": "93rd"
+    },
+    {
+      "event": "International Game of Hacker Final",
+      "organizer": "UNIKL",
+      "date": "Feb 2026",
+      "placement": "22nd"
+    },
+    {
+      "event": "International Game of Hacker Preliminary",
+      "organizer": "UNIKL",
+      "date": "Feb 2026",
+      "placement": "22nd"
+    },
+    {
+      "event": "Taming iCTFF8 Final",
+      "organizer": "UiTM",
+      "date": "Jan 2026",
+      "placement": "7th"
+    },
+    {
+      "event": "Taming iCTFF8 Preliminary",
+      "organizer": "UiTM",
+      "date": "Jan 2026",
+      "placement": "23rd"
+    },
+    {
+      "event": "RE:UNION CTF",
+      "organizer": "REHACK",
+      "date": "Dec 2025",
+      "placement": "22nd"
+    },
+    {
+      "event": "Tinsel Trouble University CTF",
+      "organizer": "Hack The Box",
+      "date": "Dec 2025",
+      "placement": "129th"
+    },
+    {
+      "event": "BingoCTF",
+      "organizer": "FSEC",
+      "date": "Nov 2025",
+      "placement": "Top 5"
+    },
+    {
+      "event": "Kernel0 CTF",
+      "organizer": "CYSEC Club",
+      "date": "Nov 2025",
+      "placement": "Creator"
+    },
+    {
+      "event": "International Battle of Hacker",
+      "organizer": "FSEC",
+      "date": "Nov 2025",
+      "placement": "66th"
+    },
+    {
+      "event": "DEADFACE CTF",
+      "organizer": "Cyber Hacktics",
+      "date": "Oct 2025",
+      "placement": "Top 200"
+    },
+    {
+      "event": "Holmes CTF",
+      "organizer": "Hack The Box",
+      "date": "Sep 2025",
+      "placement": "511th"
+    },
+    {
+      "event": "3108 CTF",
+      "organizer": "BAHTERA CYBER",
+      "date": "Aug 2025",
+      "placement": "78th"
+    },
+    {
+      "event": "SunCTF",
+      "organizer": "Sunway Cybersecurity",
+      "date": "Aug 2025",
+      "placement": "Participant"
+    },
+    {
+      "event": "TRYHACK MRSM",
+      "organizer": "MRSM",
+      "date": "Aug 2025",
+      "placement": "Creator"
+    },
+    {
+      "event": "SIBERSIAGA Code Combat",
+      "organizer": "SIBERSIAGA",
+      "date": "Aug 2025",
+      "placement": "Participant"
+    },
+    {
+      "event": "Cyber Warfare Odyssey",
+      "organizer": "WARZONE",
+      "date": "May 2025",
+      "placement": "Participant"
+    },
+    {
+      "event": "Break The Enigma",
+      "organizer": "CYSEC",
+      "date": "Apr 2025",
+      "placement": "Top 10"
+    },
+    {
+      "event": "Rising Phoenix 3.0",
+      "organizer": "WARZONE",
+      "date": "Mar 2025",
+      "placement": "Participant"
+    }
+  ],
+  "currentlyPursuing": [
+    {
+      "name": "Active Directory Red Team Specialist (AD-RTS)",
+      "provider": "CyberWarFare Labs"
+    },
+    {
+      "name": "Web Red Team Analyst (Web-RTA)",
+      "provider": "CyberWarFare Labs"
+    }
+  ]
+}

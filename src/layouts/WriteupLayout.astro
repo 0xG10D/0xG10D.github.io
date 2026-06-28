@@ -1,0 +1,761 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from './BaseLayout.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  post: CollectionEntry<'writeups'>;
+  headings: Heading[];
+}
+
+const { post, headings } = Astro.props;
+
+// Formatting helpers
+const platformLabels: Record<string, string> = {
+  hackthebox: 'Hack The Box',
+  'hack-the-box': 'Hack The Box',
+  tryhackme: 'TryHackMe',
+  portswigger: 'PortSwigger',
+  picoctf: 'picoCTF',
+  'international-ctf': 'International CTF',
+  'local-ctf': 'Local CTF',
+  ctf: 'CTF',
+  other: 'Other'
+};
+
+const difficultyLabels: Record<string, string> = {
+  easy: 'Easy',
+  medium: 'Medium',
+  hard: 'Hard',
+  insane: 'Insane',
+  info: 'Information'
+};
+
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+
+const getPlatformLabel = (value: string) => platformLabels[value] ?? value.replaceAll('-', ' ');
+const getDifficultyLabel = (value: string) => difficultyLabels[value] ?? value;
+
+const formattedDate = formatDate(post.data.date);
+const platformLabel = getPlatformLabel(post.data.platform);
+const difficultyLabel = getDifficultyLabel(post.data.difficulty);
+const categoryLabel = post.data.category.replaceAll('-', ' ');
+---
+
+<BaseLayout title={post.data.title} description={post.data.summary}>
+  <article class="writeup-article">
+    <div class="container">
+      <!-- Writeup Header -->
+      <header class="writeup-header">
+        <div class="writeup-meta">
+          <div class="meta-badges">
+            <span class="badge badge-platform">{platformLabel}</span>
+            <span class="badge badge-difficulty" data-difficulty={post.data.difficulty}>
+              {difficultyLabel}
+            </span>
+            <span class="badge badge-category">{categoryLabel}</span>
+          </div>
+
+          <div class="meta-dates">
+            <time class="publish-date" datetime={post.data.date.toISOString()}>
+              Published: {formattedDate}
+            </time>
+          </div>
+        </div>
+
+        <h1 class="writeup-title">{post.data.title}</h1>
+
+        {post.data.summary && (
+          <p class="writeup-summary">{post.data.summary}</p>
+        )}
+
+
+        <dl class="report-meta-grid" aria-label="Report metadata">
+          <div>
+            <dt>Platform</dt>
+            <dd>{platformLabel}</dd>
+          </div>
+          <div>
+            <dt>Difficulty</dt>
+            <dd>{difficultyLabel}</dd>
+          </div>
+          <div>
+            <dt>Category</dt>
+            <dd>{categoryLabel}</dd>
+          </div>
+          <div>
+            <dt>Tags</dt>
+            <dd>{post.data.tags.length}</dd>
+          </div>
+        </dl>
+
+        {post.data.boxImage && (
+          <div class="writeup-featured-image">
+            <img
+              src={post.data.boxImage}
+              alt={`${post.data.title} machine image`}
+              loading="lazy"
+            />
+          </div>
+        )}
+      </header>
+
+      <!-- Writeup Body -->
+      <div class="writeup-body">
+        <div class="writeup-content">
+          <slot />
+        </div>
+
+        <!-- Table of Contents Sidebar -->
+        {headings.length > 0 && (
+          <aside class="writeup-sidebar">
+            <div class="sidebar-sticky">
+              <TableOfContents headings={headings} />
+
+              <div class="sidebar-tags">
+                <h3 class="sidebar-heading">Tags</h3>
+                <div class="tag-cloud">
+                  {post.data.tags.map((tag) => (
+                    <a
+                      href={`/writeups/?tag=${tag}`}
+                      class="tag"
+                    >
+                      #{tag}
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              <div class="sidebar-actions">
+                <a href="/writeups/" class="button button-secondary">
+                  <span>Back to Writeups</span>
+                </a>
+              </div>
+            </div>
+          </aside>
+        )}
+      </div>
+
+      <!-- Writeup Footer -->
+      <footer class="writeup-footer">
+        <div class="writeup-navigation">
+          <div class="nav-section">
+            <h3 class="nav-heading">More Writeups</h3>
+            <div class="nav-links">
+              <a href="/writeups/?platform=hackthebox" class="nav-link">
+                View all Hack The Box writeups
+              </a>
+              <a href={`/writeups/?difficulty=${post.data.difficulty}`} class="nav-link">
+                View all {difficultyLabel} difficulty writeups
+              </a>
+            </div>
+          </div>
+
+          <div class="nav-section">
+            <h3 class="nav-heading">Share</h3>
+            <div class="share-buttons">
+              <button class="share-button" type="button" data-share-url>
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="9" y="9" width="10" height="10" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span data-share-label>Copy Link</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="writeup-disclaimer">
+          <h3 class="disclaimer-heading">Disclaimer</h3>
+          <p class="disclaimer-text">
+            This writeup documents security learning through authorized platforms (Hack The Box, TryHackMe).
+            All techniques are demonstrated in controlled, legal environments for educational purposes only.
+            Never attempt these techniques on systems you do not own or have explicit permission to test.
+          </p>
+        </div>
+      </footer>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  /* ===== WRITEUP ARTICLE ===== */
+  .writeup-article {
+    padding: 7rem 0 4rem;
+  }
+
+  /* Writeup Header */
+  .writeup-header {
+    margin-bottom: 3rem;
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    background:
+      radial-gradient(circle at 80% 10%, rgba(56, 189, 248, 0.15), transparent 36%),
+      linear-gradient(180deg, rgba(16, 42, 76, 0.82), rgba(11, 29, 58, 0.9));
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    box-shadow: var(--shadow-medium);
+  }
+
+  .writeup-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .meta-badges {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    border: 1px solid var(--border-medium);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-platform {
+    background: var(--accent-blue-subtle);
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+  }
+
+  .badge-difficulty {
+    background: var(--surface-elevated);
+    color: var(--silver-text);
+  }
+
+  .badge-difficulty[data-difficulty="easy"] {
+    color: #7DD3FC;
+    border-color: #7DD3FC;
+    background: rgba(125, 211, 252, 0.1);
+  }
+
+  .badge-difficulty[data-difficulty="medium"] {
+    color: #60A5FA;
+    border-color: #60A5FA;
+    background: rgba(96, 165, 250, 0.1);
+  }
+
+  .badge-difficulty[data-difficulty="hard"] {
+    color: #3B82F6;
+    border-color: #3B82F6;
+    background: rgba(59, 130, 246, 0.1);
+  }
+
+  .badge-category {
+    background: var(--surface-elevated);
+    color: var(--silver-text);
+  }
+
+  .meta-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    text-align: right;
+  }
+
+  .publish-date,
+  .update-date {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    color: var(--silver-muted);
+  }
+
+  .writeup-title {
+    font-size: clamp(2.5rem, 4vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+    color: var(--silver-text);
+  }
+
+  .report-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.8rem;
+    margin: 2rem 0 0;
+  }
+
+  .report-meta-grid div {
+    padding: 1rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: rgba(8, 20, 47, 0.58);
+  }
+
+  .report-meta-grid dt {
+    color: var(--muted-text);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .report-meta-grid dd {
+    margin: 0.35rem 0 0;
+    color: var(--text-primary);
+    font-weight: 700;
+    text-transform: capitalize;
+  }
+
+  .writeup-summary {
+    font-size: 1.25rem;
+    line-height: 1.7;
+    color: var(--silver-muted);
+    margin-bottom: 2rem;
+    max-width: 800px;
+  }
+
+  .writeup-featured-image {
+    margin: 2rem 0;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+  }
+
+  .writeup-featured-image img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Writeup Body */
+  .writeup-body {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 4rem;
+    align-items: start;
+  }
+
+  .writeup-content {
+    max-width: 800px;
+    min-width: 0;
+    margin: 0 auto;
+  }
+
+  /* Content styling for markdown */
+  .writeup-content :global(*) {
+    margin-bottom: 1.5rem;
+  }
+
+  .writeup-content :global(h2) {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--silver-text);
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-subtle);
+  }
+
+  .writeup-content :global(h3) {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--silver-text);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .writeup-content :global(p) {
+    font-size: 1.125rem;
+    line-height: 1.8;
+    color: var(--silver-muted);
+  }
+
+  .writeup-content :global(code) {
+    font-family: var(--font-mono);
+    background: var(--surface-elevated);
+    color: var(--accent-blue);
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.9em;
+    border: 1px solid var(--border-subtle);
+  }
+
+  .writeup-content :global(pre) {
+    max-width: 100%;
+    background: #061226;
+    border: 1px solid var(--border-medium);
+    border-radius: 10px;
+    padding: 1.5rem;
+    overflow-x: auto;
+    margin: 2rem 0;
+    box-shadow: inset 0 1px 0 rgba(125, 211, 252, 0.08);
+    scrollbar-color: var(--accent-blue) var(--bg-secondary);
+  }
+
+  .writeup-content :global(pre[data-language="bash"]),
+  .writeup-content :global(pre[data-language="sh"]),
+  .writeup-content :global(pre[data-language="shell"]),
+  .writeup-content :global(pre[data-language="zsh"]),
+  .writeup-content :global(pre[data-language="console"]) {
+    padding: 0;
+    overflow-x: auto;
+    background:
+      linear-gradient(180deg, rgba(2, 8, 23, 0.96), rgba(3, 13, 31, 0.98)),
+      #030d1f;
+    border-color: rgba(56, 189, 248, 0.42);
+    box-shadow:
+      inset 0 1px 0 rgba(125, 211, 252, 0.1),
+      0 16px 42px rgba(2, 8, 23, 0.34);
+  }
+
+  .writeup-content :global(pre[data-language="bash"]::before),
+  .writeup-content :global(pre[data-language="sh"]::before),
+  .writeup-content :global(pre[data-language="shell"]::before),
+  .writeup-content :global(pre[data-language="zsh"]::before),
+  .writeup-content :global(pre[data-language="console"]::before) {
+    content: "G10D@kali:~$";
+    position: sticky;
+    left: 0;
+    display: block;
+    min-width: max-content;
+    padding: 0.75rem 1.25rem 0.75rem 4.35rem;
+    background:
+      radial-gradient(circle at 1.3rem 50%, #38bdf8 0 0.28rem, transparent 0.3rem),
+      radial-gradient(circle at 2.15rem 50%, #2563eb 0 0.28rem, transparent 0.3rem),
+      radial-gradient(circle at 3rem 50%, #93c5fd 0 0.28rem, transparent 0.3rem),
+      linear-gradient(90deg, rgba(8, 24, 52, 0.98), rgba(13, 38, 76, 0.94));
+    border-bottom: 1px solid rgba(56, 189, 248, 0.24);
+    color: #bae6fd;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0;
+  }
+
+  .writeup-content :global(pre code) {
+    background: transparent;
+    border: none;
+    padding: 0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--silver-text);
+  }
+
+  .writeup-content :global(pre[data-language="bash"] code),
+  .writeup-content :global(pre[data-language="sh"] code),
+  .writeup-content :global(pre[data-language="shell"] code),
+  .writeup-content :global(pre[data-language="zsh"] code),
+  .writeup-content :global(pre[data-language="console"] code) {
+    display: block;
+    min-width: max-content;
+    padding: 1.25rem;
+  }
+
+  .writeup-content :global(blockquote) {
+    border-left: 4px solid var(--accent-blue);
+    padding-left: 1.5rem;
+    margin: 2rem 0;
+    color: var(--silver-muted);
+    font-style: italic;
+    background: rgba(16, 42, 76, 0.72);
+    border-radius: 0 8px 8px 0;
+    padding: 1.5rem;
+  }
+
+  .writeup-content :global(table) {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: 10px;
+    overflow-x: auto;
+    scrollbar-color: var(--accent-blue) var(--bg-secondary);
+  }
+
+  .writeup-content :global(th) {
+    background: var(--surface-elevated);
+    color: var(--silver-text);
+    font-weight: 600;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .writeup-content :global(td) {
+    padding: 1rem;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--silver-muted);
+  }
+
+  .writeup-content :global(tr:last-child td) {
+    border-bottom: none;
+  }
+
+  .writeup-content :global(ul),
+  .writeup-content :global(ol) {
+    padding-left: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .writeup-content :global(li) {
+    margin-bottom: 0.75rem;
+    color: var(--silver-muted);
+    line-height: 1.7;
+  }
+
+  .writeup-content :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    border: 1px solid var(--border-subtle);
+    margin: 2rem 0;
+  }
+
+  /* Writeup Sidebar */
+  .writeup-sidebar {
+    position: sticky;
+    top: 100px;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+
+  .sidebar-sticky {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .sidebar-heading {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--silver-text);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-tags {
+    padding: 1.5rem;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+  }
+
+  .tag-cloud {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .tag-cloud .tag {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--silver-muted);
+    background: var(--deep-matte-grey);
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    border: 1px solid var(--border-subtle);
+    transition: all var(--motion-fast) var(--motion-ease);
+  }
+
+  .tag-cloud .tag:hover {
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    background: var(--accent-blue-subtle);
+  }
+
+  .sidebar-actions {
+    padding: 1.5rem;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+  }
+
+  /* Writeup Footer */
+  .writeup-footer {
+    margin-top: 4rem;
+    padding-top: 3rem;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .writeup-navigation {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  .nav-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .nav-heading {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--silver-text);
+  }
+
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .nav-link {
+    color: var(--silver-muted);
+    font-size: 0.95rem;
+    transition: color var(--motion-fast) var(--motion-ease);
+  }
+
+  .nav-link:hover {
+    color: var(--accent-blue);
+  }
+
+  .share-buttons {
+    display: flex;
+    gap: 0.75rem;
+  }
+
+  .share-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--surface-elevated);
+    color: var(--silver-text);
+    border: 1px solid var(--border-subtle);
+    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--motion-fast) var(--motion-ease);
+  }
+
+  .share-button:hover {
+    border-color: var(--accent-blue);
+    color: var(--accent-blue);
+    background: var(--accent-blue-subtle);
+  }
+
+  .share-button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .writeup-disclaimer {
+    padding: 2rem;
+    background: var(--surface-elevated);
+    border: 1px solid var(--border-medium);
+    border-radius: 8px;
+  }
+
+  .disclaimer-heading {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--accent-blue);
+    margin-bottom: 1rem;
+  }
+
+  .disclaimer-text {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--silver-muted);
+    margin: 0;
+  }
+
+  /* ===== RESPONSIVE DESIGN ===== */
+  @media (max-width: 1024px) {
+    .writeup-body {
+      grid-template-columns: 1fr;
+      gap: 3rem;
+    }
+
+    .writeup-sidebar {
+      position: static;
+      max-height: none;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .writeup-article {
+      padding: 2rem 0;
+    }
+
+    .writeup-meta {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .meta-dates {
+      text-align: left;
+    }
+
+    .writeup-title {
+      font-size: 2rem;
+    }
+
+    .writeup-summary {
+      font-size: 1.125rem;
+    }
+
+    .writeup-navigation {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .meta-badges {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .writeup-title {
+      font-size: 1.75rem;
+    }
+
+    .share-buttons {
+      flex-direction: column;
+    }
+
+    .share-button {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll('[data-share-url]').forEach((button) => {
+    if (!(button instanceof HTMLButtonElement)) return;
+
+    button.addEventListener('click', async () => {
+      if (!navigator.clipboard) return;
+      await navigator.clipboard.writeText(window.location.href);
+      const label = button.querySelector('[data-share-label]');
+      if (label) {
+        const previous = label.textContent || 'Copy Link';
+        label.textContent = 'Copied';
+        window.setTimeout(() => { label.textContent = previous; }, 1600);
+      }
+    });
+  });
+</script>

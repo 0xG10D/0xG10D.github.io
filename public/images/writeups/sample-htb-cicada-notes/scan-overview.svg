@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520" role="img" aria-labelledby="title desc">
+  <title id="title">Sample scan overview</title>
+  <desc id="desc">A clean terminal-style visual showing a scan workflow for a CTF writeup.</desc>
+  <rect width="1200" height="520" fill="#0c0f14"/>
+  <rect x="48" y="42" width="1104" height="436" rx="12" fill="#121720" stroke="#253044" stroke-width="2"/>
+  <circle cx="82" cy="76" r="8" fill="#9aa8ba"/>
+  <circle cx="110" cy="76" r="8" fill="#9aa8ba"/>
+  <circle cx="138" cy="76" r="8" fill="#46d39a"/>
+  <text x="72" y="132" fill="#46d39a" font-family="Consolas, monospace" font-size="28">$ nmap -sC -sV [REDACTED_TARGET_IP]</text>
+  <text x="72" y="184" fill="#e8edf5" font-family="Consolas, monospace" font-size="24">53/tcp   open  domain      dnsmasq</text>
+  <text x="72" y="224" fill="#e8edf5" font-family="Consolas, monospace" font-size="24">88/tcp   open  kerberos    Microsoft Windows Kerberos</text>
+  <text x="72" y="264" fill="#e8edf5" font-family="Consolas, monospace" font-size="24">445/tcp  open  microsoft-ds Windows SMB</text>
+  <text x="72" y="332" fill="#9aa8ba" font-family="Consolas, monospace" font-size="22">next: enumerate shares, validate users, collect evidence</text>
+  <rect x="72" y="374" width="390" height="54" rx="8" fill="#171d28" stroke="#253044"/>
+  <text x="96" y="410" fill="#46d39a" font-family="Consolas, monospace" font-size="22">write notes, not guesses</text>
+</svg>

@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getProjectById } from '../../data/projects';
+
+const project = getProjectById('awd-watchdog');
+
+if (!project) {
+  throw new Error('AWD-Watchdog project data is missing.');
+}
+---
+
+<BaseLayout title={project.title} description={project.summary}>
+  <main class="project-detail-page">
+  <div class="container">
+    <!-- Back Navigation -->
+    <a href="/projects/" class="button button-secondary project-back-link">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="19" y1="12" x2="5" y2="12"></line>
+        <polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Back to Projects
+    </a>
+
+    <section class="project-hero">
+      <span class="eyebrow">[ {project.type.toUpperCase()} ]</span>
+      <h1>{project.title}</h1>
+      <p class="lead">{project.tagline}</p>
+      <div class="project-hero-actions">
+        <a class="button button-primary" href={project.repoUrl} target="_blank" rel="noopener noreferrer">View GitHub repo</a>
+      </div>
+    </section>
+
+    <section class="project-detail">
+      <div class="project-detail-header">
+        <span class="pill accent">Project Overview</span>
+        <h2>CASE_STUDY: {project.title}</h2>
+        <p class="project-overview">{project.overview}</p>
+      </div>
+
+      <div class="project-two-column">
+        <div class="project-panel card" data-id="SOLVES">
+          <h3>Problem it solves</h3>
+          <p>{project.problem}</p>
+        </div>
+        <div class="project-panel card" data-id="FOCUS">
+          <h3>{project.securityUseCaseTitle}</h3>
+          <p>{project.securityUseCase}</p>
+        </div>
+      </div>
+
+      <div class="project-section-grid">
+        <div class="card" data-id="FEATURES">
+          <h3 class="project-card-heading">Key Features</h3>
+          <div class="project-feature-grid">
+            {project.features.map((feature) => (
+              <p>{feature}</p>
+            ))}
+          </div>
+        </div>
+        <div class="card" data-id="STACK">
+          <h3 class="project-card-heading">Tech Stack</h3>
+          <div class="project-stack expanded">
+            {project.stack.map((item) => <span>{item.toUpperCase()}</span>)}
+          </div>
+        </div>
+      </div>
+
+      <div class="project-workflow">
+        <h3>Architecture and Workflow</h3>
+        <ol>
+          {project.workflow.map((item) => <li>{item}</li>)}
+        </ol>
+      </div>
+
+      <div class="project-section-grid">
+        <div class="project-panel card" data-id="HELP">
+          <h3>{project.helpTitle}</h3>
+          <p>{project.helpText}</p>
+        </div>
+      </div>
+
+      <div class="project-section-grid">
+        <div class="project-panel card" data-id="IMPROVE">
+          <h3>Future improvements</h3>
+          <ul class="project-future-list">
+            {project.future.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div class="project-panel card" data-id="NAV">
+          <h3>Compare Work</h3>
+          <p class="compare-text">Compare this tool with the wireless intrusion detection system project.</p>
+          <a class="button button-secondary compare-link" href="/projects/wavesentinel-wids/">View Wireless IDS project</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+</BaseLayout>

@@ -351,6 +351,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     max-width: 800px;
     min-width: 0;
     margin: 0 auto;
+    overflow-wrap: anywhere;
   }
 
   /* Content styling for markdown */
@@ -359,7 +360,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   }
 
   .writeup-content :global(h2) {
-    font-size: 2rem;
+    font-size: clamp(1.55rem, 5vw, 2rem);
     font-weight: 700;
     color: var(--silver-text);
     margin-top: 3rem;
@@ -369,7 +370,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   }
 
   .writeup-content :global(h3) {
-    font-size: 1.5rem;
+    font-size: clamp(1.25rem, 4vw, 1.5rem);
     font-weight: 600;
     color: var(--silver-text);
     margin-top: 2.5rem;
@@ -377,7 +378,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   }
 
   .writeup-content :global(p) {
-    font-size: 1.125rem;
+    font-size: clamp(1rem, 2vw, 1.125rem);
     line-height: 1.8;
     color: var(--silver-muted);
   }
@@ -402,6 +403,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     margin: 2rem 0;
     box-shadow: inset 0 1px 0 rgba(125, 211, 252, 0.08);
     scrollbar-color: var(--accent-blue) var(--bg-secondary);
+    -webkit-overflow-scrolling: touch;
   }
 
   .writeup-content :global(pre[data-language="bash"]),
@@ -451,6 +453,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     font-size: 0.9rem;
     line-height: 1.5;
     color: var(--silver-text);
+    white-space: pre;
   }
 
   .writeup-content :global(pre[data-language="bash"] code),
@@ -484,6 +487,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     border-radius: 10px;
     overflow-x: auto;
     scrollbar-color: var(--accent-blue) var(--bg-secondary);
+    -webkit-overflow-scrolling: touch;
   }
 
   .writeup-content :global(th) {
@@ -519,6 +523,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
 
   .writeup-content :global(img) {
     max-width: 100%;
+    width: auto;
     height: auto;
     border-radius: 8px;
     border: 1px solid var(--border-subtle);
@@ -695,7 +700,12 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
 
   @media (max-width: 768px) {
     .writeup-article {
-      padding: 2rem 0;
+      padding: 5.25rem 0 2rem;
+    }
+
+    .writeup-header {
+      margin-bottom: 2rem;
+      padding: 1.1rem;
     }
 
     .writeup-meta {
@@ -709,11 +719,72 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     }
 
     .writeup-title {
-      font-size: 2rem;
+      font-size: clamp(1.85rem, 9vw, 2.35rem);
     }
 
     .writeup-summary {
-      font-size: 1.125rem;
+      font-size: 1rem;
+      line-height: 1.7;
+      margin-bottom: 1.25rem;
+    }
+
+    .report-meta-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0.65rem;
+    }
+
+    .writeup-content {
+      max-width: 100%;
+    }
+
+    .writeup-content :global(h2) {
+      margin-top: 2.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .writeup-content :global(h3) {
+      margin-top: 2rem;
+    }
+
+    .writeup-content :global(pre) {
+      margin: 1.5rem calc(var(--container-padding) * -0.35);
+      padding: 1rem;
+      border-radius: 8px;
+    }
+
+    .writeup-content :global(pre[data-language="bash"]::before),
+    .writeup-content :global(pre[data-language="sh"]::before),
+    .writeup-content :global(pre[data-language="shell"]::before),
+    .writeup-content :global(pre[data-language="zsh"]::before),
+    .writeup-content :global(pre[data-language="console"]::before) {
+      padding-left: 3.8rem;
+      font-size: 0.72rem;
+    }
+
+    .writeup-content :global(pre code) {
+      font-size: 0.82rem;
+      line-height: 1.55;
+    }
+
+    .writeup-content :global(table) {
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+    }
+
+    .writeup-content :global(th),
+    .writeup-content :global(td) {
+      padding: 0.75rem;
+      min-width: 9rem;
+    }
+
+    .sidebar-sticky {
+      gap: 1rem;
+    }
+
+    .sidebar-tags,
+    .sidebar-actions,
+    .writeup-disclaimer {
+      padding: 1rem;
     }
 
     .writeup-navigation {
@@ -729,7 +800,18 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     }
 
     .writeup-title {
-      font-size: 1.75rem;
+      font-size: clamp(1.7rem, 10vw, 2rem);
+    }
+
+    .badge {
+      width: 100%;
+      justify-content: center;
+      text-align: center;
+      padding-inline: 0.75rem;
+    }
+
+    .report-meta-grid {
+      grid-template-columns: 1fr;
     }
 
     .share-buttons {

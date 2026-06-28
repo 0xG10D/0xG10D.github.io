@@ -182,7 +182,8 @@ const currentYear = new Date().getFullYear();
     font-size: 0.95rem;
     transition: all var(--motion-fast) var(--motion-ease);
     position: relative;
-    padding-left: 0;
+    min-height: 44px;
+    padding: 0.45rem 0;
     display: inline-block;
   }
 
@@ -265,6 +266,23 @@ const currentYear = new Date().getFullYear();
 
     .site-footer {
       padding: 3rem 0 1.5rem;
+    }
+
+    .footer-section {
+      gap: 0.8rem;
+    }
+
+    .footer-links {
+      gap: 0.35rem;
+    }
+
+    .footer-status {
+      width: 100%;
+      justify-content: center;
+    }
+
+    .footer-copyright {
+      text-align: left;
     }
   }
 </style>

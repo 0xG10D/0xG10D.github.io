@@ -614,6 +614,7 @@ const statusLabels = {
     padding: 0.5rem 1rem;
     border-radius: 6px;
     border: 1px solid var(--border-subtle);
+    overflow-wrap: anywhere;
   }
 
   .status-card {
@@ -765,6 +766,7 @@ const statusLabels = {
     color: var(--silver-text);
     margin: 0;
     line-height: 1.3;
+    overflow-wrap: anywhere;
   }
 
   .certification-meta {
@@ -805,6 +807,7 @@ const statusLabels = {
   .id-value {
     color: var(--silver-text);
     font-weight: 600;
+    overflow-wrap: anywhere;
   }
 
   /* CTF Grid */
@@ -844,6 +847,7 @@ const statusLabels = {
     color: var(--silver-text);
     margin: 0;
     line-height: 1.3;
+    overflow-wrap: anywhere;
   }
 
   .ctf-placement {
@@ -1013,8 +1017,44 @@ const statusLabels = {
   }
 
   @media (max-width: 768px) {
+    .achievements-page {
+      padding-top: 68px;
+    }
+
+    .achievements-hero {
+      padding-top: 2.25rem;
+    }
+
+    .hero-content {
+      gap: 1.25rem;
+    }
+
+    .hero-eyebrow {
+      align-items: flex-start;
+      gap: 0.7rem;
+    }
+
+    .eyebrow-tag {
+      font-size: 0.74rem;
+      overflow-wrap: anywhere;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 10vw, 2.8rem);
+    }
+
+    .hero-description {
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
     .hero-stats {
       grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .snapshot-grid {
+      grid-template-columns: 1fr;
     }
 
     .certifications-grid,
@@ -1023,8 +1063,12 @@ const statusLabels = {
     }
 
     .profile-card,
-    .status-card {
-      padding: 1.5rem;
+    .status-card,
+    .snapshot-card,
+    .certification-card,
+    .ctf-card,
+    .roadmap-item {
+      padding: 1.15rem;
     }
 
     .roadmap-item {
@@ -1035,6 +1079,12 @@ const statusLabels = {
     .roadmap-icon {
       align-self: flex-start;
     }
+
+    .roadmap-progress {
+      align-items: stretch;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
   }
 
   @media (max-width: 480px) {
@@ -1043,12 +1093,20 @@ const statusLabels = {
       grid-template-columns: 1fr;
     }
 
-    .hero-title {
-      font-size: 2rem;
+    .stat-card {
+      padding: 1.15rem;
     }
 
-    .hero-description {
-      font-size: 1rem;
+    .profile-title,
+    .status-title {
+      align-items: flex-start;
+      font-size: 1.25rem;
+    }
+
+    .certification-header,
+    .certification-meta {
+      align-items: flex-start;
+      flex-direction: column;
     }
 
     .ctf-header {
@@ -1060,6 +1118,13 @@ const statusLabels = {
     .ctf-meta {
       flex-direction: column;
       gap: 0.75rem;
+    }
+
+    .certification-status,
+    .ctf-placement,
+    .meta-provider {
+      width: 100%;
+      text-align: center;
     }
   }
 </style>

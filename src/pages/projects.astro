@@ -410,6 +410,7 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   }
 
   .filter-button {
+    min-height: 44px;
     padding: 0.75rem 1.5rem;
     background: linear-gradient(180deg, rgba(16, 42, 76, 0.86), rgba(11, 29, 58, 0.94));
     color: var(--silver-text);
@@ -627,6 +628,7 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
     padding: 0.25rem 0.5rem;
     border-radius: 4px;
     border: 1px solid var(--border-subtle);
+    overflow-wrap: anywhere;
   }
 
   .project-features {
@@ -701,6 +703,7 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
     color: var(--silver-muted);
     text-decoration: none;
     transition: color var(--motion-fast) var(--motion-ease);
+    min-height: 44px;
   }
 
   .project-link:hover {
@@ -894,8 +897,44 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   }
 
   @media (max-width: 768px) {
+    .projects-page {
+      padding-top: 68px;
+    }
+
+    .projects-hero {
+      padding-top: 2.25rem;
+    }
+
+    .hero-content {
+      gap: 1.25rem;
+    }
+
+    .hero-eyebrow {
+      align-items: flex-start;
+      gap: 0.7rem;
+    }
+
+    .eyebrow-tag {
+      font-size: 0.74rem;
+      overflow-wrap: anywhere;
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 10vw, 2.8rem);
+    }
+
+    .hero-description {
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
     .hero-stats {
       gap: 2rem;
+    }
+
+    .category-filter {
+      margin-bottom: 2rem;
+      padding: 1rem;
     }
 
     .filter-buttons {
@@ -925,10 +964,19 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
 
     .project-links {
       justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .project-card-inner,
+    .detail-header,
+    .detail-content,
+    .detail-footer,
+    .architecture {
+      padding: 1.25rem;
     }
 
     .detail-content {
-      padding: 1.5rem;
+      gap: 1.5rem;
     }
 
     .detail-actions {
@@ -956,21 +1004,22 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
       gap: 1.5rem;
     }
 
-    .project-card-inner {
-      padding: 1.5rem;
+    .project-header,
+    .detail-meta {
+      flex-direction: column;
+      align-items: flex-start;
     }
 
-    .detail-header {
-      padding: 1.5rem;
+    .project-meta {
+      text-align: left;
     }
 
     .detail-title {
       font-size: 1.5rem;
     }
 
-    .detail-meta {
-      flex-direction: column;
-      gap: 0.75rem;
+    .meta-item {
+      align-items: flex-start;
     }
   }
 </style>

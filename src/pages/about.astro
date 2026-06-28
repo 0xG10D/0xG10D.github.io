@@ -417,6 +417,7 @@ const currentFocus = [
     grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: 0.9rem;
+    min-height: 56px;
     padding: 1rem;
     color: var(--text-primary);
     transition: transform var(--motion-medium) var(--motion-ease), border-color var(--motion-medium) var(--motion-ease);
@@ -465,9 +466,59 @@ const currentFocus = [
   }
 
   @media (max-width: 640px) {
+    .about-page {
+      padding-top: 68px;
+    }
+
+    .operator-hero {
+      padding-top: 2.25rem;
+    }
+
+    .operator-card,
+    .mission-panel,
+    .current-focus-card,
+    .focus-card,
+    .skill-card,
+    .disclaimer-card {
+      padding: 1.15rem;
+    }
+
+    .operator-card h1,
+    .mission-panel h2 {
+      font-size: clamp(1.85rem, 9vw, 2.4rem);
+    }
+
+    .operator-role,
+    .mission-panel p {
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
     .operator-meta,
     .mission-stats {
       grid-template-columns: 1fr;
+      gap: 0.75rem;
+      margin-top: 1.25rem;
+    }
+
+    .current-focus-grid,
+    .focus-grid,
+    .skills-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .link-card {
+      grid-template-columns: auto 1fr;
+    }
+
+    .link-card small,
+    .link-card svg:last-child {
+      grid-column: 2;
+    }
+
+    .disclaimer-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
     }
   }
 </style>

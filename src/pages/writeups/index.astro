@@ -411,6 +411,8 @@ const platformCounts = platforms.map((platform) => ({
   .active-filter-remove {
     display: grid;
     place-items: center;
+    min-width: 32px;
+    min-height: 32px;
     color: inherit;
     background: transparent;
     border: 0;
@@ -503,17 +505,51 @@ const platformCounts = platforms.map((platform) => ({
   }
 
   @media (max-width: 780px) {
+    .writeups-page {
+      padding-top: 68px;
+    }
+
+    .archive-hero {
+      padding-top: 2.25rem;
+    }
+
     .archive-hero-grid,
     .filters-grid {
       grid-template-columns: 1fr;
     }
 
+    .archive-hero h1 {
+      font-size: clamp(2rem, 10vw, 2.8rem);
+    }
+
+    .archive-hero p {
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
     .filters-header {
       flex-direction: column;
+      gap: 0.85rem;
     }
 
     .filters-status {
       text-align: left;
+    }
+
+    .filter-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .filter-button {
+      width: 100%;
+    }
+
+    .active-filter {
+      min-height: 40px;
+      max-width: 100%;
+      overflow-wrap: anywhere;
     }
   }
 
@@ -523,6 +559,23 @@ const platformCounts = platforms.map((platform) => ({
     }
 
     .writeups-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .filters-card {
+      padding: 1rem;
+    }
+
+    .filters-header h2 {
+      font-size: 1.15rem;
+    }
+
+    .filter-actions {
+      grid-template-columns: 1fr;
+    }
+
+    .platforms-grid {
       grid-template-columns: 1fr;
     }
   }

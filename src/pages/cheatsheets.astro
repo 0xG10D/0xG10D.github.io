@@ -352,7 +352,7 @@ const categoryCounts = categoryOrder.map((category) => ({
   }
 
   .filter-chip {
-    min-height: 38px;
+    min-height: 44px;
     padding: 0.45rem 0.75rem;
     font-size: 0.82rem;
     font-weight: 700;
@@ -387,6 +387,7 @@ const categoryCounts = categoryOrder.map((category) => ({
     gap: 0.7rem;
     align-items: center;
     padding: 0.85rem;
+    min-height: 48px;
     text-align: left;
   }
 
@@ -418,7 +419,7 @@ const categoryCounts = categoryOrder.map((category) => ({
   }
 
   .clear-button {
-    min-height: 38px;
+    min-height: 44px;
     padding: 0.45rem 0.75rem;
     font-weight: 700;
   }
@@ -516,10 +517,11 @@ const categoryCounts = categoryOrder.map((category) => ({
     color: var(--text-secondary);
     font-size: 0.78rem;
     font-weight: 700;
+    overflow-wrap: anywhere;
   }
 
   .copy-button {
-    min-height: 30px;
+    min-height: 36px;
     padding: 0.25rem 0.55rem;
     color: var(--accent-blue);
     background: var(--accent-blue-subtle);
@@ -572,6 +574,7 @@ const categoryCounts = categoryOrder.map((category) => ({
 
   .sheet-links a {
     padding: 0.45rem 0.65rem;
+    min-height: 44px;
     font-size: 0.82rem;
   }
 
@@ -591,7 +594,7 @@ const categoryCounts = categoryOrder.map((category) => ({
   }
 
   .sheet-tags button {
-    min-height: 32px;
+    min-height: 38px;
     padding: 0.3rem 0.55rem;
     font-family: var(--font-mono);
     font-size: 0.72rem;
@@ -681,14 +684,62 @@ const categoryCounts = categoryOrder.map((category) => ({
   }
 
   @media (max-width: 620px) {
+    .cheatsheets-page {
+      padding-top: 68px;
+    }
+
+    .cheatsheets-hero {
+      padding-top: 2.25rem;
+      padding-bottom: 1.75rem;
+    }
+
+    .hero-copy h1 {
+      font-size: clamp(2rem, 10vw, 2.8rem);
+    }
+
+    .hero-copy p {
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
     .hero-panel,
-    .sheets-grid {
+    .sheets-grid,
+    .category-grid {
       grid-template-columns: 1fr;
+    }
+
+    .cheatsheet-controls,
+    .sheet-card {
+      padding: 1rem;
+    }
+
+    .filter-group {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .filter-chip,
+    .clear-button {
+      width: 100%;
+      justify-content: center;
     }
 
     .results-line {
       align-items: flex-start;
       flex-direction: column;
+    }
+
+    .sheet-header {
+      grid-template-columns: 1fr;
+    }
+
+    .command-head {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .copy-button {
+      width: 100%;
     }
 
     .cve-card div {

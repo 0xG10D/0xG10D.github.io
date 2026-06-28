@@ -118,6 +118,7 @@ const { headings } = Astro.props;
     flex: 1;
     font-size: 0.875rem;
     line-height: 1.4;
+    overflow-wrap: anywhere;
   }
 
   /* Indentation based on heading depth */
@@ -168,10 +169,13 @@ const { headings } = Astro.props;
   @media (max-width: 768px) {
     .toc {
       padding: 1rem;
+      max-height: 42dvh;
+      overflow-y: auto;
     }
 
     .toc-link {
-      padding: 0.5rem 0.75rem;
+      min-height: 44px;
+      padding: 0.65rem 0.75rem;
     }
 
     .toc-item-depth-3 .toc-link {
@@ -187,7 +191,16 @@ const { headings } = Astro.props;
     }
 
     .toc-item-depth-6 .toc-link {
-      padding-left: 4.5rem;
+      padding-left: 2.5rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .toc-item-depth-3 .toc-link,
+    .toc-item-depth-4 .toc-link,
+    .toc-item-depth-5 .toc-link,
+    .toc-item-depth-6 .toc-link {
+      padding-left: 0.9rem;
     }
   }
 </style>

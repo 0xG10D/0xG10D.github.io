@@ -117,14 +117,15 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  overflow-x: clip;
 }
 
 body {
   min-height: 100vh;
   font-family: var(--font-sans);
-  font-size: 16px;
+  font-size: clamp(16px, 1.7vw, 17px);
   line-height: 1.7;
-  letter-spacing: -0.01em;
+  letter-spacing: 0;
   overflow-x: hidden;
 
   /* Premium blue agency background */
@@ -247,11 +248,45 @@ svg {
   max-width: 100%;
 }
 
+img,
+picture,
+video,
+canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+table {
+  max-width: 100%;
+}
+
+pre {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+code,
+kbd,
+samp {
+  overflow-wrap: normal;
+}
+
+p,
+li,
+dd,
+figcaption,
+.section-subtitle {
+  overflow-wrap: anywhere;
+}
+
 button,
 input,
 select,
 textarea {
   font: inherit;
+  max-width: 100%;
 }
 
 button,
@@ -363,6 +398,7 @@ input[type='search'] {
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
+  min-height: 44px;
   padding: 0.875rem 1.75rem;
   font-family: var(--font-sans);
   font-weight: 600;
@@ -713,6 +749,11 @@ input[type='search'] {
 
 /* Responsive Breakpoints */
 @media (max-width: 768px) {
+  :root {
+    --container-padding: clamp(1rem, 5vw, 1.35rem);
+    --section-spacing: clamp(2.75rem, 12vw, 4rem);
+  }
+
   .project-two-column,
   .project-section-grid,
   .project-screenshot-grid,
@@ -725,10 +766,35 @@ input[type='search'] {
   .section {
     padding: calc(var(--section-spacing) / 2) 0;
   }
+
+  h1 {
+    font-size: clamp(2.1rem, 11vw, 3rem);
+  }
+
+  h2 {
+    font-size: clamp(1.65rem, 8vw, 2.3rem);
+  }
+
+  h3 {
+    font-size: clamp(1.25rem, 6vw, 1.65rem);
+  }
+
+  .button {
+    width: 100%;
+    padding-inline: 1rem;
+  }
+
+  .section-header {
+    margin-bottom: 2rem;
+  }
 }
 
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   *,
   *::before,
   *::after {

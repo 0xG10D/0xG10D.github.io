@@ -520,6 +520,7 @@ const quickStats = [
     gap: 0.5rem;
     font-family: var(--font-mono);
     font-size: 0.9rem;
+    min-width: 0;
   }
 
   .prompt {
@@ -530,10 +531,12 @@ const quickStats = [
 
   .command {
     color: var(--silver-text);
+    overflow-wrap: anywhere;
   }
 
   .output {
     color: var(--status-info);
+    overflow-wrap: anywhere;
   }
 
   .status-success {
@@ -896,6 +899,7 @@ const quickStats = [
     font-size: 0.875rem;
     position: relative;
     z-index: 1;
+    overflow-x: auto;
   }
 
   /* ===== RESPONSIVE DESIGN ===== */
@@ -922,9 +926,48 @@ const quickStats = [
   }
 
   @media (max-width: 768px) {
+    .homepage {
+      padding-top: 68px;
+    }
+
+    .section {
+      padding: clamp(2.25rem, 11vw, 3.5rem) 0;
+    }
+
     .hero {
-      padding-top: calc(var(--section-spacing) * 0.75);
-      padding-bottom: calc(var(--section-spacing) * 0.75);
+      padding-top: 2rem;
+      padding-bottom: 2.5rem;
+    }
+
+    .hero-grid {
+      gap: 2rem;
+    }
+
+    .hero-content {
+      gap: 1.1rem;
+    }
+
+    .hero-eyebrow {
+      align-items: flex-start;
+      gap: 0.7rem;
+    }
+
+    .eyebrow-tag {
+      font-size: 0.74rem;
+      overflow-wrap: anywhere;
+    }
+
+    .hero-title-main {
+      font-size: clamp(2.45rem, 16vw, 3.25rem);
+    }
+
+    .hero-title-sub {
+      font-size: clamp(1.05rem, 6vw, 1.35rem);
+    }
+
+    .hero-description {
+      font-size: 1rem;
+      line-height: 1.65;
     }
 
     .hero-actions {
@@ -939,6 +982,13 @@ const quickStats = [
 
     .stats-grid {
       grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+
+    .stat-card,
+    .focus-card,
+    .project-card {
+      padding: 1.25rem;
     }
 
     .focus-grid {
@@ -951,7 +1001,16 @@ const quickStats = [
     }
 
     .cta-card {
-      padding: 2rem;
+      padding: 1.25rem;
+      border-radius: 12px;
+    }
+
+    .cta-title {
+      font-size: clamp(1.75rem, 8vw, 2.2rem);
+    }
+
+    .cta-description {
+      font-size: 1rem;
     }
 
     .cta-actions {
@@ -969,12 +1028,31 @@ const quickStats = [
       grid-template-columns: 1fr;
     }
 
-    .hero-title-main {
-      font-size: 2.5rem;
+    .terminal-content,
+    .cta-terminal {
+      padding: 1rem;
     }
 
-    .hero-title-sub {
-      font-size: 1.25rem;
+    .terminal-line {
+      font-size: 0.78rem;
+    }
+
+    .signal-grid {
+      gap: 0.65rem;
+    }
+
+    .project-header {
+      flex-direction: column;
+    }
+
+    .project-actions {
+      justify-content: stretch;
+    }
+
+    .project-link {
+      min-height: 44px;
+      width: 100%;
+      justify-content: center;
     }
   }
 </style>

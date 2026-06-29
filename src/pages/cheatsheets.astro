@@ -22,7 +22,7 @@ const categoryCounts = categoryOrder.map((category) => ({
           <div class="hero-copy">
             <div class="meta-pill">
               <SecurityIcon name="shield" size={16} />
-              <span>Authorized use only</span>
+              <span>// QUICK_REFERENCE</span>
             </div>
             <h1>Cybersecurity Cheat Sheets</h1>
             <p>
@@ -58,7 +58,7 @@ const categoryCounts = categoryOrder.map((category) => ({
               id="cheatsheet-search"
               type="search"
               autocomplete="off"
-              placeholder="Search commands, tags, category, or description"
+              placeholder="grep -i ..."
               aria-label="Search cheat sheets"
             />
           </label>
@@ -234,9 +234,7 @@ const categoryCounts = categoryOrder.map((category) => ({
     padding-top: calc(var(--section-spacing) * 1.15);
     padding-bottom: 2.5rem;
     border-bottom: 1px solid var(--border-subtle);
-    background:
-      radial-gradient(circle at 82% 12%, rgba(56, 189, 248, 0.18), transparent 32%),
-      linear-gradient(135deg, rgba(8, 20, 47, 0.86), rgba(5, 11, 31, 0));
+    background: var(--bg-main);
   }
 
   .hero-grid {
@@ -268,10 +266,9 @@ const categoryCounts = categoryOrder.map((category) => ({
   .sheet-card,
   .cve-card,
   .empty-state {
-    background: var(--gradient-panel);
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    box-shadow: var(--shadow-medium);
+    border-radius: var(--radius-md);
   }
 
   .hero-panel div {
@@ -280,7 +277,7 @@ const categoryCounts = categoryOrder.map((category) => ({
 
   .hero-panel strong {
     display: block;
-    color: var(--accent-blue);
+    color: var(--accent);
     font-family: var(--font-mono);
     font-size: clamp(1.4rem, 3vw, 2rem);
     line-height: 1;
@@ -299,9 +296,9 @@ const categoryCounts = categoryOrder.map((category) => ({
     gap: 1rem;
     margin-top: 2rem;
     padding: 1rem;
-    background: rgba(8, 20, 47, 0.74);
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
   }
 
   .search-group {
@@ -313,22 +310,25 @@ const categoryCounts = categoryOrder.map((category) => ({
     color: var(--text-secondary);
     font-size: 0.85rem;
     font-weight: 700;
+    font-family: var(--font-mono);
   }
 
   .search-group input {
     width: 100%;
     min-height: 48px;
     color: var(--text-primary);
-    background: rgba(5, 11, 31, 0.86);
+    background: var(--bg-main);
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     padding: 0.75rem 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
   }
 
   .search-group input:focus {
     outline: none;
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 0 3px var(--accent-blue-subtle);
+    border-color: var(--border-medium);
+    box-shadow: 0 0 0 2px var(--accent-subtle);
   }
 
   .filter-group,
@@ -345,9 +345,9 @@ const categoryCounts = categoryOrder.map((category) => ({
   .clear-button,
   .category-tile {
     color: var(--text-secondary);
-    background: rgba(8, 20, 47, 0.78);
+    background: var(--bg-main);
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     cursor: pointer;
   }
 
@@ -356,6 +356,7 @@ const categoryCounts = categoryOrder.map((category) => ({
     padding: 0.45rem 0.75rem;
     font-size: 0.82rem;
     font-weight: 700;
+    font-family: var(--font-mono);
   }
 
   .filter-chip:hover,
@@ -364,15 +365,15 @@ const categoryCounts = categoryOrder.map((category) => ({
   .sheet-tags button.active,
   .category-tile:hover,
   .category-tile.active {
-    color: var(--accent-blue);
-    border-color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
+    color: var(--text-primary);
+    border-color: var(--border-medium);
+    background: var(--accent-subtle);
   }
 
   .category-band {
     padding: 1.25rem 0;
     border-bottom: 1px solid var(--border-subtle);
-    background: rgba(5, 11, 31, 0.4);
+    background: var(--bg-main);
   }
 
   .category-grid {
@@ -393,10 +394,12 @@ const categoryCounts = categoryOrder.map((category) => ({
 
   .category-tile span {
     font-weight: 700;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
   }
 
   .category-tile strong {
-    color: var(--accent-blue);
+    color: var(--accent);
     font-family: var(--font-mono);
   }
 
@@ -414,7 +417,7 @@ const categoryCounts = categoryOrder.map((category) => ({
   }
 
   .results-line strong {
-    color: var(--accent-blue);
+    color: var(--accent);
     font-family: var(--font-mono);
   }
 
@@ -422,6 +425,8 @@ const categoryCounts = categoryOrder.map((category) => ({
     min-height: 44px;
     padding: 0.45rem 0.75rem;
     font-weight: 700;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
   }
 
   .sheets-grid {
@@ -452,15 +457,15 @@ const categoryCounts = categoryOrder.map((category) => ({
     width: 42px;
     height: 42px;
     place-items: center;
-    color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
+    color: var(--text-secondary);
+    background: var(--panel-elevated, #1a1a1a);
     border: 1px solid var(--border-medium);
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
   }
 
   .sheet-category {
     margin: 0 0 0.25rem;
-    color: var(--accent-blue);
+    color: var(--muted-text);
     font-family: var(--font-mono);
     font-size: 0.73rem;
     font-weight: 800;
@@ -484,10 +489,10 @@ const categoryCounts = categoryOrder.map((category) => ({
     align-items: flex-start;
     margin: 0;
     padding: 0.75rem;
-    color: var(--soft-cyan);
-    background: rgba(37, 99, 235, 0.1);
+    color: var(--text-secondary);
+    background: var(--accent-subtle);
     border: 1px solid var(--border-medium);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     font-size: 0.85rem;
   }
 
@@ -499,8 +504,8 @@ const categoryCounts = categoryOrder.map((category) => ({
   .command-block {
     overflow: hidden;
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    background: rgba(5, 11, 31, 0.68);
+    border-radius: var(--radius-sm);
+    background: var(--bg-main);
   }
 
   .command-head {
@@ -510,6 +515,7 @@ const categoryCounts = categoryOrder.map((category) => ({
     gap: 0.75rem;
     align-items: center;
     padding: 0.45rem 0.55rem 0.45rem 0.75rem;
+    background: var(--panel-elevated, #1a1a1a);
     border-bottom: 1px solid var(--border-subtle);
   }
 
@@ -517,24 +523,35 @@ const categoryCounts = categoryOrder.map((category) => ({
     color: var(--text-secondary);
     font-size: 0.78rem;
     font-weight: 700;
+    font-family: var(--font-mono);
     overflow-wrap: anywhere;
   }
 
   .copy-button {
-    min-height: 36px;
-    padding: 0.25rem 0.55rem;
-    color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
-    border: 1px solid var(--border-medium);
-    border-radius: 6px;
+    min-height: 32px;
+    padding: 0.2rem 0.55rem;
+    color: var(--text-secondary);
+    background: var(--bg-main);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
     cursor: pointer;
-    font-size: 0.75rem;
-    font-weight: 800;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+
+  .copy-button:hover {
+    color: var(--text-primary);
+    border-color: var(--border-medium);
   }
 
   .copy-button.copied {
-    color: var(--bg-main);
-    background: var(--accent-blue);
+    color: var(--text-primary);
+    border-color: var(--border-medium);
+    background: var(--accent-subtle);
   }
 
   .command-block pre {
@@ -567,9 +584,12 @@ const categoryCounts = categoryOrder.map((category) => ({
     gap: 0.4rem;
     color: var(--text-secondary);
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    background: rgba(8, 20, 47, 0.72);
+    border-radius: var(--radius-sm);
+    background: var(--bg-main);
     font-weight: 700;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    transition: color 0.15s ease, border-color 0.15s ease;
   }
 
   .sheet-links a {
@@ -584,8 +604,8 @@ const categoryCounts = categoryOrder.map((category) => ({
 
   .sheet-links a:hover,
   .research-links a:hover {
-    color: var(--accent-blue);
-    border-color: var(--accent-blue);
+    color: var(--text-primary);
+    border-color: var(--border-medium);
   }
 
   .sheet-tags {
@@ -606,7 +626,7 @@ const categoryCounts = categoryOrder.map((category) => ({
   }
 
   .empty-state svg {
-    color: var(--accent-blue);
+    color: var(--text-secondary);
     margin-bottom: 1rem;
   }
 
@@ -616,7 +636,7 @@ const categoryCounts = categoryOrder.map((category) => ({
 
   .cve-section {
     border-top: 1px solid var(--border-subtle);
-    background: linear-gradient(180deg, rgba(8, 20, 47, 0.46), rgba(5, 11, 31, 0));
+    background: var(--bg-main);
   }
 
   .cve-layout {
@@ -664,7 +684,7 @@ const categoryCounts = categoryOrder.map((category) => ({
   }
 
   .cve-card dt {
-    color: var(--accent-blue);
+    color: var(--text-secondary);
     font-family: var(--font-mono);
     font-size: 0.76rem;
     font-weight: 800;

@@ -30,37 +30,31 @@ const focusAreas: {
   icon: SecurityIconName;
   title: string;
   description: string;
-  color: string;
 }[] = [
   {
     icon: 'target',
     title: 'Penetration Testing',
-    description: 'Network, web, and Active Directory exploitation with detailed methodology documentation.',
-    color: 'rgba(56, 189, 248, 0.18)'
+    description: 'Network, web, and Active Directory exploitation with detailed methodology documentation.'
   },
   {
     icon: 'archive',
     title: 'CTF',
-    description: 'Challenge analysis across web, reverse engineering, binary exploitation, cryptography, and forensics.',
-    color: 'rgba(125, 211, 252, 0.16)'
+    description: 'Challenge analysis across web, reverse engineering, binary exploitation, cryptography, and forensics.'
   },
   {
     icon: 'radar',
     title: 'SOC / Threat Hunting',
-    description: 'Alert triage, detection thinking, forensic review, and defensive security practice in simulated environments.',
-    color: 'rgba(37, 99, 235, 0.2)'
+    description: 'Alert triage, detection thinking, forensic review, and defensive security practice in simulated environments.'
   },
   {
     icon: 'flask',
     title: 'Malware Analysis',
-    description: 'Static and dynamic analysis notes focused on behavior, indicators, and reproducible lab practice.',
-    color: 'rgba(147, 197, 253, 0.16)'
+    description: 'Static and dynamic analysis notes focused on behavior, indicators, and reproducible lab practice.'
   },
   {
     icon: 'tool',
     title: 'System Hardening',
-    description: 'Security tooling, service monitoring, evidence collection, and practical hardening workflows.',
-    color: 'rgba(96, 165, 250, 0.18)'
+    description: 'Security tooling, service monitoring, evidence collection, and practical hardening workflows.'
   }
 ];
 
@@ -83,13 +77,12 @@ const quickStats = [
           <!-- Hero Content -->
           <div class="hero-content">
             <div class="hero-eyebrow">
-              <span class="eyebrow-tag">CYBERSECURITY PORTFOLIO</span>
-              <span class="status-indicator active" aria-label="Active"></span>
+              <span class="eyebrow-tag">// SECURITY_PORTFOLIO</span>
             </div>
 
             <h1 class="hero-title">
-              <span class="hero-title-main">0xG10D</span>
-              <span class="hero-title-sub">Security Research & Documentation</span>
+              <span class="hero-title-line">offensive notes,</span>
+              <span class="hero-title-line">defensive thinking.</span>
             </h1>
 
             <p class="hero-description">
@@ -108,76 +101,65 @@ const quickStats = [
               <a href="/projects/" class="button button-secondary">
                 <span>View Projects</span>
               </a>
-              <a href="/about/" class="button button-ghost">
-                <span>About Me</span>
-              </a>
             </div>
           </div>
 
           <!-- Hero Terminal -->
           <div class="hero-visual" aria-label="Portfolio capability dashboard">
-          <div class="hero-terminal">
-            <div class="terminal-header">
-              <div class="terminal-dots">
-                <span class="dot red"></span>
-                <span class="dot blue-mid"></span>
-                <span class="dot green"></span>
-              </div>
-              <span class="terminal-title">portfolio_status.sh</span>
-            </div>
-
-            <div class="terminal-content">
-              <div class="terminal-line">
-                <span class="prompt">$</span>
-                <span class="command">./portfolio --status --detailed</span>
+            <div class="hero-terminal">
+              <div class="terminal-header">
+                <div class="terminal-dots">
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                  <span class="dot"></span>
+                </div>
+                <span class="terminal-title">~/.profile</span>
               </div>
 
-              <div class="terminal-line">
-                <span class="output">[ok] Portfolio initialized: 0xG10D</span>
-              </div>
+              <div class="terminal-content">
+                <div class="terminal-line">
+                  <span class="prompt">$</span>
+                  <span class="command">whoami</span>
+                </div>
+                <div class="terminal-line">
+                  <span class="output">0xG10D</span>
+                </div>
 
-              <div class="terminal-line">
-                <span class="output">[ok] Writeups indexed: {writeupStats.total} entries</span>
-              </div>
+                <div class="terminal-spacer"></div>
 
-              <div class="terminal-line">
-                <span class="output">[ok] Active projects: {featuredProjects.length} running</span>
-              </div>
+                <div class="terminal-line">
+                  <span class="prompt">$</span>
+                  <span class="command">cat /home/0xG10D/profile</span>
+                </div>
+                <div class="terminal-line">
+                  <span class="output">cybersecurity student</span>
+                </div>
 
-              <div class="terminal-line">
-                <span class="output">[ok] Last update: {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-              </div>
+                <div class="terminal-spacer"></div>
 
-              <div class="terminal-line">
-                <span class="output">[ok] System integrity: <span class="status-success">SECURE</span></span>
-              </div>
+                <div class="terminal-line">
+                  <span class="prompt">$</span>
+                  <span class="command">./security-portfolio --list</span>
+                </div>
+                <div class="terminal-line">
+                  <span class="output">writeups: {writeupStats.total} published</span>
+                </div>
+                <div class="terminal-line">
+                  <span class="output">projects: {featuredProjects.length} active</span>
+                </div>
+                <div class="terminal-line">
+                  <span class="output">htb:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {writeupStats.htb} machines</span>
+                </div>
+                <div class="terminal-line">
+                  <span class="output">ctf:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {writeupStats.ctf} challenges</span>
+                </div>
 
-              <div class="terminal-line">
-                <span class="prompt">$</span>
-                <span class="command">./portfolio --recommendation</span>
-              </div>
+                <div class="terminal-spacer"></div>
 
-              <div class="terminal-line">
-                <span class="output">[next] Recommended: Review latest HTB writeup</span>
-              </div>
-            </div>
-          </div>
-
-            <div class="signal-grid" aria-label="Security focus overview">
-              <div class="signal-card">
-                <span class="signal-label">Archive</span>
-                <strong>{writeupStats.total}</strong>
-                <span>technical reports</span>
-              </div>
-              <div class="signal-card">
-                <span class="signal-label">Practice</span>
-                <strong>HTB / THM</strong>
-                <span>authorized labs</span>
-              </div>
-              <div class="signal-card">
-                <span class="signal-label">Builds</span>
-                <strong>{featuredProjects.length}</strong>
-                <span>security tools</span>
+                <div class="terminal-line">
+                  <span class="prompt">$</span>
+                  <span class="cursor">_</span>
+                </div>
               </div>
             </div>
           </div>
@@ -189,12 +171,11 @@ const quickStats = [
     <section class="stats section">
       <div class="container">
         <div class="stats-grid">
-          {quickStats.map((stat, index) => (
+          {quickStats.map((stat) => (
             <div class="stat-card">
               <div class="stat-value">{stat.value}</div>
               <div class="stat-label">{stat.label}</div>
               <div class="stat-change">{stat.change}</div>
-              <div class="stat-glow" style={`--stat-index: ${index}`}></div>
             </div>
           ))}
         </div>
@@ -205,6 +186,7 @@ const quickStats = [
     <section class="focus section">
       <div class="container">
         <div class="section-header">
+          <span class="section-label">// FOCUS_AREAS</span>
           <h2 class="section-title">Core Focus Areas</h2>
           <p class="section-subtitle">
             Specialized cybersecurity disciplines practiced through labs, challenges, and tool development.
@@ -213,11 +195,10 @@ const quickStats = [
 
         <div class="focus-grid">
           {focusAreas.map((area) => (
-            <div class="focus-card" style={`--focus-color: ${area.color}`}>
+            <div class="focus-card">
               <div class="focus-icon"><SecurityIcon name={area.icon} size={28} /></div>
               <h3 class="focus-title">{area.title}</h3>
               <p class="focus-description">{area.description}</p>
-              <div class="focus-glow"></div>
             </div>
           ))}
         </div>
@@ -228,6 +209,7 @@ const quickStats = [
     <section class="writeups section">
       <div class="container">
         <div class="section-header">
+          <span class="section-label">// LATEST_WRITEUPS</span>
           <h2 class="section-title">Latest Writeups</h2>
           <p class="section-subtitle">
             Recent CTF challenge documentation and penetration testing methodology.
@@ -261,6 +243,7 @@ const quickStats = [
     <section class="projects section">
       <div class="container">
         <div class="section-header">
+          <span class="section-label">// BUILDS</span>
           <h2 class="section-title">Featured Security Tools</h2>
           <p class="section-subtitle">
             Practical security utilities and monitoring tools developed for defensive and offensive security.
@@ -317,6 +300,7 @@ const quickStats = [
       <div class="container">
         <div class="cta-card">
           <div class="cta-content">
+            <span class="section-label">// CONNECT</span>
             <h2 class="cta-title">Ready to Dive Deeper?</h2>
             <p class="cta-description">
               Explore comprehensive writeups, security tool documentation, and professional
@@ -331,7 +315,7 @@ const quickStats = [
           <div class="cta-terminal">
             <div class="terminal-line">
               <span class="prompt">$</span>
-              <span class="command">curl -X GET https://portfolio.0xg10d.dev/engagement</span>
+              <span class="command">curl -s https://0xg10d.dev/api/status</span>
             </div>
             <div class="terminal-line">
               <span class="output">{"{"}</span>
@@ -359,11 +343,36 @@ const quickStats = [
 <style>
   /* ===== HOMEPAGE LAYOUT ===== */
   .homepage {
-    padding-top: 80px; /* Account for fixed header */
+    padding-top: 80px;
   }
 
   .section {
     padding: var(--section-spacing) 0;
+  }
+
+  /* ===== SECTION LABELS ===== */
+  .section-label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-secondary, #888);
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+  }
+
+  .section-header {
+    margin-bottom: 3rem;
+  }
+
+  .section-title {
+    color: var(--text-primary, #e8e8e8);
+    margin: 0 0 0.75rem 0;
+  }
+
+  .section-subtitle {
+    color: var(--text-secondary, #888);
+    margin: 0;
+    max-width: 600px;
   }
 
   /* ===== HERO SECTION ===== */
@@ -394,50 +403,28 @@ const quickStats = [
   .eyebrow-tag {
     font-family: var(--font-mono);
     font-size: 0.875rem;
-    color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    border: 1px solid var(--border-medium);
+    color: var(--text-secondary, #888);
     letter-spacing: 0.05em;
-  }
-
-  .status-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-  }
-
-  .status-indicator.active {
-    background: var(--status-success);
-    animation: statusPulse 2s ease-in-out infinite;
   }
 
   .hero-title {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.15rem;
   }
 
-  .hero-title-main {
-    font-size: clamp(3rem, 5vw, 4.5rem);
-    font-weight: 900;
-    color: var(--silver-text);
-    line-height: 1;
+  .hero-title-line {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    color: var(--text-primary, #e8e8e8);
+    line-height: 1.1;
     letter-spacing: -0.02em;
-  }
-
-  .hero-title-sub {
-    font-size: clamp(1.25rem, 2vw, 1.75rem);
-    font-weight: 400;
-    color: var(--silver-muted);
-    line-height: 1.3;
   }
 
   .hero-description {
     font-size: 1.125rem;
     line-height: 1.7;
-    color: var(--silver-muted);
+    color: var(--text-secondary, #888);
     max-width: 600px;
   }
 
@@ -451,17 +438,30 @@ const quickStats = [
     min-width: 150px;
   }
 
-  .button-ghost {
-    color: var(--text-secondary);
-    border-color: transparent;
-    background: rgba(16, 42, 76, 0.42);
+  /* Monochrome button overrides */
+  .hero-actions .button-primary,
+  .cta-actions .button-primary {
+    background: var(--text-primary, #e8e8e8);
+    color: #0a0a0a;
+    border-color: var(--text-primary, #e8e8e8);
   }
 
-  .button-ghost:hover {
-    color: var(--accent-blue);
-    border-color: var(--border-medium);
-    background: var(--accent-blue-subtle);
-    transform: translateY(-2px);
+  .hero-actions .button-primary:hover,
+  .cta-actions .button-primary:hover {
+    background: #fff;
+    border-color: #fff;
+  }
+
+  .hero-actions .button-secondary,
+  .cta-actions .button-secondary {
+    background: transparent;
+    color: var(--text-primary, #e8e8e8);
+    border: 1px solid var(--border-subtle, #2a2a2a);
+  }
+
+  .hero-actions .button-secondary:hover,
+  .cta-actions .button-secondary:hover {
+    border-color: var(--text-secondary, #888);
   }
 
   /* Hero Terminal */
@@ -471,20 +471,19 @@ const quickStats = [
   }
 
   .hero-terminal {
-    background: var(--dark-slate);
-    border: 1px solid var(--border-medium);
-    border-radius: var(--radius-lg);
+    background: var(--card-bg, #111);
+    border: 1px solid var(--border-subtle, #2a2a2a);
+    border-radius: var(--radius-md, 6px);
     overflow: hidden;
-    box-shadow: var(--shadow-elevated);
   }
 
   .terminal-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1rem 1.5rem;
-    background: var(--surface-elevated);
-    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.75rem 1.25rem;
+    background: var(--panel-elevated, #161616);
+    border-bottom: 1px solid var(--border-subtle, #2a2a2a);
   }
 
   .terminal-dots {
@@ -493,96 +492,65 @@ const quickStats = [
   }
 
   .terminal-dots .dot {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
+    background: var(--border-subtle, #2a2a2a);
+    border: 1px solid #3a3a3a;
   }
-
-  .terminal-dots .dot.red { background: #2563EB; }
-  .terminal-dots .dot.blue-mid { background: #38BDF8; }
-  .terminal-dots .dot.green { background: #7DD3FC; }
 
   .terminal-title {
     font-family: var(--font-mono);
-    font-size: 0.875rem;
-    color: var(--silver-text);
+    font-size: 0.8rem;
+    color: var(--text-secondary, #888);
   }
 
   .terminal-content {
-    padding: 1.5rem;
+    padding: 1.25rem;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.4rem;
+  }
+
+  .terminal-spacer {
+    height: 0.5rem;
   }
 
   .terminal-line {
     display: flex;
     gap: 0.5rem;
     font-family: var(--font-mono);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     min-width: 0;
   }
 
   .prompt {
-    color: var(--accent-blue);
+    color: var(--text-secondary, #888);
     font-weight: 700;
     flex-shrink: 0;
   }
 
   .command {
-    color: var(--silver-text);
+    color: var(--text-primary, #e8e8e8);
     overflow-wrap: anywhere;
   }
 
   .output {
-    color: var(--status-info);
+    color: var(--text-secondary, #888);
     overflow-wrap: anywhere;
   }
 
-  .status-success {
-    color: var(--status-success);
-    font-weight: 700;
+  .cursor {
+    color: var(--text-primary, #e8e8e8);
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
   }
 
   .indent-1 { padding-left: 1rem; }
-
-  .signal-grid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.8rem;
-  }
-
-  .signal-card {
-    padding: 1rem;
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    background: rgba(16, 42, 76, 0.66);
-    box-shadow: inset 0 1px 0 rgba(125, 211, 252, 0.08);
-  }
-
-  .signal-card strong,
-  .signal-card span {
-    display: block;
-  }
-
-  .signal-card strong {
-    margin: 0.25rem 0;
-    color: var(--text-primary);
-    font-size: 1.15rem;
-  }
-
-  .signal-card span:last-child {
-    color: var(--muted-text);
-    font-size: 0.82rem;
-  }
-
-  .signal-label {
-    color: var(--accent-blue) !important;
-    font-family: var(--font-mono);
-    font-size: 0.68rem !important;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
 
   /* ===== STATS SECTION ===== */
   .stats-grid {
@@ -592,127 +560,86 @@ const quickStats = [
   }
 
   .stat-card {
-    position: relative;
-    background: var(--deep-matte-grey);
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
+    background: var(--card-bg, #111);
+    border: 1px solid var(--border-subtle, #2a2a2a);
+    border-radius: var(--radius-sm, 4px);
     padding: 1.75rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
-    transition: all var(--motion-medium) var(--motion-ease);
-    overflow: hidden;
+    transition: border-color var(--motion-medium, 0.2s) var(--motion-ease, ease);
   }
 
   .stat-card:hover {
-    border-color: var(--border-medium);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-medium);
+    border-color: var(--text-secondary, #888);
   }
 
   .stat-value {
     font-size: 2.5rem;
     font-weight: 900;
-    color: var(--accent-blue);
+    color: var(--text-primary, #e8e8e8);
     line-height: 1;
   }
 
   .stat-label {
     font-size: 0.95rem;
-    color: var(--silver-text);
+    color: var(--text-primary, #e8e8e8);
     font-weight: 600;
   }
 
   .stat-change {
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    color: var(--silver-muted);
-  }
-
-  .stat-glow {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      400px circle at 50% 50%,
-      rgba(56, 189, 248, calc(0.05 + var(--stat-index) * 0.02)) 0%,
-      transparent 50%
-    );
-    opacity: 0;
-    transition: opacity var(--motion-medium) var(--motion-ease);
-    pointer-events: none;
-  }
-
-  .stat-card:hover .stat-glow {
-    opacity: 1;
+    color: var(--text-secondary, #888);
   }
 
   /* ===== FOCUS AREAS ===== */
   .focus-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
+    gap: 1.5rem;
   }
 
   .focus-card {
-    position: relative;
-    background: var(--deep-matte-grey);
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    padding: 2rem;
+    background: var(--card-bg, #111);
+    border: 1px solid var(--border-subtle, #2a2a2a);
+    border-radius: var(--radius-sm, 4px);
+    padding: 1.75rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    transition: all var(--motion-medium) var(--motion-ease);
-    overflow: hidden;
+    transition: border-color var(--motion-medium, 0.2s) var(--motion-ease, ease);
   }
 
   .focus-card:hover {
-    border-color: var(--border-medium);
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-elevated);
+    border-color: var(--text-secondary, #888);
   }
 
   .focus-icon {
     font-size: 2.5rem;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
+    color: var(--text-secondary, #888);
   }
 
   .focus-title {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 700;
-    color: var(--silver-text);
+    color: var(--text-primary, #e8e8e8);
     margin: 0;
   }
 
   .focus-description {
-    color: var(--silver-muted);
-    font-size: 0.95rem;
+    color: var(--text-secondary, #888);
+    font-size: 0.9rem;
     line-height: 1.6;
     margin: 0;
-  }
-
-  .focus-glow {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      400px circle at 50% 50%,
-      var(--focus-color, var(--accent-blue-subtle)) 0%,
-      transparent 50%
-    );
-    opacity: 0;
-    transition: opacity var(--motion-medium) var(--motion-ease);
-    pointer-events: none;
-  }
-
-  .focus-card:hover .focus-glow {
-    opacity: 0.1;
   }
 
   /* ===== WRITEUPS SECTION ===== */
   .writeups-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-    gap: 2rem;
+    gap: 1.5rem;
     margin-bottom: 3rem;
   }
 
@@ -721,38 +648,46 @@ const quickStats = [
     justify-content: center;
   }
 
+  .section-actions .button-secondary {
+    background: transparent;
+    color: var(--text-primary, #e8e8e8);
+    border: 1px solid var(--border-subtle, #2a2a2a);
+  }
+
+  .section-actions .button-secondary:hover {
+    border-color: var(--text-secondary, #888);
+  }
+
   .empty-state {
     text-align: center;
     padding: 3rem;
-    color: var(--silver-muted);
-    background: var(--surface-elevated);
-    border-radius: 12px;
-    border: 1px solid var(--border-subtle);
+    color: var(--text-secondary, #888);
+    background: var(--card-bg, #111);
+    border-radius: var(--radius-sm, 4px);
+    border: 1px solid var(--border-subtle, #2a2a2a);
   }
 
   /* ===== PROJECTS SECTION ===== */
   .projects-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 2rem;
+    gap: 1.5rem;
     margin-bottom: 3rem;
   }
 
   .project-card {
-    background: var(--deep-matte-grey);
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
+    background: var(--card-bg, #111);
+    border: 1px solid var(--border-subtle, #2a2a2a);
+    border-radius: var(--radius-sm, 4px);
     padding: 1.75rem;
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
-    transition: all var(--motion-medium) var(--motion-ease);
+    transition: border-color var(--motion-medium, 0.2s) var(--motion-ease, ease);
   }
 
   .project-card:hover {
-    border-color: var(--border-medium);
-    transform: translateY(-4px);
-    box-shadow: var(--shadow-medium);
+    border-color: var(--text-secondary, #888);
   }
 
   .project-header {
@@ -765,26 +700,26 @@ const quickStats = [
   .project-badge {
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
+    color: var(--text-secondary, #888);
+    background: var(--panel-elevated, #161616);
     padding: 0.25rem 0.75rem;
-    border-radius: 4px;
-    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-sm, 4px);
+    border: 1px solid var(--border-subtle, #2a2a2a);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
   .project-title {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 700;
-    color: var(--silver-text);
+    color: var(--text-primary, #e8e8e8);
     margin: 0;
     flex: 1;
   }
 
   .project-description {
-    color: var(--silver-muted);
-    font-size: 0.95rem;
+    color: var(--text-secondary, #888);
+    font-size: 0.9rem;
     line-height: 1.6;
     margin: 0;
   }
@@ -799,11 +734,11 @@ const quickStats = [
   .tech-tag {
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    color: var(--silver-muted);
-    background: var(--surface-elevated);
+    color: var(--text-secondary, #888);
+    background: var(--panel-elevated, #161616);
     padding: 0.25rem 0.5rem;
-    border-radius: 4px;
-    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm, 4px);
+    border: 1px solid var(--border-subtle, #2a2a2a);
   }
 
   .project-actions {
@@ -815,20 +750,20 @@ const quickStats = [
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    font-family: var(--font-sans);
+    font-family: var(--font-mono);
     font-weight: 600;
-    font-size: 0.875rem;
-    color: var(--accent-blue);
+    font-size: 0.8rem;
+    color: var(--text-secondary, #888);
     text-decoration: none;
-    transition: all var(--motion-fast) var(--motion-ease);
+    transition: color var(--motion-fast, 0.15s) var(--motion-ease, ease);
   }
 
   .project-link:hover {
-    gap: 0.75rem;
+    color: var(--text-primary, #e8e8e8);
   }
 
   .project-link svg {
-    transition: transform var(--motion-fast) var(--motion-ease);
+    transition: transform var(--motion-fast, 0.15s) var(--motion-ease, ease);
   }
 
   .project-link:hover svg {
@@ -837,50 +772,34 @@ const quickStats = [
 
   /* ===== CTA SECTION ===== */
   .cta-card {
-    background: var(--deep-matte-grey);
-    border: 1px solid var(--border-medium);
-    border-radius: 16px;
+    background: var(--card-bg, #111);
+    border: 1px solid var(--border-subtle, #2a2a2a);
+    border-radius: var(--radius-md, 6px);
     padding: 4rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
     align-items: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .cta-card::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      800px circle at 80% 20%,
-      rgba(56, 189, 248, 0.1) 0%,
-      transparent 50%
-    );
-    pointer-events: none;
   }
 
   .cta-content {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
-    position: relative;
-    z-index: 1;
+    gap: 1.25rem;
   }
 
   .cta-title {
-    font-size: 2.5rem;
+    font-size: 2.25rem;
     font-weight: 800;
-    color: var(--silver-text);
+    color: var(--text-primary, #e8e8e8);
     line-height: 1.2;
     margin: 0;
   }
 
   .cta-description {
-    font-size: 1.125rem;
+    font-size: 1.05rem;
     line-height: 1.7;
-    color: var(--silver-muted);
+    color: var(--text-secondary, #888);
     margin: 0;
   }
 
@@ -891,15 +810,16 @@ const quickStats = [
   }
 
   .cta-terminal {
-    background: var(--dark-slate);
-    border: 1px solid var(--border-medium);
-    border-radius: 8px;
-    padding: 1.5rem;
+    background: var(--panel-elevated, #161616);
+    border: 1px solid var(--border-subtle, #2a2a2a);
+    border-radius: var(--radius-sm, 4px);
+    padding: 1.25rem;
     font-family: var(--font-mono);
-    font-size: 0.875rem;
-    position: relative;
-    z-index: 1;
+    font-size: 0.8rem;
     overflow-x: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
   }
 
   /* ===== RESPONSIVE DESIGN ===== */
@@ -907,10 +827,6 @@ const quickStats = [
     .hero-grid {
       grid-template-columns: 1fr;
       gap: 3rem;
-    }
-
-    .signal-grid {
-      grid-template-columns: 1fr;
     }
 
     .cta-card {
@@ -957,12 +873,8 @@ const quickStats = [
       overflow-wrap: anywhere;
     }
 
-    .hero-title-main {
-      font-size: clamp(2.45rem, 16vw, 3.25rem);
-    }
-
-    .hero-title-sub {
-      font-size: clamp(1.05rem, 6vw, 1.35rem);
+    .hero-title-line {
+      font-size: clamp(2rem, 10vw, 3rem);
     }
 
     .hero-description {
@@ -1002,7 +914,7 @@ const quickStats = [
 
     .cta-card {
       padding: 1.25rem;
-      border-radius: 12px;
+      border-radius: var(--radius-sm, 4px);
     }
 
     .cta-title {
@@ -1035,10 +947,6 @@ const quickStats = [
 
     .terminal-line {
       font-size: 0.78rem;
-    }
-
-    .signal-grid {
-      gap: 0.65rem;
     }
 
     .project-header {

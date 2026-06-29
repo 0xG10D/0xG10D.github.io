@@ -43,9 +43,9 @@ const { headings } = Astro.props;
 
 <style>
   .toc {
-    background: var(--surface-elevated);
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     padding: 1.5rem;
   }
 
@@ -55,7 +55,8 @@ const { headings } = Astro.props;
     gap: 0.75rem;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--silver-text);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
     margin: 0 0 1.25rem 0;
     padding-bottom: 0.75rem;
     border-bottom: 1px solid var(--border-subtle);
@@ -64,7 +65,7 @@ const { headings } = Astro.props;
   .toc-title svg {
     width: 16px;
     height: 16px;
-    color: var(--accent-blue);
+    color: var(--text-secondary);
   }
 
   .toc-list {
@@ -85,9 +86,9 @@ const { headings } = Astro.props;
     justify-content: space-between;
     gap: 0.75rem;
     padding: 0.75rem 1rem;
-    color: var(--silver-muted);
+    color: var(--muted-text);
     text-decoration: none;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     transition: all var(--motion-fast) var(--motion-ease);
     position: relative;
     overflow: hidden;
@@ -100,14 +101,14 @@ const { headings } = Astro.props;
     top: 0;
     bottom: 0;
     width: 3px;
-    background: var(--accent-blue);
+    background: var(--text-secondary);
     transform: scaleY(0);
     transition: transform var(--motion-medium) var(--motion-ease);
   }
 
   .toc-link:hover {
-    color: var(--silver-text);
-    background: var(--deep-matte-grey);
+    color: var(--text-primary);
+    background: var(--panel-elevated);
   }
 
   .toc-link:hover::before {
@@ -142,7 +143,7 @@ const { headings } = Astro.props;
     width: 6px;
     height: 6px;
     border-radius: 50%;
-    background: var(--accent-blue);
+    background: var(--text-secondary);
     opacity: 0;
     transition: opacity var(--motion-fast) var(--motion-ease);
   }
@@ -153,8 +154,8 @@ const { headings } = Astro.props;
 
   /* Active state (will be set by JavaScript) */
   .toc-link-active {
-    color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
+    color: var(--text-primary);
+    background: var(--panel-elevated);
   }
 
   .toc-link-active::before {

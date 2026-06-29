@@ -30,8 +30,7 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
       <div class="container">
         <div class="hero-content">
           <div class="hero-eyebrow">
-            <span class="eyebrow-tag">SECURITY TOOLING & RESEARCH</span>
-            <span class="status-indicator active" aria-label="Active"></span>
+            <span class="eyebrow-tag">// BUILDS</span>
           </div>
 
           <h1 class="hero-title">Security Projects</h1>
@@ -152,9 +151,6 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
                   </div>
                 </div>
               </div>
-
-              <!-- Project Glow -->
-              <div class="project-glow" style={`--project-index: ${index}`}></div>
             </article>
           ))}
         </div>
@@ -309,14 +305,12 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
 <style>
   /* ===== PROJECTS PAGE ===== */
   .projects-page {
-    padding-top: 80px; /* Account for fixed header */
+    padding-top: 80px;
   }
 
   /* Projects Hero */
   .projects-hero {
-    background:
-      radial-gradient(circle at 82% 18%, rgba(56, 189, 248, 0.14), transparent 34%),
-      linear-gradient(135deg, var(--bg-secondary), var(--bg-main));
+    background: var(--bg-main);
     border-bottom: 1px solid var(--border-subtle);
   }
 
@@ -335,10 +329,10 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   .eyebrow-tag {
     font-family: var(--font-mono);
     font-size: 0.875rem;
-    color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
+    color: var(--text-secondary);
+    background: var(--accent-subtle);
     padding: 0.5rem 1rem;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border-medium);
     letter-spacing: 0.05em;
   }
@@ -346,7 +340,7 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   .hero-title {
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: 900;
-    color: var(--silver-text);
+    color: var(--text-primary);
     line-height: 1.1;
     margin: 0;
   }
@@ -354,7 +348,7 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   .hero-description {
     font-size: 1.25rem;
     line-height: 1.7;
-    color: var(--silver-muted);
+    color: var(--text-secondary);
     max-width: 800px;
     margin: 0;
   }
@@ -374,33 +368,36 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   .stat-value {
     font-size: 2.5rem;
     font-weight: 900;
-    color: var(--accent-blue);
+    color: var(--accent);
     line-height: 1;
+    font-family: var(--font-mono);
   }
 
   .stat-label {
     font-size: 0.875rem;
-    color: var(--silver-muted);
+    color: var(--muted-text);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    font-family: var(--font-mono);
   }
 
   /* Category Filter */
   .category-filter {
     margin-bottom: 3rem;
     padding: 1.5rem;
-    background: var(--surface-elevated);
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
   }
 
   .filter-label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--silver-text);
+    color: var(--text-secondary);
     margin-bottom: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    font-family: var(--font-mono);
   }
 
   .filter-buttons {
@@ -412,12 +409,12 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   .filter-button {
     min-height: 44px;
     padding: 0.75rem 1.5rem;
-    background: linear-gradient(180deg, rgba(16, 42, 76, 0.86), rgba(11, 29, 58, 0.94));
-    color: var(--silver-text);
+    background: var(--bg-main);
+    color: var(--text-secondary);
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    font-family: var(--font-sans);
-    font-size: 0.875rem;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
     font-weight: 500;
     cursor: pointer;
     transition: all var(--motion-fast) var(--motion-ease);
@@ -428,13 +425,13 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
 
   .filter-button:hover {
     border-color: var(--border-medium);
-    background: var(--surface-elevated);
+    color: var(--text-primary);
   }
 
   .filter-button-active {
-    background: var(--accent-blue-subtle);
-    color: var(--accent-blue);
-    border-color: var(--accent-blue);
+    background: var(--accent-subtle);
+    color: var(--text-primary);
+    border-color: var(--border-medium);
   }
 
   .filter-count {
@@ -454,9 +451,9 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
 
   .project-card {
     position: relative;
-    background: var(--deep-matte-grey);
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     overflow: hidden;
     transition: all var(--motion-medium) var(--motion-ease);
   }
@@ -464,7 +461,6 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   .project-card:hover {
     transform: translateY(-4px);
     border-color: var(--border-medium);
-    box-shadow: var(--shadow-elevated);
   }
 
   .project-card-inner {
@@ -474,23 +470,6 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
     gap: 1.5rem;
     position: relative;
     z-index: 1;
-  }
-
-  .project-glow {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      400px circle at 50% 50%,
-      rgba(56, 189, 248, calc(0.05 + var(--project-index) * 0.02)) 0%,
-      transparent 50%
-    );
-    opacity: 0;
-    transition: opacity var(--motion-medium) var(--motion-ease);
-    pointer-events: none;
-  }
-
-  .project-card:hover .project-glow {
-    opacity: 0.1;
   }
 
   .project-header {
@@ -507,14 +486,29 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   }
 
   .badge-type {
-    background: var(--accent-blue-subtle);
-    color: var(--accent-blue);
-    border-color: var(--accent-blue);
+    background: var(--accent-subtle);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-medium);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .badge-status {
-    background: var(--surface-elevated);
-    color: var(--silver-text);
+    background: var(--bg-main);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
 
   .project-meta {
@@ -527,36 +521,7 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   .project-date {
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    color: var(--silver-muted);
-  }
-
-  .project-difficulty {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 600;
-    padding: 0.2rem 0.5rem;
-    border-radius: 4px;
-    background: var(--surface-elevated);
-    border: 1px solid var(--border-subtle);
-    color: var(--silver-text);
-  }
-
-  .project-difficulty[data-difficulty="beginner"] {
-    color: #7DD3FC;
-    border-color: #7DD3FC;
-    background: rgba(125, 211, 252, 0.1);
-  }
-
-  .project-difficulty[data-difficulty="intermediate"] {
-    color: #60A5FA;
-    border-color: #60A5FA;
-    background: rgba(96, 165, 250, 0.1);
-  }
-
-  .project-difficulty[data-difficulty="advanced"] {
-    color: #3B82F6;
-    border-color: #3B82F6;
-    background: rgba(59, 130, 246, 0.1);
+    color: var(--muted-text);
   }
 
   .project-body {
@@ -568,7 +533,7 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   .project-title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--silver-text);
+    color: var(--text-primary);
     margin: 0;
     line-height: 1.3;
   }
@@ -581,19 +546,19 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
     padding: 0.9rem;
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
-    background: rgba(56, 189, 248, 0.045);
+    background: var(--accent-subtle);
     color: var(--text-secondary);
     font-size: 0.9rem;
     line-height: 1.55;
   }
 
   .project-value svg {
-    color: var(--accent-blue);
+    color: var(--text-secondary);
     margin-top: 0.15rem;
   }
 
   .project-summary {
-    color: var(--silver-muted);
+    color: var(--text-secondary);
     font-size: 0.95rem;
     line-height: 1.6;
     margin: 0;
@@ -608,10 +573,11 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   .tech-heading {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--silver-text);
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin: 0;
+    font-family: var(--font-mono);
   }
 
   .tech-tags {
@@ -623,10 +589,10 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   .tech-tag {
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    color: var(--silver-muted);
-    background: var(--surface-elevated);
+    color: var(--text-secondary);
+    background: var(--bg-main);
     padding: 0.25rem 0.5rem;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border-subtle);
     overflow-wrap: anywhere;
   }
@@ -640,10 +606,11 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   .features-heading {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--silver-text);
+    color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin: 0;
+    font-family: var(--font-mono);
   }
 
   .features-list {
@@ -657,7 +624,7 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
 
   .feature-item {
     font-size: 0.875rem;
-    color: var(--silver-muted);
+    color: var(--text-secondary);
     line-height: 1.5;
     padding-left: 1rem;
     position: relative;
@@ -667,12 +634,13 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
     content: ">";
     position: absolute;
     left: 0;
-    color: var(--accent-blue);
+    color: var(--muted-text);
+    font-family: var(--font-mono);
   }
 
   .feature-item-more {
     font-size: 0.75rem;
-    color: var(--silver-muted);
+    color: var(--muted-text);
     opacity: 0.7;
     font-style: italic;
   }
@@ -700,14 +668,15 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
     align-items: center;
     gap: 0.5rem;
     font-size: 0.75rem;
-    color: var(--silver-muted);
+    color: var(--text-secondary);
     text-decoration: none;
     transition: color var(--motion-fast) var(--motion-ease);
     min-height: 44px;
+    font-family: var(--font-mono);
   }
 
   .project-link:hover {
-    color: var(--accent-blue);
+    color: var(--text-primary);
   }
 
   .project-link svg {
@@ -723,22 +692,22 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   }
 
   .detail-card {
-    background: var(--deep-matte-grey);
+    background: var(--card-bg);
     border: 1px solid var(--border-medium);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     overflow: hidden;
   }
 
   .detail-header {
     padding: 2rem;
-    background: var(--surface-elevated);
+    background: var(--panel-elevated, #1a1a1a);
     border-bottom: 1px solid var(--border-subtle);
   }
 
   .detail-title {
     font-size: 2rem;
     font-weight: 700;
-    color: var(--silver-text);
+    color: var(--text-primary);
     margin: 0 0 1rem 0;
   }
 
@@ -753,7 +722,7 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
     align-items: center;
     gap: 0.5rem;
     font-size: 0.875rem;
-    color: var(--silver-muted);
+    color: var(--text-secondary);
   }
 
   .meta-item svg {
@@ -777,12 +746,12 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   .content-heading {
     font-size: 1.25rem;
     font-weight: 600;
-    color: var(--silver-text);
+    color: var(--text-primary);
     margin: 0;
   }
 
   .content-text {
-    color: var(--silver-muted);
+    color: var(--text-secondary);
     font-size: 1rem;
     line-height: 1.7;
     margin: 0;
@@ -798,7 +767,7 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   }
 
   .content-list li {
-    color: var(--silver-muted);
+    color: var(--text-secondary);
     font-size: 1rem;
     line-height: 1.6;
     padding-left: 1rem;
@@ -809,31 +778,20 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
     content: "-";
     position: absolute;
     left: 0;
-    color: var(--accent-blue);
+    color: var(--muted-text);
+    font-family: var(--font-mono);
   }
 
   .architecture {
-    background: var(--dark-slate);
+    background: var(--bg-main);
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     padding: 1.5rem;
-  }
-
-  .architecture-placeholder {
-    text-align: center;
-    padding: 2rem;
-    color: var(--silver-muted);
-  }
-
-  .placeholder-note {
-    font-size: 0.875rem;
-    opacity: 0.7;
-    margin-top: 0.5rem;
   }
 
   .detail-footer {
     padding: 2rem;
-    background: var(--surface-elevated);
+    background: var(--panel-elevated, #1a1a1a);
     border-top: 1px solid var(--border-subtle);
     display: flex;
     justify-content: space-between;
@@ -859,7 +817,7 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   }
 
   .empty-state-icon {
-    color: var(--accent-blue);
+    color: var(--text-secondary);
     margin-bottom: 1.5rem;
     opacity: 0.5;
   }
@@ -867,12 +825,12 @@ const allTechStack = [...new Set(projects.flatMap(p => p.stack))];
   .empty-state-title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--silver-text);
+    color: var(--text-primary);
     margin: 0 0 0.75rem 0;
   }
 
   .empty-state-description {
-    color: var(--silver-muted);
+    color: var(--text-secondary);
     font-size: 1rem;
     line-height: 1.6;
     max-width: 500px;

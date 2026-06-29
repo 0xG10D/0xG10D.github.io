@@ -199,12 +199,9 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   .writeup-header {
     margin-bottom: 3rem;
     padding: clamp(1.5rem, 4vw, 2.5rem);
-    background:
-      radial-gradient(circle at 80% 10%, rgba(56, 189, 248, 0.15), transparent 36%),
-      linear-gradient(180deg, rgba(16, 42, 76, 0.82), rgba(11, 29, 58, 0.9));
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: 14px;
-    box-shadow: var(--shadow-medium);
+    border-radius: var(--radius-md);
   }
 
   .writeup-meta {
@@ -227,44 +224,28 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     font-size: 0.75rem;
     font-weight: 600;
     padding: 0.5rem 1rem;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border-medium);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
   .badge-platform {
-    background: var(--accent-blue-subtle);
-    color: var(--accent-blue);
-    border-color: var(--accent-blue);
+    background: var(--panel-elevated);
+    color: var(--text-primary);
+    border-color: var(--border-medium);
   }
 
   .badge-difficulty {
-    background: var(--surface-elevated);
-    color: var(--silver-text);
-  }
-
-  .badge-difficulty[data-difficulty="easy"] {
-    color: #7DD3FC;
-    border-color: #7DD3FC;
-    background: rgba(125, 211, 252, 0.1);
-  }
-
-  .badge-difficulty[data-difficulty="medium"] {
-    color: #60A5FA;
-    border-color: #60A5FA;
-    background: rgba(96, 165, 250, 0.1);
-  }
-
-  .badge-difficulty[data-difficulty="hard"] {
-    color: #3B82F6;
-    border-color: #3B82F6;
-    background: rgba(59, 130, 246, 0.1);
+    background: var(--panel-elevated);
+    color: var(--text-secondary);
+    border-color: var(--border-subtle);
   }
 
   .badge-category {
-    background: var(--surface-elevated);
-    color: var(--silver-text);
+    background: var(--panel-elevated);
+    color: var(--text-secondary);
+    border-color: var(--border-subtle);
   }
 
   .meta-dates {
@@ -278,7 +259,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   .update-date {
     font-family: var(--font-mono);
     font-size: 0.875rem;
-    color: var(--silver-muted);
+    color: var(--muted-text);
   }
 
   .writeup-title {
@@ -286,7 +267,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     font-weight: 800;
     line-height: 1.2;
     margin-bottom: 1.5rem;
-    color: var(--silver-text);
+    color: var(--text-primary);
   }
 
   .report-meta-grid {
@@ -299,8 +280,8 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   .report-meta-grid div {
     padding: 1rem;
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    background: rgba(8, 20, 47, 0.58);
+    border-radius: var(--radius-sm);
+    background: var(--bg-main);
   }
 
   .report-meta-grid dt {
@@ -311,24 +292,29 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     text-transform: uppercase;
   }
 
+  .report-meta-grid dt::after {
+    content: ":";
+  }
+
   .report-meta-grid dd {
     margin: 0.35rem 0 0;
     color: var(--text-primary);
     font-weight: 700;
+    font-family: var(--font-mono);
     text-transform: capitalize;
   }
 
   .writeup-summary {
     font-size: 1.25rem;
     line-height: 1.7;
-    color: var(--silver-muted);
+    color: var(--text-secondary);
     margin-bottom: 2rem;
     max-width: 800px;
   }
 
   .writeup-featured-image {
     margin: 2rem 0;
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     overflow: hidden;
     border: 1px solid var(--border-subtle);
   }
@@ -362,7 +348,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   .writeup-content :global(h2) {
     font-size: clamp(1.55rem, 5vw, 2rem);
     font-weight: 700;
-    color: var(--silver-text);
+    color: var(--text-primary);
     margin-top: 3rem;
     margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
@@ -372,7 +358,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   .writeup-content :global(h3) {
     font-size: clamp(1.25rem, 4vw, 1.5rem);
     font-weight: 600;
-    color: var(--silver-text);
+    color: var(--text-primary);
     margin-top: 2.5rem;
     margin-bottom: 1rem;
   }
@@ -380,29 +366,29 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   .writeup-content :global(p) {
     font-size: clamp(1rem, 2vw, 1.125rem);
     line-height: 1.8;
-    color: var(--silver-muted);
+    color: var(--text-secondary);
   }
 
   .writeup-content :global(code) {
     font-family: var(--font-mono);
-    background: var(--surface-elevated);
-    color: var(--accent-blue);
+    background: var(--panel-elevated);
+    color: var(--text-primary);
     padding: 0.2rem 0.5rem;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     font-size: 0.9em;
     border: 1px solid var(--border-subtle);
   }
 
   .writeup-content :global(pre) {
     max-width: 100%;
-    background: #061226;
+    background: var(--bg-main);
     border: 1px solid var(--border-medium);
-    border-radius: 10px;
+    border-radius: var(--radius-md);
     padding: 1.5rem;
     overflow-x: auto;
     margin: 2rem 0;
-    box-shadow: inset 0 1px 0 rgba(125, 211, 252, 0.08);
-    scrollbar-color: var(--accent-blue) var(--bg-secondary);
+    box-shadow: none;
+    scrollbar-color: var(--border-medium) var(--bg-main);
     -webkit-overflow-scrolling: touch;
   }
 
@@ -413,13 +399,9 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   .writeup-content :global(pre[data-language="console"]) {
     padding: 0;
     overflow-x: auto;
-    background:
-      linear-gradient(180deg, rgba(2, 8, 23, 0.96), rgba(3, 13, 31, 0.98)),
-      #030d1f;
-    border-color: rgba(56, 189, 248, 0.42);
-    box-shadow:
-      inset 0 1px 0 rgba(125, 211, 252, 0.1),
-      0 16px 42px rgba(2, 8, 23, 0.34);
+    background: var(--bg-main);
+    border-color: var(--border-medium);
+    box-shadow: none;
   }
 
   .writeup-content :global(pre[data-language="bash"]::before),
@@ -427,19 +409,19 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   .writeup-content :global(pre[data-language="shell"]::before),
   .writeup-content :global(pre[data-language="zsh"]::before),
   .writeup-content :global(pre[data-language="console"]::before) {
-    content: "G10D@kali:~$";
+    content: "0xG10D@kali:~$";
     position: sticky;
     left: 0;
     display: block;
     min-width: max-content;
     padding: 0.75rem 1.25rem 0.75rem 4.35rem;
     background:
-      radial-gradient(circle at 1.3rem 50%, #38bdf8 0 0.28rem, transparent 0.3rem),
-      radial-gradient(circle at 2.15rem 50%, #2563eb 0 0.28rem, transparent 0.3rem),
-      radial-gradient(circle at 3rem 50%, #93c5fd 0 0.28rem, transparent 0.3rem),
-      linear-gradient(90deg, rgba(8, 24, 52, 0.98), rgba(13, 38, 76, 0.94));
-    border-bottom: 1px solid rgba(56, 189, 248, 0.24);
-    color: #bae6fd;
+      radial-gradient(circle at 1.3rem 50%, #888 0 0.28rem, transparent 0.3rem),
+      radial-gradient(circle at 2.15rem 50%, #666 0 0.28rem, transparent 0.3rem),
+      radial-gradient(circle at 3rem 50%, #aaa 0 0.28rem, transparent 0.3rem),
+      var(--panel-elevated);
+    border-bottom: 1px solid var(--border-medium);
+    color: var(--text-secondary);
     font-family: var(--font-mono);
     font-size: 0.78rem;
     font-weight: 700;
@@ -452,7 +434,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     padding: 0;
     font-size: 0.9rem;
     line-height: 1.5;
-    color: var(--silver-text);
+    color: var(--text-primary);
     white-space: pre;
   }
 
@@ -467,13 +449,13 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   }
 
   .writeup-content :global(blockquote) {
-    border-left: 4px solid var(--accent-blue);
+    border-left: 4px solid var(--border-medium);
     padding-left: 1.5rem;
     margin: 2rem 0;
-    color: var(--silver-muted);
+    color: var(--text-secondary);
     font-style: italic;
-    background: rgba(16, 42, 76, 0.72);
-    border-radius: 0 8px 8px 0;
+    background: var(--panel-elevated);
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
     padding: 1.5rem;
   }
 
@@ -483,26 +465,26 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     max-width: 100%;
     border-collapse: collapse;
     margin: 2rem 0;
-    border: 1px solid var(--border-subtle);
-    border-radius: 10px;
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-md);
     overflow-x: auto;
-    scrollbar-color: var(--accent-blue) var(--bg-secondary);
+    scrollbar-color: var(--border-medium) var(--bg-main);
     -webkit-overflow-scrolling: touch;
   }
 
   .writeup-content :global(th) {
-    background: var(--surface-elevated);
-    color: var(--silver-text);
+    background: var(--panel-elevated);
+    color: var(--text-primary);
     font-weight: 600;
     padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border-medium);
   }
 
   .writeup-content :global(td) {
     padding: 1rem;
     border-bottom: 1px solid var(--border-subtle);
-    color: var(--silver-muted);
+    color: var(--text-secondary);
   }
 
   .writeup-content :global(tr:last-child td) {
@@ -517,7 +499,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
 
   .writeup-content :global(li) {
     margin-bottom: 0.75rem;
-    color: var(--silver-muted);
+    color: var(--text-secondary);
     line-height: 1.7;
   }
 
@@ -525,7 +507,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     max-width: 100%;
     width: auto;
     height: auto;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-subtle);
     margin: 2rem 0;
   }
@@ -547,17 +529,18 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   .sidebar-heading {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--silver-text);
+    color: var(--text-primary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: 1rem;
+    font-family: var(--font-mono);
   }
 
   .sidebar-tags {
     padding: 1.5rem;
-    background: var(--surface-elevated);
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
+    border-radius: var(--radius-md);
   }
 
   .tag-cloud {
@@ -569,25 +552,25 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   .tag-cloud .tag {
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    color: var(--silver-muted);
-    background: var(--deep-matte-grey);
+    color: var(--muted-text);
+    background: transparent;
     padding: 0.25rem 0.75rem;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border-subtle);
     transition: all var(--motion-fast) var(--motion-ease);
   }
 
   .tag-cloud .tag:hover {
-    color: var(--accent-blue);
-    border-color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
+    color: var(--text-primary);
+    border-color: var(--border-medium);
+    background: var(--panel-elevated);
   }
 
   .sidebar-actions {
     padding: 1.5rem;
-    background: var(--surface-elevated);
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
+    border-radius: var(--radius-md);
   }
 
   /* Writeup Footer */
@@ -613,7 +596,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   .nav-heading {
     font-size: 1.125rem;
     font-weight: 600;
-    color: var(--silver-text);
+    color: var(--text-primary);
   }
 
   .nav-links {
@@ -623,13 +606,13 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   }
 
   .nav-link {
-    color: var(--silver-muted);
+    color: var(--text-secondary);
     font-size: 0.95rem;
     transition: color var(--motion-fast) var(--motion-ease);
   }
 
   .nav-link:hover {
-    color: var(--accent-blue);
+    color: var(--text-primary);
   }
 
   .share-buttons {
@@ -642,11 +625,11 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     align-items: center;
     gap: 0.5rem;
     padding: 0.75rem 1.25rem;
-    background: var(--surface-elevated);
-    color: var(--silver-text);
+    background: var(--card-bg);
+    color: var(--text-secondary);
     border: 1px solid var(--border-subtle);
-    border-radius: 6px;
-    font-family: var(--font-sans);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-mono);
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
@@ -654,9 +637,9 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   }
 
   .share-button:hover {
-    border-color: var(--accent-blue);
-    color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
+    border-color: var(--border-medium);
+    color: var(--text-primary);
+    background: var(--panel-elevated);
   }
 
   .share-button svg {
@@ -666,22 +649,23 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
 
   .writeup-disclaimer {
     padding: 2rem;
-    background: var(--surface-elevated);
+    background: var(--card-bg);
     border: 1px solid var(--border-medium);
-    border-radius: 8px;
+    border-radius: var(--radius-md);
   }
 
   .disclaimer-heading {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--accent-blue);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
     margin-bottom: 1rem;
   }
 
   .disclaimer-text {
     font-size: 0.875rem;
     line-height: 1.6;
-    color: var(--silver-muted);
+    color: var(--muted-text);
     margin: 0;
   }
 
@@ -749,7 +733,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     .writeup-content :global(pre) {
       margin: 1.5rem calc(var(--container-padding) * -0.35);
       padding: 1rem;
-      border-radius: 8px;
+      border-radius: var(--radius-md);
     }
 
     .writeup-content :global(pre[data-language="bash"]::before),

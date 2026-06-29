@@ -53,8 +53,7 @@ const platformCounts = platforms.map((platform) => ({
         <div class="archive-hero-grid">
           <div>
             <div class="hero-eyebrow">
-              <SecurityIcon name="archive" size={18} />
-              <span>Security research archive</span>
+              <span>// ARCHIVE</span>
             </div>
             <h1>Writeups built like technical reports.</h1>
             <p>
@@ -89,7 +88,7 @@ const platformCounts = platforms.map((platform) => ({
           <div class="filters-grid">
             <label class="filter-group">
               <span>Search</span>
-              <input type="search" id="search-input" class="filter-input" placeholder="Title, summary, platform, or tag" data-filter="search" aria-label="Search writeups" autocomplete="off" />
+              <input type="search" id="search-input" class="filter-input" placeholder="grep -i 'title | tag | platform'" data-filter="search" aria-label="Search writeups" autocomplete="off" />
             </label>
 
             <label class="filter-group">
@@ -207,9 +206,7 @@ const platformCounts = platforms.map((platform) => ({
 
   .archive-hero {
     padding-top: calc(var(--section-spacing) * 1.25);
-    background:
-      radial-gradient(circle at 78% 20%, rgba(56, 189, 248, 0.16), transparent 34%),
-      linear-gradient(135deg, rgba(8, 20, 47, 0.78), rgba(5, 11, 31, 0));
+    background: var(--bg-main);
     border-bottom: 1px solid var(--border-subtle);
   }
 
@@ -224,10 +221,10 @@ const platformCounts = platforms.map((platform) => ({
     display: inline-flex;
     align-items: center;
     gap: 0.55rem;
-    color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
+    color: var(--text-secondary);
+    background: var(--panel-elevated);
     border: 1px solid var(--border-medium);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     padding: 0.45rem 0.75rem;
     font-family: var(--font-mono);
     font-size: 0.76rem;
@@ -256,10 +253,10 @@ const platformCounts = platforms.map((platform) => ({
   .filters-card,
   .platform-card,
   .empty-state {
-    background: linear-gradient(180deg, rgba(16, 42, 76, 0.86), rgba(11, 29, 58, 0.92));
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    box-shadow: var(--shadow-medium);
+    border-radius: var(--radius-md);
+    box-shadow: none;
   }
 
   .archive-metrics div {
@@ -268,7 +265,8 @@ const platformCounts = platforms.map((platform) => ({
 
   .archive-metrics strong {
     display: block;
-    color: var(--accent-blue);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
     font-size: clamp(1.45rem, 3vw, 2rem);
     line-height: 1.1;
   }
@@ -317,7 +315,8 @@ const platformCounts = platforms.map((platform) => ({
 
   .filters-status strong {
     display: block;
-    color: var(--accent-blue);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
     font-size: 2rem;
     line-height: 1;
   }
@@ -352,18 +351,19 @@ const platformCounts = platforms.map((platform) => ({
     min-height: 44px;
     width: 100%;
     color: var(--text-primary);
-    background: rgba(8, 20, 47, 0.86);
+    background: var(--bg-main);
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     padding: 0.65rem 0.8rem;
     font: inherit;
+    font-family: var(--font-mono);
   }
 
   .filter-input:focus,
   .filter-select:focus {
     outline: none;
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 0 3px var(--accent-blue-subtle);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px var(--accent-subtle);
   }
 
   .filter-actions {
@@ -375,16 +375,22 @@ const platformCounts = platforms.map((platform) => ({
     min-height: 44px;
     padding: 0.65rem 0.9rem;
     color: var(--text-primary);
-    background: linear-gradient(135deg, var(--primary-blue), var(--electric-blue));
-    border: 1px solid rgba(125, 211, 252, 0.35);
-    border-radius: 8px;
+    background: var(--panel-elevated);
+    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-sm);
     font-weight: 700;
+    font-family: var(--font-mono);
     cursor: pointer;
+    transition: border-color var(--motion-fast) var(--motion-ease);
+  }
+
+  .filter-button:hover {
+    border-color: var(--text-secondary);
   }
 
   .filter-button.secondary {
     color: var(--text-secondary);
-    background: rgba(8, 20, 47, 0.72);
+    background: var(--bg-main);
   }
 
   .active-filters {
@@ -399,10 +405,10 @@ const platformCounts = platforms.map((platform) => ({
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
+    color: var(--text-primary);
+    background: var(--panel-elevated);
     border: 1px solid var(--border-medium);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
     padding: 0.45rem 0.7rem;
     font-family: var(--font-mono);
     font-size: 0.75rem;
@@ -431,7 +437,7 @@ const platformCounts = platforms.map((platform) => ({
   }
 
   .empty-state svg {
-    color: var(--accent-blue);
+    color: var(--text-secondary);
     margin-bottom: 1rem;
   }
 
@@ -458,7 +464,7 @@ const platformCounts = platforms.map((platform) => ({
 
   .platform-header svg,
   .platform-card a svg {
-    color: var(--accent-blue);
+    color: var(--text-secondary);
   }
 
   .platform-header h3 {
@@ -467,14 +473,15 @@ const platformCounts = platforms.map((platform) => ({
   }
 
   .platform-header strong {
-    color: var(--accent-blue);
+    color: var(--text-primary);
     font-family: var(--font-mono);
   }
 
   .platform-progress {
     height: 7px;
     margin: 1rem 0;
-    background: rgba(8, 20, 47, 0.9);
+    background: var(--bg-main);
+    border: 1px solid var(--border-subtle);
     border-radius: 999px;
     overflow: hidden;
   }
@@ -482,7 +489,7 @@ const platformCounts = platforms.map((platform) => ({
   .platform-progress span {
     display: block;
     height: 100%;
-    background: linear-gradient(90deg, var(--primary-blue), var(--electric-blue));
+    background: var(--text-secondary);
     border-radius: inherit;
   }
 
@@ -492,10 +499,12 @@ const platformCounts = platforms.map((platform) => ({
     gap: 0.45rem;
     color: var(--text-secondary);
     font-weight: 700;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
   }
 
   .platform-card a:hover {
-    color: var(--accent-blue);
+    color: var(--text-primary);
   }
 
   @media (max-width: 1100px) {

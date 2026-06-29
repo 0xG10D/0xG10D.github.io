@@ -89,8 +89,7 @@ const statusLabels = {
       <div class="container">
         <div class="hero-content">
           <div class="hero-eyebrow">
-            <span class="eyebrow-tag">TECHNICAL CREDENTIALS</span>
-            <span class="status-indicator active" aria-label="Active"></span>
+            <span class="eyebrow-tag">// LOG</span>
           </div>
 
           <h1 class="hero-title">Achievements & Credentials</h1>
@@ -219,14 +218,13 @@ const statusLabels = {
         <div class="certifications-grid">
           {allCertifications.map((cert) => {
             const status = (cert.status || 'verified') as keyof typeof statusColors;
-            const statusColor = statusColors[status] || statusColors.verified;
             const statusLabel = statusLabels[status] || 'Verified';
 
             return (
               <div class="certification-card" data-status={status}>
                 <div class="certification-header">
                   <div class="certification-provider">{cert.provider}</div>
-                  <div class="certification-status" style={`background: ${statusColor}20; border-color: ${statusColor}; color: ${statusColor}`}>
+                  <div class="certification-status">
                     {statusLabel}
                   </div>
                 </div>
@@ -407,7 +405,7 @@ const statusLabels = {
 <style>
   /* ===== ACHIEVEMENTS PAGE ===== */
   .achievements-page {
-    padding-top: 80px; /* Account for fixed header */
+    padding-top: 80px;
   }
 
   .snapshot-grid {
@@ -418,14 +416,13 @@ const statusLabels = {
 
   .snapshot-card {
     padding: 1.5rem;
-    background: linear-gradient(180deg, rgba(16, 42, 76, 0.86), rgba(11, 29, 58, 0.94));
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-lg);
-    box-shadow: var(--shadow-medium);
+    border-radius: var(--radius-md);
   }
 
   .snapshot-card svg {
-    color: var(--accent-blue);
+    color: var(--text-secondary);
   }
 
   .snapshot-card h2 {
@@ -441,11 +438,7 @@ const statusLabels = {
 
   /* Achievements Hero */
   .achievements-hero {
-    background: linear-gradient(
-      135deg,
-      var(--dark-slate) 0%,
-      var(--deep-matte-grey) 100%
-    );
+    background: var(--bg-main);
     border-bottom: 1px solid var(--border-subtle);
   }
 
@@ -464,10 +457,10 @@ const statusLabels = {
   .eyebrow-tag {
     font-family: var(--font-mono);
     font-size: 0.875rem;
-    color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
+    color: var(--text-secondary);
+    background: var(--accent-subtle);
     padding: 0.5rem 1rem;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border-medium);
     letter-spacing: 0.05em;
   }
@@ -475,7 +468,7 @@ const statusLabels = {
   .hero-title {
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: 900;
-    color: var(--silver-text);
+    color: var(--text-primary);
     line-height: 1.1;
     margin: 0;
   }
@@ -483,7 +476,7 @@ const statusLabels = {
   .hero-description {
     font-size: 1.25rem;
     line-height: 1.7;
-    color: var(--silver-muted);
+    color: var(--text-secondary);
     max-width: 800px;
     margin: 0;
   }
@@ -496,11 +489,9 @@ const statusLabels = {
   }
 
   .stat-card {
-    background:
-      radial-gradient(circle at 80% 18%, rgba(56, 189, 248, 0.14), transparent 34%),
-      linear-gradient(135deg, var(--bg-secondary), var(--bg-main));
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
@@ -511,27 +502,29 @@ const statusLabels = {
   .stat-card:hover {
     border-color: var(--border-medium);
     transform: translateY(-2px);
-    box-shadow: var(--shadow-medium);
   }
 
   .stat-value {
     font-size: 2.5rem;
     font-weight: 900;
-    color: var(--accent-blue);
+    color: var(--accent);
     line-height: 1;
+    font-family: var(--font-mono);
   }
 
   .stat-label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--silver-text);
+    color: var(--text-primary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    font-family: var(--font-mono);
   }
 
   .stat-description {
     font-size: 0.75rem;
-    color: var(--silver-muted);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
   }
 
   /* Profile Section */
@@ -541,35 +534,39 @@ const statusLabels = {
     gap: 2rem;
   }
 
-  .profile-card {
-    background: linear-gradient(180deg, rgba(16, 42, 76, 0.86), rgba(11, 29, 58, 0.94));
+  .profile-card,
+  .status-card {
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     padding: 2rem;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
   }
 
-  .profile-header {
+  .profile-header,
+  .status-header {
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--border-subtle);
   }
 
-  .profile-title {
+  .profile-title,
+  .status-title {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--silver-text);
+    color: var(--text-primary);
     margin: 0;
   }
 
-  .profile-title svg {
+  .profile-title svg,
+  .status-title svg {
     width: 20px;
     height: 20px;
-    color: var(--accent-blue);
+    color: var(--text-secondary);
   }
 
   .profile-content {
@@ -581,7 +578,7 @@ const statusLabels = {
   .profile-summary {
     font-size: 1.125rem;
     line-height: 1.7;
-    color: var(--silver-muted);
+    color: var(--text-secondary);
     margin: 0;
   }
 
@@ -594,10 +591,11 @@ const statusLabels = {
   .focus-title {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--silver-text);
+    color: var(--text-primary);
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    font-family: var(--font-mono);
   }
 
   .focus-tags {
@@ -609,43 +607,12 @@ const statusLabels = {
   .focus-tag {
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    color: var(--silver-text);
-    background: var(--surface-elevated);
+    color: var(--text-secondary);
+    background: var(--bg-main);
     padding: 0.5rem 1rem;
-    border-radius: 6px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border-subtle);
     overflow-wrap: anywhere;
-  }
-
-  .status-card {
-    background: linear-gradient(180deg, rgba(16, 42, 76, 0.86), rgba(11, 29, 58, 0.94));
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .status-header {
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border-subtle);
-  }
-
-  .status-title {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: var(--silver-text);
-    margin: 0;
-  }
-
-  .status-title svg {
-    width: 20px;
-    height: 20px;
-    color: var(--accent-blue);
   }
 
   .status-content {
@@ -659,35 +626,16 @@ const statusLabels = {
     align-items: center;
     gap: 1rem;
     padding: 1rem;
-    background: var(--surface-elevated);
+    background: var(--bg-main);
     border: 1px solid var(--border-subtle);
-    border-radius: 8px;
+    border-radius: var(--radius-sm);
   }
 
   .status-indicator {
     width: 12px;
     height: 12px;
     border-radius: 50%;
-  }
-
-  .status-verified {
-    background: var(--status-success);
-    animation: statusPulse 2s ease-in-out infinite;
-  }
-
-  .status-in-progress {
-    background: var(--status-warning);
-    animation: statusPulse 2s ease-in-out infinite;
-  }
-
-  .status-active {
-    background: var(--status-info);
-    animation: statusPulse 2s ease-in-out infinite;
-  }
-
-  @keyframes statusPulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.6; }
+    background: var(--muted-text);
   }
 
   .status-info {
@@ -700,7 +648,7 @@ const statusLabels = {
   .status-label {
     font-size: 0.875rem;
     font-weight: 600;
-    color: var(--silver-text);
+    color: var(--text-primary);
   }
 
   .status-count {
@@ -717,9 +665,9 @@ const statusLabels = {
   }
 
   .certification-card {
-    background: linear-gradient(180deg, rgba(16, 42, 76, 0.86), rgba(11, 29, 58, 0.94));
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     padding: 1.75rem;
     display: flex;
     flex-direction: column;
@@ -730,7 +678,6 @@ const statusLabels = {
   .certification-card:hover {
     border-color: var(--border-medium);
     transform: translateY(-4px);
-    box-shadow: var(--shadow-medium);
   }
 
   .certification-header {
@@ -744,7 +691,7 @@ const statusLabels = {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     font-weight: 700;
-    color: var(--silver-text);
+    color: var(--text-primary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
@@ -754,16 +701,18 @@ const statusLabels = {
     font-size: 0.7rem;
     font-weight: 600;
     padding: 0.25rem 0.75rem;
-    border-radius: 4px;
-    border: 1px solid;
+    border-radius: var(--radius-sm);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    background: var(--panel-elevated);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
   }
 
   .certification-name {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--silver-text);
+    color: var(--text-primary);
     margin: 0;
     line-height: 1.3;
     overflow-wrap: anywhere;
@@ -781,7 +730,8 @@ const statusLabels = {
     align-items: center;
     gap: 0.5rem;
     font-size: 0.75rem;
-    color: var(--silver-muted);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
   }
 
   .meta-item svg {
@@ -795,7 +745,7 @@ const statusLabels = {
     gap: 0.5rem;
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    color: var(--silver-muted);
+    color: var(--text-secondary);
     padding-top: 1rem;
     border-top: 1px solid var(--border-subtle);
   }
@@ -805,7 +755,7 @@ const statusLabels = {
   }
 
   .id-value {
-    color: var(--silver-text);
+    color: var(--text-primary);
     font-weight: 600;
     overflow-wrap: anywhere;
   }
@@ -818,9 +768,9 @@ const statusLabels = {
   }
 
   .ctf-card {
-    background: linear-gradient(180deg, rgba(16, 42, 76, 0.86), rgba(11, 29, 58, 0.94));
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     padding: 1.75rem;
     display: flex;
     flex-direction: column;
@@ -831,7 +781,6 @@ const statusLabels = {
   .ctf-card:hover {
     border-color: var(--border-medium);
     transform: translateY(-4px);
-    box-shadow: var(--shadow-medium);
   }
 
   .ctf-header {
@@ -844,7 +793,7 @@ const statusLabels = {
   .ctf-event {
     font-size: 1.25rem;
     font-weight: 700;
-    color: var(--silver-text);
+    color: var(--text-primary);
     margin: 0;
     line-height: 1.3;
     overflow-wrap: anywhere;
@@ -854,19 +803,18 @@ const statusLabels = {
     font-family: var(--font-mono);
     font-size: 0.75rem;
     font-weight: 700;
-    color: var(--silver-text);
-    background: var(--surface-elevated);
+    color: var(--text-secondary);
+    background: var(--bg-main);
     padding: 0.5rem 1rem;
-    border-radius: 4px;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border-subtle);
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
 
   .ctf-placement-top {
-    background: var(--accent-blue-subtle);
-    color: var(--accent-blue);
-    border-color: var(--accent-blue);
+    color: var(--text-primary);
+    border-color: var(--border-medium);
   }
 
   .ctf-meta {
@@ -874,6 +822,7 @@ const statusLabels = {
     flex-wrap: wrap;
     gap: 1rem;
     margin-top: 0.5rem;
+    font-family: var(--font-mono);
   }
 
   /* Roadmap */
@@ -887,9 +836,9 @@ const statusLabels = {
     display: flex;
     gap: 1.5rem;
     padding: 1.5rem;
-    background: linear-gradient(180deg, rgba(16, 42, 76, 0.86), rgba(11, 29, 58, 0.94));
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
     transition: all var(--motion-medium) var(--motion-ease);
   }
 
@@ -907,7 +856,7 @@ const statusLabels = {
   .roadmap-icon svg {
     width: 20px;
     height: 20px;
-    color: var(--accent-blue);
+    color: var(--text-secondary);
   }
 
   .roadmap-content {
@@ -920,7 +869,7 @@ const statusLabels = {
   .roadmap-title {
     font-size: 1.125rem;
     font-weight: 700;
-    color: var(--silver-text);
+    color: var(--text-primary);
     margin: 0;
   }
 
@@ -933,16 +882,17 @@ const statusLabels = {
   .meta-provider {
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
+    color: var(--text-secondary);
+    background: var(--panel-elevated);
     padding: 0.25rem 0.75rem;
-    border-radius: 4px;
-    border: 1px solid var(--border-medium);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-subtle);
   }
 
   .meta-date {
     font-size: 0.75rem;
-    color: var(--silver-muted);
+    color: var(--text-secondary);
+    font-family: var(--font-mono);
   }
 
   .roadmap-progress {
@@ -955,14 +905,14 @@ const statusLabels = {
   .progress-bar {
     flex: 1;
     height: 6px;
-    background: var(--surface-elevated);
+    background: var(--panel-elevated);
     border-radius: 3px;
     overflow: hidden;
   }
 
   .progress-fill {
     height: 100%;
-    background: var(--accent-blue);
+    background: var(--muted-text);
     border-radius: 3px;
     transition: width 0.5s ease;
   }
@@ -970,7 +920,7 @@ const statusLabels = {
   .progress-label {
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    color: var(--silver-muted);
+    color: var(--muted-text);
     min-width: 80px;
   }
 
@@ -978,13 +928,13 @@ const statusLabels = {
   .empty-state {
     text-align: center;
     padding: 4rem 2rem;
-    background: var(--surface-elevated);
+    background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: 12px;
+    border-radius: var(--radius-md);
   }
 
   .empty-state-icon {
-    color: var(--accent-blue);
+    color: var(--text-secondary);
     margin-bottom: 1.5rem;
     opacity: 0.5;
   }
@@ -992,12 +942,12 @@ const statusLabels = {
   .empty-state-title {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--silver-text);
+    color: var(--text-primary);
     margin: 0 0 0.75rem 0;
   }
 
   .empty-state-description {
-    color: var(--silver-muted);
+    color: var(--text-secondary);
     font-size: 1rem;
     line-height: 1.6;
     max-width: 500px;

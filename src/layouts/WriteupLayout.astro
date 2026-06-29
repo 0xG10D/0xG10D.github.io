@@ -197,8 +197,8 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
 
   /* Writeup Header */
   .writeup-header {
-    max-width: 980px;
-    margin: 0 auto 3rem;
+    max-width: 1184px;
+    margin: 0 auto clamp(2rem, 5vw, 3rem);
     padding: clamp(1.35rem, 3vw, 2.1rem);
     background: var(--card-bg);
     border: 1px solid var(--border-subtle);
@@ -274,7 +274,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
 
   .report-meta-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(120px, 1fr));
     gap: 0.65rem;
     margin: 1.5rem 0 0;
   }
@@ -326,7 +326,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
 
   .writeup-featured-image img {
     width: 100%;
-    max-height: 380px;
+    max-height: min(420px, 62vh);
     height: auto;
     object-fit: contain;
     display: block;
@@ -336,22 +336,26 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   /* Writeup Body */
   .writeup-body {
     display: grid;
-    grid-template-columns: minmax(0, 840px) minmax(240px, 280px);
-    gap: clamp(2.5rem, 5vw, 4rem);
+    grid-template-columns: minmax(0, 820px) minmax(240px, 280px);
+    gap: clamp(2rem, 4vw, 3.5rem);
     align-items: start;
     justify-content: center;
   }
 
   .writeup-content {
-    max-width: 840px;
+    max-width: 820px;
     min-width: 0;
     margin: 0 auto;
     overflow-wrap: anywhere;
   }
 
   /* Content styling for markdown */
-  .writeup-content :global(*) {
-    margin-bottom: 1.35rem;
+  .writeup-content :global(> :first-child) {
+    margin-top: 0;
+  }
+
+  .writeup-content :global(> :last-child) {
+    margin-bottom: 0;
   }
 
   .writeup-content :global(h2) {
@@ -376,6 +380,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     font-size: clamp(1rem, 1.6vw, 1.06rem);
     line-height: 1.72;
     color: var(--text-secondary);
+    margin: 0 0 1.35rem;
   }
 
   .writeup-content :global(code) {
@@ -438,6 +443,8 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
   }
 
   .writeup-content :global(pre code) {
+    display: block;
+    min-width: max-content;
     background: transparent;
     border: none;
     padding: 0;
@@ -516,6 +523,8 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     max-width: 100%;
     width: auto;
     height: auto;
+    max-height: min(560px, 72vh);
+    object-fit: contain;
     border-radius: var(--radius-md);
     border: 1px solid var(--border-subtle);
     margin: 2rem 0;
@@ -744,7 +753,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     }
 
     .writeup-content :global(pre) {
-      margin: 1.5rem calc(var(--container-padding) * -0.35);
+      margin: 1.5rem 0;
       padding: 1rem;
       border-radius: var(--radius-md);
     }
@@ -809,6 +818,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
 
     .report-meta-grid {
       grid-template-columns: 1fr;
+      gap: 0.5rem;
     }
 
     .share-buttons {

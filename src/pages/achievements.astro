@@ -411,7 +411,7 @@ const statusLabels = {
   .snapshot-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1rem;
+    gap: 1.25rem;
   }
 
   .snapshot-card {
@@ -483,7 +483,7 @@ const statusLabels = {
 
   .hero-stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr));
     gap: 1.5rem;
     margin-top: 1rem;
   }
@@ -660,7 +660,7 @@ const statusLabels = {
   /* Certifications Grid */
   .certifications-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
     gap: 1.5rem;
   }
 
@@ -673,6 +673,7 @@ const statusLabels = {
     flex-direction: column;
     gap: 1rem;
     transition: all var(--motion-medium) var(--motion-ease);
+    min-width: 0;
   }
 
   .certification-card:hover {
@@ -719,9 +720,9 @@ const statusLabels = {
   }
 
   .certification-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.75rem 1rem;
     margin-top: 0.5rem;
   }
 
@@ -763,7 +764,7 @@ const statusLabels = {
   /* CTF Grid */
   .ctf-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
     gap: 1.5rem;
   }
 
@@ -776,6 +777,7 @@ const statusLabels = {
     flex-direction: column;
     gap: 1rem;
     transition: all var(--motion-medium) var(--motion-ease);
+    min-width: 0;
   }
 
   .ctf-card:hover {
@@ -818,9 +820,9 @@ const statusLabels = {
   }
 
   .ctf-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 0.75rem 1rem;
     margin-top: 0.5rem;
     font-family: var(--font-mono);
   }
@@ -962,7 +964,7 @@ const statusLabels = {
 
     .certifications-grid,
     .ctf-grid {
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
     }
   }
 
@@ -1053,10 +1055,14 @@ const statusLabels = {
       font-size: 1.25rem;
     }
 
-    .certification-header,
-    .certification-meta {
+    .certification-header {
       align-items: flex-start;
       flex-direction: column;
+    }
+
+    .certification-meta,
+    .ctf-meta {
+      grid-template-columns: 1fr;
     }
 
     .ctf-header {

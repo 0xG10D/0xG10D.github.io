@@ -126,6 +126,7 @@ const links: NavLink[] = [
     align-items: center;
     justify-content: space-between;
     gap: clamp(1rem, 3vw, 2rem);
+    min-width: 0;
   }
 
   /* Brand */
@@ -138,6 +139,7 @@ const links: NavLink[] = [
     font-size: 1.12rem;
     color: var(--text-primary);
     transition: color var(--motion-fast) var(--motion-ease);
+    min-width: 0;
   }
 
   .brand:hover {
@@ -150,6 +152,7 @@ const links: NavLink[] = [
 
   .brand-name {
     color: var(--text-primary);
+    overflow-wrap: anywhere;
   }
 
   .brand-tagline {

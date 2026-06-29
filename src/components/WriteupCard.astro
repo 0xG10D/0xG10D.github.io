@@ -126,12 +126,15 @@ const searchText = [post.data.title, post.data.summary, post.data.platform, post
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
+    flex-wrap: wrap;
   }
 
   .card-meta {
     display: flex;
     align-items: center;
     gap: 1rem;
+    min-width: 0;
+    flex-wrap: wrap;
   }
 
   .card-platform {
@@ -283,6 +286,7 @@ const searchText = [post.data.title, post.data.summary, post.data.platform, post
     border: 1px solid var(--border-subtle);
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    overflow-wrap: anywhere;
   }
 
   /* Responsive */

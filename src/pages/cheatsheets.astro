@@ -221,7 +221,7 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
 
   .hero-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+    grid-template-columns: minmax(0, 1fr) minmax(250px, 360px);
     gap: clamp(1.25rem, 4vw, 3rem);
     align-items: end;
   }
@@ -330,7 +330,7 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
 
   .reference-layout {
     display: grid;
-    grid-template-columns: minmax(190px, 240px) minmax(0, 1fr);
+    grid-template-columns: minmax(200px, 240px) minmax(0, 1fr);
     gap: clamp(1rem, 3vw, 2rem);
     align-items: start;
   }
@@ -440,7 +440,7 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
 
   .command-section {
     scroll-margin-top: 110px;
-    padding: 1.1rem;
+    padding: clamp(1rem, 2vw, 1.2rem);
     background: rgba(20, 20, 20, 0.72);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
@@ -499,7 +499,7 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
 
   .command-card {
     min-width: 0;
-    padding: 1rem;
+    padding: clamp(0.95rem, 2vw, 1.15rem);
     background: var(--card-bg);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
@@ -507,7 +507,7 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
 
   .command-card-header {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, auto);
     gap: 0.8rem;
     align-items: start;
     margin-bottom: 0.85rem;
@@ -528,7 +528,7 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: 0.4rem;
-    max-width: 330px;
+    max-width: 320px;
   }
 
   .tag-row button {
@@ -554,6 +554,7 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
   }
 
   .terminal-block {
+    min-width: 0;
     overflow: hidden;
     background: var(--bg-main);
     border: 1px solid var(--border-subtle);
@@ -562,7 +563,7 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
 
   .terminal-head {
     display: grid;
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: minmax(0, auto) 1fr auto;
     gap: 0.65rem;
     align-items: center;
     min-height: 42px;
@@ -571,12 +572,18 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
     border-bottom: 1px solid var(--border-subtle);
   }
 
+  .terminal-head > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
   .language-label {
     color: var(--muted-text);
     text-transform: lowercase;
   }
 
   .copy-button {
+    justify-self: end;
     min-height: 32px;
     padding: 0.2rem 0.55rem;
     font-size: 0.7rem;
@@ -590,6 +597,7 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
   }
 
   .terminal-block pre {
+    max-width: 100%;
     margin: 0;
     padding: 0.9rem;
     overflow-x: auto;
@@ -597,6 +605,8 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
   }
 
   .terminal-block code {
+    display: block;
+    min-width: max-content;
     color: var(--text-primary);
     font-family: var(--font-mono);
     font-size: 0.84rem;
@@ -681,6 +691,7 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
       gap: 0.5rem;
       overflow-x: auto;
       padding-bottom: 0.7rem;
+      scrollbar-width: thin;
       scroll-snap-type: x proximity;
     }
 
@@ -745,6 +756,15 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
 
     .terminal-head {
       grid-template-columns: 1fr auto;
+    }
+
+    .terminal-block pre {
+      padding: 0.8rem;
+    }
+
+    .terminal-block code {
+      font-size: 0.78rem;
+      line-height: 1.55;
     }
 
     .terminal-head > span:first-child {

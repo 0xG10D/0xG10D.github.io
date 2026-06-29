@@ -350,7 +350,7 @@ const currentFocus = [
   .mission-stats {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1rem;
     margin-top: 2rem;
   }
@@ -383,7 +383,7 @@ const currentFocus = [
   .focus-grid,
   .skills-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
     gap: 1.25rem;
   }
 
@@ -474,6 +474,7 @@ const currentFocus = [
     min-height: 56px;
     padding: 1rem;
     color: var(--text-primary);
+    min-width: 0;
     transition: transform var(--motion-medium) var(--motion-ease), border-color var(--motion-medium) var(--motion-ease);
   }
 
@@ -489,6 +490,7 @@ const currentFocus = [
   .link-card small {
     color: var(--muted-text);
     font-family: var(--font-mono);
+    overflow-wrap: anywhere;
   }
 
   .disclaimer-section {

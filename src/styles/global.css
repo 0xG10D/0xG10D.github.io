@@ -104,7 +104,7 @@
 }
 
 
-/* === RESET & BASE STYLES === */
+/* === BASE === */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -183,7 +183,7 @@ body::after {
   text-shadow: none;
 }
 
-/* Typography */
+/* === TYPOGRAPHY === */
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: 1.2;
@@ -273,7 +273,7 @@ input[type='search'] {
   min-height: 44px;
 }
 
-/* === UTILITY CLASSES === */
+/* === LAYOUT === */
 .container {
   width: 100%;
   max-width: var(--container-max);
@@ -313,6 +313,7 @@ input[type='search'] {
   margin: 0 auto;
 }
 
+/* === COMPONENTS === */
 
 /* Reusable primitives - monochrome */
 .surface-card {
@@ -361,8 +362,6 @@ input[type='search'] {
 .text-gradient-blue {
   color: var(--text-primary);
 }
-
-/* === COMPONENT STYLES === */
 
 /* Button Base */
 .button {
@@ -509,6 +508,8 @@ input[type='search'] {
 .grid-4 {
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
 }
+
+/* === PAGES === */
 
 /* Project detail pages */
 .project-detail-page {

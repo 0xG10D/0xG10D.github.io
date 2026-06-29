@@ -17,15 +17,7 @@ const featuredProjects = projects.filter((project) =>
   ['awd-watchdog', 'wavesentinel-wids'].includes(project.id)
 );
 
-// Get stats
-const writeupStats = {
-  total: allWriteups.length,
-  htb: allWriteups.filter(w => w.data.platform === 'hackthebox').length,
-  thm: allWriteups.filter(w => w.data.platform === 'tryhackme').length,
-  ctf: allWriteups.filter(w => w.data.category.includes('ctf')).length
-};
-
-// Focus areas for expertise
+// Focus areas for learning notes
 const focusAreas: {
   icon: SecurityIconName;
   title: string;
@@ -33,40 +25,39 @@ const focusAreas: {
 }[] = [
   {
     icon: 'target',
-    title: 'Penetration Testing',
-    description: 'Network, web, and Active Directory exploitation with detailed methodology documentation.'
+    title: 'Web and lab practice',
+    description: 'Notes from web security, Linux, networking, and Active Directory labs on authorized platforms.'
   },
   {
     icon: 'archive',
-    title: 'CTF',
-    description: 'Challenge analysis across web, reverse engineering, binary exploitation, cryptography, and forensics.'
+    title: 'CTF writeups',
+    description: 'Challenge walkthroughs across web, reverse engineering, binary, cryptography, and forensics categories.'
   },
   {
     icon: 'radar',
-    title: 'SOC / Threat Hunting',
-    description: 'Alert triage, detection thinking, forensic review, and defensive security practice in simulated environments.'
+    title: 'Blue team basics',
+    description: 'Practical notes on alerts, logs, evidence review, and defensive basics in simulated environments.'
   },
   {
     icon: 'flask',
-    title: 'Malware Analysis',
-    description: 'Static and dynamic analysis notes focused on behavior, indicators, and reproducible lab practice.'
+    title: 'Malware analysis notes',
+    description: 'Static and dynamic analysis practice focused on behavior, indicators, and reproducible lab setup.'
   },
   {
     icon: 'tool',
-    title: 'System Hardening',
-    description: 'Security tooling, service monitoring, evidence collection, and practical hardening workflows.'
+    title: 'Small security tools',
+    description: 'Personal projects for monitoring, automation, evidence collection, and practical hardening workflows.'
   }
 ];
 
-// Quick stats
-const quickStats = [
-  { label: 'Writeups Published', value: writeupStats.total, change: '+3 this month' },
-  { label: 'HTB Machines', value: writeupStats.htb, change: 'Easy to Hard' },
-  { label: 'CTF Challenges', value: writeupStats.ctf, change: 'Multiple categories' },
-  { label: 'Projects Active', value: featuredProjects.length, change: '2 featured' }
+const learningNotes = [
+  { label: 'Writeups', text: 'Practical notes from labs, CTFs, and security exercises.' },
+  { label: 'Projects', text: 'Small tools built to understand monitoring and automation.' },
+  { label: 'Cheatsheets', text: 'Commands and references kept for repeated practice.' },
+  { label: 'Learning log', text: 'Documenting progress without treating the site like a scoreboard.' }
 ];
 
-const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
+const linkedInUrl = 'https://www.linkedin.com/in/irfanshahrizan/';
 ---
 
 <BaseLayout title="Home">
@@ -87,24 +78,23 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
                 decoding="async"
               />
               <div>
-                <span class="profile-kicker">Operator</span>
+                <span class="profile-kicker">Student</span>
                 <strong>0xG10D</strong>
               </div>
             </div>
 
             <div class="hero-eyebrow">
-              <span class="eyebrow-tag">// SECURITY_PORTFOLIO</span>
+              <span class="eyebrow-tag">// LEARNING_NOTEBOOK</span>
             </div>
 
             <h1 class="hero-title">
-              <span class="hero-title-line">offensive notes,</span>
-              <span class="hero-title-line">defensive thinking.</span>
+              <span class="hero-title-line">security notes,</span>
+              <span class="hero-title-line">writeups, and projects.</span>
             </h1>
 
             <p class="hero-description">
-              A technical portfolio documenting penetration testing methodology,
-              CTF challenge analysis, security tool development, and professional
-              cybersecurity learning through authorized platforms.
+              A small technical archive documenting CTF writeups, lab notes, security
+              projects, and lessons learned through authorized platforms.
             </p>
 
             <div class="hero-actions">
@@ -130,7 +120,7 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
           </div>
 
           <!-- Hero Terminal -->
-          <div class="hero-visual" aria-label="Portfolio capability dashboard">
+          <div class="hero-visual" aria-label="Learning notebook terminal summary">
             <div class="hero-terminal">
               <div class="terminal-header">
                 <div class="terminal-dots">
@@ -147,16 +137,6 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
                   <span class="command">whoami</span>
                 </div>
                 <div class="terminal-line">
-                  <span class="output">0xG10D</span>
-                </div>
-
-                <div class="terminal-spacer"></div>
-
-                <div class="terminal-line">
-                  <span class="prompt">$</span>
-                  <span class="command">cat /home/0xG10D/profile</span>
-                </div>
-                <div class="terminal-line">
                   <span class="output">cybersecurity student</span>
                 </div>
 
@@ -164,26 +144,30 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
 
                 <div class="terminal-line">
                   <span class="prompt">$</span>
-                  <span class="command">./security-portfolio --list</span>
+                  <span class="command">focus</span>
                 </div>
                 <div class="terminal-line">
-                  <span class="output">writeups: {writeupStats.total} published</span>
-                </div>
-                <div class="terminal-line">
-                  <span class="output">projects: {featuredProjects.length} active</span>
-                </div>
-                <div class="terminal-line">
-                  <span class="output">htb:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {writeupStats.htb} machines</span>
-                </div>
-                <div class="terminal-line">
-                  <span class="output">ctf:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {writeupStats.ctf} challenges</span>
+                  <span class="output">web, labs, writeups, blue team basics</span>
                 </div>
 
                 <div class="terminal-spacer"></div>
 
                 <div class="terminal-line">
                   <span class="prompt">$</span>
-                  <span class="cursor">_</span>
+                  <span class="command">notes</span>
+                </div>
+                <div class="terminal-line">
+                  <span class="output">learning through authorized platforms</span>
+                </div>
+
+                <div class="terminal-spacer"></div>
+
+                <div class="terminal-line">
+                  <span class="prompt">$</span>
+                  <span class="command">status</span>
+                </div>
+                <div class="terminal-line">
+                  <span class="output">always learning</span>
                 </div>
               </div>
             </div>
@@ -192,15 +176,14 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
       </div>
     </section>
 
-    <!-- ===== QUICK STATS ===== -->
+    <!-- ===== LEARNING NOTES ===== -->
     <section class="stats section">
       <div class="container">
         <div class="stats-grid">
-          {quickStats.map((stat) => (
+          {learningNotes.map((stat) => (
             <div class="stat-card">
-              <div class="stat-value">{stat.value}</div>
               <div class="stat-label">{stat.label}</div>
-              <div class="stat-change">{stat.change}</div>
+              <div class="stat-change">{stat.text}</div>
             </div>
           ))}
         </div>
@@ -212,9 +195,9 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
       <div class="container">
         <div class="section-header">
           <span class="section-label">// FOCUS_AREAS</span>
-          <h2 class="section-title">Core Focus Areas</h2>
+          <h2 class="section-title">Focus areas</h2>
           <p class="section-subtitle">
-            Specialized cybersecurity disciplines practiced through labs, challenges, and tool development.
+            Practical areas I am learning through labs, challenges, notes, and small tools.
           </p>
         </div>
 
@@ -237,7 +220,7 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
           <span class="section-label">// LATEST_WRITEUPS</span>
           <h2 class="section-title">Latest Writeups</h2>
           <p class="section-subtitle">
-            Recent CTF challenge documentation and penetration testing methodology.
+            Recent field notes from authorized labs and competitions.
           </p>
         </div>
 
@@ -269,9 +252,9 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
       <div class="container">
         <div class="section-header">
           <span class="section-label">// BUILDS</span>
-          <h2 class="section-title">Featured Security Tools</h2>
+          <h2 class="section-title">Featured security tools</h2>
           <p class="section-subtitle">
-            Practical security utilities and monitoring tools developed for defensive and offensive security.
+            Small utilities and monitoring projects built while learning practical security workflows.
           </p>
         </div>
 
@@ -326,10 +309,10 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
         <div class="cta-card">
           <div class="cta-content">
             <span class="section-label">// CONNECT</span>
-            <h2 class="cta-title">Ready to Dive Deeper?</h2>
+            <h2 class="cta-title">Browse the notebook</h2>
             <p class="cta-description">
-              Explore comprehensive writeups, security tool documentation, and professional
-              learning progress in cybersecurity.
+              Read writeups, project notes, and references from authorized labs, CTFs,
+              and cybersecurity practice.
             </p>
             <div class="cta-actions">
               <a href="/writeups/" class="button button-primary">Browse Writeups</a>
@@ -349,22 +332,16 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
           <div class="cta-terminal">
             <div class="terminal-line">
               <span class="prompt">$</span>
-              <span class="command">curl -s https://0xg10d.dev/api/status</span>
+              <span class="command">cat ~/learning-notes/status.txt</span>
             </div>
             <div class="terminal-line">
-              <span class="output">{"{"}</span>
+              <span class="output">writeups: practical notes</span>
             </div>
             <div class="terminal-line">
-              <span class="output indent-1">"status": "active",</span>
+              <span class="output">projects: learning by building</span>
             </div>
             <div class="terminal-line">
-              <span class="output indent-1">"writeups_available": {writeupStats.total},</span>
-            </div>
-            <div class="terminal-line">
-              <span class="output indent-1">"last_update": "{new Date().toISOString().split('T')[0]}"</span>
-            </div>
-            <div class="terminal-line">
-              <span class="output">{"}"}</span>
+              <span class="output">status: always learning</span>
             </div>
           </div>
         </div>
@@ -395,7 +372,7 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
   }
 
   .section-header {
-    margin-bottom: 3rem;
+    margin-bottom: clamp(2.25rem, 5vw, 3.5rem);
   }
 
   .section-title {
@@ -411,21 +388,21 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
 
   /* ===== HERO SECTION ===== */
   .hero {
-    padding-top: calc(var(--section-spacing) * 1.5);
-    padding-bottom: calc(var(--section-spacing) * 1.5);
+    padding-top: clamp(3.25rem, 7vw, 5.5rem);
+    padding-bottom: clamp(4rem, 8vw, 6rem);
   }
 
   .hero-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
+    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+    gap: clamp(3rem, 7vw, 5.5rem);
     align-items: center;
   }
 
   .hero-content {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.35rem;
   }
 
   .hero-eyebrow {
@@ -437,10 +414,10 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
   .hero-profile {
     display: inline-flex;
     align-items: center;
-    gap: 0.9rem;
+    gap: 0.75rem;
     width: fit-content;
     max-width: 100%;
-    padding: 0.6rem 0.8rem;
+    padding: 0.5rem 0.7rem;
     color: var(--text-primary, #e8e8e8);
     background: var(--card-bg, #111);
     border: 1px solid var(--border-subtle, #2a2a2a);
@@ -448,8 +425,8 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
   }
 
   .hero-avatar {
-    width: clamp(54px, 8vw, 72px);
-    height: clamp(54px, 8vw, 72px);
+    width: clamp(44px, 6vw, 58px);
+    height: clamp(44px, 6vw, 58px);
     flex: 0 0 auto;
     object-fit: cover;
     border-radius: 50%;
@@ -466,13 +443,13 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
 
   .hero-profile strong {
     font-family: var(--font-mono);
-    font-size: 1rem;
+    font-size: 0.92rem;
     color: var(--text-primary, #e8e8e8);
   }
 
   .profile-kicker {
     font-family: var(--font-mono);
-    font-size: 0.72rem;
+    font-size: 0.66rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--text-secondary, #888);
@@ -489,10 +466,11 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
     display: flex;
     flex-direction: column;
     gap: 0.15rem;
+    max-width: 780px;
   }
 
   .hero-title-line {
-    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-size: clamp(2.35rem, 4.6vw, 3.65rem);
     font-weight: 800;
     color: var(--text-primary, #e8e8e8);
     line-height: 1.1;
@@ -500,7 +478,7 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
   }
 
   .hero-description {
-    font-size: 1.125rem;
+    font-size: clamp(1rem, 1.6vw, 1.08rem);
     line-height: 1.7;
     color: var(--text-secondary, #888);
     max-width: 600px;
@@ -553,6 +531,8 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
     border: 1px solid var(--border-subtle, #2a2a2a);
     border-radius: var(--radius-md, 6px);
     overflow: hidden;
+    max-width: 520px;
+    margin-inline: auto 0;
   }
 
   .terminal-header {
@@ -584,7 +564,7 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
   }
 
   .terminal-content {
-    padding: 1.25rem;
+    padding: clamp(1.1rem, 2.4vw, 1.45rem);
     display: flex;
     flex-direction: column;
     gap: 0.4rem;
@@ -598,7 +578,7 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
     display: flex;
     gap: 0.5rem;
     font-family: var(--font-mono);
-    font-size: 0.85rem;
+    font-size: clamp(0.78rem, 1.25vw, 0.86rem);
     min-width: 0;
   }
 
@@ -630,18 +610,18 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
 
   .indent-1 { padding-left: 1rem; }
 
-  /* ===== STATS SECTION ===== */
+  /* ===== LEARNING NOTES SECTION ===== */
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
   }
 
   .stat-card {
     background: var(--card-bg, #111);
     border: 1px solid var(--border-subtle, #2a2a2a);
     border-radius: var(--radius-sm, 4px);
-    padding: 1.75rem;
+    padding: 1.35rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -652,22 +632,17 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
     border-color: var(--text-secondary, #888);
   }
 
-  .stat-value {
-    font-size: 2.5rem;
-    font-weight: 900;
-    color: var(--text-primary, #e8e8e8);
-    line-height: 1;
-  }
-
   .stat-label {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
     color: var(--text-primary, #e8e8e8);
     font-weight: 600;
+    font-family: var(--font-mono);
+    letter-spacing: 0.01em;
   }
 
   .stat-change {
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.9rem;
+    line-height: 1.6;
     color: var(--text-secondary, #888);
   }
 
@@ -675,14 +650,14 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
   .focus-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 
   .focus-card {
     background: var(--card-bg, #111);
     border: 1px solid var(--border-subtle, #2a2a2a);
     border-radius: var(--radius-sm, 4px);
-    padding: 1.75rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -694,7 +669,6 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
   }
 
   .focus-icon {
-    font-size: 2.5rem;
     margin-bottom: 0.25rem;
     color: var(--text-secondary, #888);
   }
@@ -853,7 +827,7 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
     background: var(--card-bg, #111);
     border: 1px solid var(--border-subtle, #2a2a2a);
     border-radius: var(--radius-md, 6px);
-    padding: 4rem;
+    padding: clamp(2rem, 5vw, 3.25rem);
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 4rem;
@@ -867,7 +841,7 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
   }
 
   .cta-title {
-    font-size: 2.25rem;
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
     font-weight: 800;
     color: var(--text-primary, #e8e8e8);
     line-height: 1.2;
@@ -907,10 +881,14 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
       gap: 3rem;
     }
 
+    .hero-terminal {
+      max-width: none;
+      margin-inline: 0;
+    }
+
     .cta-card {
       grid-template-columns: 1fr;
       gap: 3rem;
-      padding: 3rem;
     }
 
     .writeups-grid,
@@ -956,7 +934,7 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
     }
 
     .hero-title-line {
-      font-size: clamp(2rem, 10vw, 3rem);
+      font-size: clamp(1.9rem, 9vw, 2.75rem);
     }
 
     .hero-description {
@@ -975,7 +953,7 @@ const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
     }
 
     .stats-grid {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr;
       gap: 1rem;
     }
 

@@ -14,7 +14,7 @@ const profile = {
   status: 'Active Learner'
 };
 
-const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
+const linkedInUrl = 'https://www.linkedin.com/in/irfanshahrizan/';
 
 const focusAreas: {
   icon: SecurityIconName;
@@ -24,7 +24,7 @@ const focusAreas: {
   {
     icon: 'target',
     title: 'Penetration Testing',
-    description: 'Network exploitation, web application security, and Active Directory attacks with detailed methodology documentation.'
+    description: 'Network, web application, and Active Directory lab notes with repeatable documentation.'
   },
   {
     icon: 'archive',
@@ -34,7 +34,7 @@ const focusAreas: {
   {
     icon: 'radar',
     title: 'Defensive Security',
-    description: 'Security monitoring, incident response, threat hunting, and defensive tool development.'
+    description: 'Security monitoring, incident response basics, log review, and defensive tool development.'
   },
   {
     icon: 'automation',
@@ -59,10 +59,11 @@ const contactLinks: {
   handle: string;
   url: string;
   icon: SecurityIconName;
+  ariaLabel: string;
 }[] = [
-  { platform: 'GitHub', handle: '@0xG10D', url: 'https://github.com/0xG10D', icon: 'github' },
-  { platform: 'LinkedIn', handle: 'Profile', url: linkedInUrl, icon: 'platform' },
-  { platform: 'Hack The Box', handle: '1228382', url: 'https://app.hackthebox.com/profile/1228382', icon: 'target' }
+  { platform: 'GitHub', handle: '@0xG10D', url: 'https://github.com/0xG10D', icon: 'github', ariaLabel: 'GitHub profile' },
+  { platform: 'LinkedIn', handle: 'Profile', url: linkedInUrl, icon: 'platform', ariaLabel: 'LinkedIn profile' },
+  { platform: 'Hack The Box', handle: '1228382', url: 'https://app.hackthebox.com/profile/1228382', icon: 'target', ariaLabel: 'Hack The Box profile' }
 ];
 
 const technicalSkills = [
@@ -75,12 +76,12 @@ const technicalSkills = [
 const currentFocus = [
   'Publishing structured HTB, TryHackMe, and CTF writeups',
   'Building defensive monitoring and security automation projects',
-  'Practicing offensive methodology in authorized lab environments',
+  'Practicing web, network, and system security in authorized lab environments',
   'Improving malware, SOC, and forensics documentation quality'
 ];
 ---
 
-<BaseLayout title="About" description="Professional cybersecurity operator profile for 0xG10D.">
+<BaseLayout title="About" description="Cybersecurity learning profile for 0xG10D.">
   <main class="about-page">
     <section class="operator-hero section">
       <div class="container">
@@ -100,7 +101,7 @@ const currentFocus = [
               <div class="operator-heading">
                 <div class="operator-badge">
                   <SecurityIcon name="profile" size={18} />
-                  <span>Operator profile</span>
+                  <span>Learning profile</span>
                 </div>
                 <h1>{profile.name}</h1>
               </div>
@@ -115,10 +116,10 @@ const currentFocus = [
 
           <article class="mission-panel">
             <span class="eyebrow-tag">Learning system</span>
-            <h2>Documented practice across offensive and defensive security.</h2>
+            <h2>Documented practice across labs, CTFs, and defensive basics.</h2>
             <p>
-              Building a comprehensive cybersecurity portfolio through practical application,
-              continuous learning, and detailed documentation of offensive and defensive security techniques.
+              Keeping a small archive of cybersecurity practice through authorized labs,
+              CTFs, project work, and lessons learned along the way.
             </p>
             <div class="mission-stats">
               <div><strong>{allWriteups.length}</strong><span>writeups</span></div>
@@ -214,7 +215,7 @@ const currentFocus = [
                 class="link-card"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label={`${contact.platform} profile`}
+                aria-label={contact.ariaLabel}
               >
                 <SecurityIcon name={contact.icon} />
                 <span>{contact.platform}</span>

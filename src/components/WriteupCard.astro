@@ -88,7 +88,7 @@ const searchText = [post.data.title, post.data.summary, post.data.platform, post
   <!-- Card Footer -->
   <div class="card-footer">
     <a href={`/writeups/${post.id}/`} class="card-read-more">
-      Read Analysis
+      Read notes
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M6 12l4-4-4-4"/>
       </svg>
@@ -107,7 +107,7 @@ const searchText = [post.data.title, post.data.summary, post.data.platform, post
     background: var(--card-bg);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
-    padding: 1.75rem;
+    padding: 1.5rem;
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
@@ -137,9 +137,9 @@ const searchText = [post.data.title, post.data.summary, post.data.platform, post
   .card-platform {
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--text-primary);
-    background: var(--panel-elevated);
+    background: transparent;
     padding: 0.25rem 0.75rem;
     border-radius: var(--radius-sm);
     border: 1px solid var(--border-medium);
@@ -162,9 +162,9 @@ const searchText = [post.data.title, post.data.summary, post.data.platform, post
   .difficulty-label {
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--text-secondary);
-    background: var(--panel-elevated);
+    background: transparent;
     padding: 0.25rem 0.6rem;
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
@@ -180,7 +180,7 @@ const searchText = [post.data.title, post.data.summary, post.data.platform, post
   }
 
   .card-title {
-    font-size: 1.25rem;
+    font-size: 1.18rem;
     font-weight: 700;
     line-height: 1.3;
     color: var(--text-primary);
@@ -200,8 +200,8 @@ const searchText = [post.data.title, post.data.summary, post.data.platform, post
 
   .card-summary {
     color: var(--text-secondary);
-    font-size: 0.95rem;
-    line-height: 1.6;
+    font-size: 0.93rem;
+    line-height: 1.65;
     margin: 0;
     display: -webkit-box;
     -webkit-line-clamp: 3;

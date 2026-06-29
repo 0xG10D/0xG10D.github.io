@@ -65,6 +65,8 @@ const quickStats = [
   { label: 'CTF Challenges', value: writeupStats.ctf, change: 'Multiple categories' },
   { label: 'Projects Active', value: featuredProjects.length, change: '2 featured' }
 ];
+
+const linkedInUrl = 'PASTE_MY_LINKEDIN_URL_HERE';
 ---
 
 <BaseLayout title="Home">
@@ -76,6 +78,20 @@ const quickStats = [
         <div class="hero-grid">
           <!-- Hero Content -->
           <div class="hero-content">
+            <div class="hero-profile">
+              <img
+                src="/images/profile/katboy.jpg"
+                alt="0xG10D profile picture"
+                class="hero-avatar"
+                loading="eager"
+                decoding="async"
+              />
+              <div>
+                <span class="profile-kicker">Operator</span>
+                <strong>0xG10D</strong>
+              </div>
+            </div>
+
             <div class="hero-eyebrow">
               <span class="eyebrow-tag">// SECURITY_PORTFOLIO</span>
             </div>
@@ -100,6 +116,15 @@ const quickStats = [
               </a>
               <a href="/projects/" class="button button-secondary">
                 <span>View Projects</span>
+              </a>
+              <a
+                href={linkedInUrl}
+                class="button button-secondary"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn profile"
+              >
+                <span>LinkedIn</span>
               </a>
             </div>
           </div>
@@ -309,6 +334,15 @@ const quickStats = [
             <div class="cta-actions">
               <a href="/writeups/" class="button button-primary">Browse Writeups</a>
               <a href="/about/" class="button button-secondary">Learn About Me</a>
+              <a
+                href={linkedInUrl}
+                class="button button-secondary"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="LinkedIn profile"
+              >
+                LinkedIn
+              </a>
             </div>
           </div>
 
@@ -398,6 +432,50 @@ const quickStats = [
     display: flex;
     align-items: center;
     gap: 1rem;
+  }
+
+  .hero-profile {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    width: fit-content;
+    max-width: 100%;
+    padding: 0.6rem 0.8rem;
+    color: var(--text-primary, #e8e8e8);
+    background: var(--card-bg, #111);
+    border: 1px solid var(--border-subtle, #2a2a2a);
+    border-radius: var(--radius-md, 6px);
+  }
+
+  .hero-avatar {
+    width: clamp(54px, 8vw, 72px);
+    height: clamp(54px, 8vw, 72px);
+    flex: 0 0 auto;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid var(--text-secondary, #888);
+    filter: grayscale(1) contrast(1.05);
+    background: #0a0a0a;
+  }
+
+  .hero-profile div {
+    display: grid;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .hero-profile strong {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--text-primary, #e8e8e8);
+  }
+
+  .profile-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary, #888);
   }
 
   .eyebrow-tag {
@@ -861,6 +939,10 @@ const quickStats = [
 
     .hero-content {
       gap: 1.1rem;
+    }
+
+    .hero-profile {
+      width: 100%;
     }
 
     .hero-eyebrow {

@@ -40,6 +40,11 @@
     ],
     "cybersecurity": [
       {
+        "name": "Web Red Team Analyst (Web-RTA)",
+        "provider": "CyberWarFare Labs",
+        "date": "May 2026"
+      },
+      {
         "name": "SOC Level 1",
         "provider": "TryHackMe",
         "date": "Apr 2026"
@@ -256,8 +261,17 @@
       "provider": "CyberWarFare Labs"
     },
     {
-      "name": "Web Red Team Analyst (Web-RTA)",
-      "provider": "CyberWarFare Labs"
+      "name": "Web Application Pentesting",
+      "provider": "MFBKTECH"
+    },
+    {
+      "name": "Certified in Cybersecurity",
+      "provider": "ISC2"
+    },
+    {
+      "name": "Certified Network Security Practitioner (CNSP)",
+      "provider": "The SecOps Group "
     }
   ]
 }
+

@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { getChallengeType, getWriteupUrl } from '../utils/writeups';
 
 interface Props {
   post: CollectionEntry<'writeups'>;
@@ -30,20 +31,13 @@ const getPlatformLabel = (value: string) => platformLabels[value] ?? value.repla
 const date = formatDate(post.data.date);
 const difficulty = post.data.difficulty;
 const platformLabel = getPlatformLabel(post.data.platform);
+const challengeType = getChallengeType(post);
 const cardId = `writeup-${post.id.replace(/[^a-z0-9-]/gi, '-')}`;
-const searchText = [post.data.title, post.data.summary, post.data.platform, post.data.category, post.data.difficulty, ...post.data.tags]
-  .filter(Boolean)
-  .join(' ')
-  .toLowerCase();
+const writeupUrl = getWriteupUrl(post);
 ---
 
 <article
   class="writeup-card"
-  data-platform={post.data.platform}
-  data-category={post.data.category}
-  data-difficulty={post.data.difficulty}
-  data-tags={post.data.tags.join(',')}
-  data-search={searchText}
   aria-labelledby={cardId}
 >
   <div class="card-date">
@@ -53,12 +47,12 @@ const searchText = [post.data.title, post.data.summary, post.data.platform, post
   <div class="card-main">
     <div class="card-meta">
       <span>{platformLabel}</span>
-      <span>{post.data.category.replaceAll('-', ' ')}</span>
+      <span>{challengeType}</span>
       <span>{difficulty}</span>
     </div>
 
     <h3 class="card-title" id={cardId}>
-      <a href={`/writeups/${post.id}/`}>{post.data.title}</a>
+      <a href={writeupUrl}>{post.data.title}</a>
     </h3>
 
     {post.data.summary && <p class="card-summary">{post.data.summary}</p>}

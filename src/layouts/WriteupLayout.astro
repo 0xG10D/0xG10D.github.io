@@ -2,6 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import TableOfContents from '../components/TableOfContents.astro';
+import { getChallengeType } from '../utils/writeups';
 
 interface Heading {
   depth: number;
@@ -45,7 +46,7 @@ const formatDate = (date: Date) =>
 
 const platformLabel = platformLabels[post.data.platform] ?? post.data.platform.replaceAll('-', ' ');
 const difficultyLabel = difficultyLabels[post.data.difficulty] ?? post.data.difficulty;
-const categoryLabel = post.data.category.replaceAll('-', ' ');
+const categoryLabel = getChallengeType(post);
 ---
 
 <BaseLayout title={post.data.title} description={post.data.summary}>
@@ -79,7 +80,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
 
         {post.data.tags.length > 0 && (
           <div class="writeup-tags" aria-label="Tags">
-            {post.data.tags.map((tag) => <a href={`/writeups/?tag=${tag}`}>#{tag}</a>)}
+            {post.data.tags.map((tag) => <span>#{tag}</span>)}
           </div>
         )}
 
@@ -183,7 +184,7 @@ const categoryLabel = post.data.category.replaceAll('-', ' ');
     margin-top: 1rem;
   }
 
-  .writeup-tags a {
+  .writeup-tags span {
     color: var(--muted-text);
     font-family: var(--font-mono);
     font-size: 0.75rem;

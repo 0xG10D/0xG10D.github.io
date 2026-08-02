@@ -1,4 +1,5 @@
 ---
+event: "tryhackme"
 title: "TryHackMe Cheese CTF"
 summary: "TryHackMe room covering web enumeration, PHP LFI to filter-chain RCE, SSH key abuse, and systemd timer privilege escalation."
 date: 2026-06-19

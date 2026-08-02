@@ -29,6 +29,7 @@ const writeups = defineCollection({
       'local-ctf',
       'misc'
     ]),
+    event: z.string().regex(/^[a-z0-9][a-z0-9-]*$/, 'Use lowercase kebab-case event slugs').optional(),
     difficulty: z.enum(['easy', 'medium', 'hard', 'insane', 'info']),
     platform: z.enum(['hackthebox', 'hack-the-box', 'tryhackme', 'portswigger', 'picoctf', 'research', 'ctf', 'other']),
     boxImage: z.string().optional(),

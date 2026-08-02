@@ -1,15 +1,17 @@
 ---
 import { getCollection } from 'astro:content';
+import { getWriteupSlug, getWriteupUrl } from '../../utils/writeups';
 
 export async function getStaticPaths() {
   const writeups = await getCollection('writeups', ({ data }) => !data.draft);
   return writeups
-    .filter((post) => post.id.includes('/'))
+    .map((post) => ({ post, canonicalSlug: getWriteupSlug(post) }))
+    .filter(({ canonicalSlug }) => canonicalSlug.includes('/'))
     .map((post) => {
-      const slug = post.id.split('/').pop();
+      const slug = post.canonicalSlug.split('/').pop();
       return {
         params: { slug },
-        props: { target: `/writeups/${post.id}/`, title: post.data.title }
+        props: { target: getWriteupUrl(post.post), title: post.post.data.title }
       };
     })
     .filter((entry) => Boolean(entry.params.slug));

@@ -334,8 +334,6 @@ pre,
 .profile-card,
 .status-card,
 .detail-card,
-.filters-card,
-.platform-card,
 .sheet-card,
 .cve-card,
 .empty-state,
@@ -420,8 +418,6 @@ pre,
   gap: 1rem !important;
 }
 
-.filter-input,
-.filter-select,
 .search-group input {
   border: 1px solid var(--border-subtle) !important;
   border-radius: var(--radius-sm) !important;
@@ -458,7 +454,6 @@ pre,
 .homepage,
 .writeups-page,
 .projects-page,
-.about-page,
 .achievements-page,
 .cheatsheets-page {
   padding-top: 0 !important;
@@ -497,8 +492,6 @@ pre,
 .stat-value,
 .archive-metrics strong,
 .hero-panel strong,
-.filters-status strong,
-.platform-header strong,
 .category-tile strong,
 .results-line strong,
 .hero-panel strong {

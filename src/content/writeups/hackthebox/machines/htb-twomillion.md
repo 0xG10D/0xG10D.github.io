@@ -1,4 +1,4 @@
-﻿---
+---
 title: "HTB TwoMillion Writeup"
 summary: "Linux writeup covering API enumeration, broken access control, command injection in VPN generation, and CVE-2023-0386 kernel privilege escalation."
 date: 2026-06-19

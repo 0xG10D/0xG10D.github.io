@@ -1,4 +1,4 @@
-﻿---
+---
 title: "HTB WingData Writeup"
 summary: "Linux writeup covering Wing FTP exposure, configuration recovery, credential analysis, and privilege escalation."
 date: 2026-06-12

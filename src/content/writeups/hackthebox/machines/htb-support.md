@@ -1,4 +1,4 @@
-﻿---
+---
 title: "HTB Support Writeup"
 summary: "Windows writeup covering SMB enumeration, LDAP credential recovery, BloodHound analysis, and RBCD abuse."
 date: 2026-06-06

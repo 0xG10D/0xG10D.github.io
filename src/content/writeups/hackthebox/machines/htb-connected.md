@@ -1,4 +1,4 @@
-﻿---
+---
 title: "HTB Connected Writeup"
 summary: "Linux writeup covering FreePBX enumeration, SQL injection, admin access, and privilege escalation."
 date: 2026-06-08
@@ -8,9 +8,10 @@ tags:
   - web
   - sqli
   - freepbx
-category: "web-exploitation"
+  - recon
+category: "hack-the-box"
 difficulty: "medium"
-platform: "hack-the-box"
+platform: "hackthebox"
 boxImage: "https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/5f828febf436aa997dff714a184614fe.png"
 draft: false
 ---
@@ -568,15 +569,15 @@ if (file_exists($i)) {
 The important behavior was:
 
 1. `sysadmin_ha` runs as root through `incrond`.
-    
+
 2. It checks for `/var/www/html/admin/modules/freepbx_ha/functions.inc/incron.php`.
-    
+
 3. If the file exists, it includes it.
-    
+
 4. It instantiates class `incron`.
-    
+
 5. It calls method `rootTrigger()`.
-    
+
 
 The `freepbx_ha` module path did not need to exist beforehand. As `asterisk`, I could create it under the FreePBX web modules directory.
 
@@ -746,26 +747,26 @@ Root: [REDACTED_HASH]
 To mitigate the initial access vector:
 
 - Upgrade the FreePBX endpoint module to a patched version.
-    
+
 - Restrict administrator panel access using firewall rules or ACLs.
-    
+
 - Remove direct public exposure of FreePBX administration routes.
-    
+
 - Review `ampusers` for unauthorized users or modified password hashes.
-    
+
 - Review web logs for suspicious requests to FreePBX AJAX endpoints.
-    
+
 - Review FreePBX module integrity and unknown files under `/var/www/html/admin/modules`.
-    
+
 
 To mitigate the privilege escalation vector:
 
 - Remove world-writable permissions from `/usr/local/asterisk/ha_trigger`.
-    
+
 - Remove unused HA/incron legacy rules.
-    
+
 - Ensure root-run handlers do not include PHP files from writable web paths.
-    
+
 - Restrict ownership of `/var/www/html/admin/modules` to trusted administrative users only.
-    
+
 - Audit `incrond` rules for writable trigger files and unsafe handlers.

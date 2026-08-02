@@ -1,19 +1,33 @@
 ---
-import { getCollection, render } from 'astro:content';
-import WriteupLayout from '../../layouts/WriteupLayout.astro';
+import { getCollection } from 'astro:content';
 
 export async function getStaticPaths() {
   const writeups = await getCollection('writeups', ({ data }) => !data.draft);
-  return writeups.map((post) => ({
-    params: { slug: post.id },
-    props: { post }
-  }));
+  return writeups
+    .filter((post) => post.id.includes('/'))
+    .map((post) => {
+      const slug = post.id.split('/').pop();
+      return {
+        params: { slug },
+        props: { target: `/writeups/${post.id}/`, title: post.data.title }
+      };
+    })
+    .filter((entry) => Boolean(entry.params.slug));
 }
 
-const { post } = Astro.props;
-const { Content, headings } = await render(post);
+const { target, title } = Astro.props;
 ---
 
-<WriteupLayout post={post} headings={headings}>
-  <Content />
-</WriteupLayout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="robots" content="noindex" />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <link rel="canonical" href={target} />
+    <title>{title} moved | 0xG10D</title>
+  </head>
+  <body>
+    <p>This writeup moved to <a href={target}>{target}</a>.</p>
+  </body>
+</html>

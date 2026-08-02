@@ -1,33 +1,19 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SecurityIcon from '../components/SecurityIcon.astro';
-import { categoryOrder, cheatSheetSections, cheatSheets } from '../data/cheatsheets';
-import type { CheatSheetCategory } from '../data/cheatsheets';
-import type { SecurityIconName } from '../data/security-icons';
+import { categoryOrder, cheatSheets, cveResearchLinks } from '../data/cheatsheets';
 
-const totalCommands = cheatSheets.length;
-const allTags = [...new Set(cheatSheets.flatMap((entry) => entry.tags))].sort();
-const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
-  Recon: 'radar',
-  Nmap: 'target',
-  'Web Enumeration': 'search',
-  Fuzzing: 'tool',
-  'Linux Privilege Escalation': 'terminal',
-  'Windows Enumeration': 'platform',
-  'Active Directory Basics': 'network',
-  'Reverse Shells': 'terminal',
-  'File Transfer': 'archive',
-  'Password Attacks': 'shield',
-  Forensics: 'search',
-  'Malware Analysis Basics': 'flask',
-  'SOC / Detection': 'shield',
-  'Useful Links': 'external'
-};
+const totalCommands = cheatSheets.reduce((total, sheet) => total + sheet.commands.length, 0);
+const allTags = [...new Set(cheatSheets.flatMap((sheet) => sheet.tags))].sort();
+const categoryCounts = categoryOrder.map((category) => ({
+  category,
+  count: cheatSheets.filter((sheet) => sheet.category === category).length
+}));
 ---
 
 <BaseLayout
-  title="cheatsheets"
-  description="Practical commands and notes for authorized labs, CTFs, and defensive learning."
+  title="Cybersecurity Cheat Sheets"
+  description="Searchable cybersecurity quick-reference hub for CTF, labs, Hack The Box, TryHackMe, and authorized security testing."
 >
   <main class="cheatsheets-page">
     <section class="cheatsheets-hero section">
@@ -35,172 +21,204 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
         <div class="hero-grid">
           <div class="hero-copy">
             <div class="meta-pill">
-              <SecurityIcon name="terminal" size={16} />
-              <span>// QUICK_REFERENCE</span>
+              <SecurityIcon name="shield" size={16} />
+              <span>Authorized use only</span>
             </div>
-            <h1>cheatsheets</h1>
-            <p>Practical commands and notes for authorized labs, CTFs, and defensive learning.</p>
+            <h1>Cybersecurity Cheat Sheets</h1>
+            <p>
+              A searchable quick-reference hub for CTFs, labs, Hack The Box, TryHackMe, and approved security testing.
+              Built for fast lookup during real workflow pressure.
+            </p>
           </div>
 
-          <aside class="hero-panel" aria-label="Cheatsheet summary">
+          <div class="hero-panel" aria-label="Cheat sheet summary">
+            <div>
+              <strong>{cheatSheets.length}</strong>
+              <span>Reference cards</span>
+            </div>
             <div>
               <strong>{categoryOrder.length}</strong>
-              <span>categories</span>
+              <span>Categories</span>
             </div>
             <div>
               <strong>{totalCommands}</strong>
-              <span>commands</span>
+              <span>Command snippets</span>
             </div>
             <div>
               <strong>{allTags.length}</strong>
-              <span>tags</span>
+              <span>Search tags</span>
             </div>
-          </aside>
+          </div>
         </div>
 
-        <div class="cheatsheet-controls" aria-label="Cheatsheet filters">
-          <label class="search-group" for="cheatsheet-search">
-            <span>search reference</span>
+        <div class="cheatsheet-controls" aria-label="Cheat sheet filters">
+          <label class="search-group">
+            <span>Search references</span>
             <input
               id="cheatsheet-search"
               type="search"
               autocomplete="off"
-              placeholder="grep -i command, tool, technique..."
-              aria-describedby="cheatsheet-results"
+              placeholder="Search commands, tags, category, or description"
+              aria-label="Search cheat sheets"
             />
           </label>
+
+          <div class="filter-group" aria-label="Category filters">
+            <button class="filter-chip active" type="button" data-category-filter="all">All</button>
+            {categoryOrder.map((category) => (
+              <button class="filter-chip" type="button" data-category-filter={category}>
+                {category}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="reference-shell section" aria-label="Command reference">
-      <div class="container reference-layout">
-        <aside class="reference-sidebar" aria-label="Category navigation">
-          <div class="sidebar-inner">
-            <p class="sidebar-label">./categories</p>
-            <nav class="category-nav">
-              <button class="category-link active" type="button" data-category-filter="all">
-                <span>./all</span>
-                <strong>{totalCommands}</strong>
-              </button>
-              {cheatSheetSections.map((section) => (
-                <button class="category-link" type="button" data-category-filter={section.category}>
-                  <span>./{section.slug}</span>
-                  <strong>{section.entries.length}</strong>
-                </button>
-              ))}
-            </nav>
-          </div>
-        </aside>
+    <section class="category-band" aria-label="Category overview">
+      <div class="container">
+        <div class="category-grid">
+          {categoryCounts.map(({ category, count }) => (
+            <button class="category-tile" type="button" data-category-filter={category}>
+              <span>{category}</span>
+              <strong>{count}</strong>
+            </button>
+          ))}
+        </div>
+      </div>
+    </section>
 
-        <div class="reference-main">
-          <div class="results-line" id="cheatsheet-results" aria-live="polite">
-            <span><strong id="cheatsheet-count">{totalCommands}</strong> commands visible</span>
-            <button type="button" class="clear-button" data-clear-filters>clear filters</button>
-          </div>
+    <section class="section sheets-section">
+      <div class="container">
+        <div class="results-line" aria-live="polite">
+          <span><strong id="cheatsheet-count">{cheatSheets.length}</strong> cards visible</span>
+          <button type="button" class="clear-button" data-clear-filters>Clear filters</button>
+        </div>
 
-          <div class="reference-sections" id="cheatsheet-grid">
-            {cheatSheetSections.map((section) => (
-              <section
-                class="command-section"
-                id={section.slug}
-                data-cheatsheet-section
-                data-category={section.category}
-                aria-labelledby={`${section.slug}-heading`}
+        <div class="sheets-grid" id="cheatsheet-grid">
+          {cheatSheets.map((sheet) => {
+            const searchText = [
+              sheet.title,
+              sheet.category,
+              sheet.description,
+              ...sheet.tags,
+              ...sheet.notes,
+              ...sheet.commands.flatMap((command) => [command.label, command.code])
+            ].join(' ').toLowerCase();
+
+            return (
+              <article
+                class="sheet-card"
+                data-cheatsheet-card
+                data-category={sheet.category}
+                data-search={searchText}
               >
-                <header class="section-heading">
-                  <div class="section-title-line">
-                    <div class="section-icon">
-                      <SecurityIcon name={categoryIcons[section.category]} size={20} />
-                    </div>
-                    <div>
-                      <p>{`./${section.slug}`}</p>
-                      <h2 id={`${section.slug}-heading`}>{section.category}</h2>
-                    </div>
+                <header class="sheet-header">
+                  <div class="sheet-icon">
+                    <SecurityIcon name={sheet.icon} size={22} />
                   </div>
-                  <span>{section.entries.length} refs</span>
+                  <div>
+                    <p class="sheet-category">{sheet.category}</p>
+                    <h2>{sheet.title}</h2>
+                  </div>
                 </header>
-                <p class="section-summary">{section.summary}</p>
 
-                <div class="command-card-list">
-                  {section.entries.map((entry) => {
-                    const searchText = [
-                      section.category,
-                      section.slug,
-                      entry.title,
-                      entry.command,
-                      entry.description,
-                      entry.whenToUse,
-                      entry.notes,
-                      entry.exampleOutput || '',
-                      entry.language,
-                      ...entry.tags
-                    ].join(' ').toLowerCase();
+                <p class="sheet-description">{sheet.description}</p>
 
-                    return (
-                      <article
-                        class="command-card"
-                        data-cheatsheet-card
-                        data-category={section.category}
-                        data-search={searchText}
-                      >
-                        <header class="command-card-header">
-                          <div>
-                            <p class="command-card-category">{section.category}</p>
-                            <h3>{entry.title}</h3>
-                          </div>
-                          <div class="tag-row" aria-label={`${entry.title} tags`}>
-                            {entry.tags.map((tag) => (
-                              <button type="button" data-tag-filter={tag}>#{tag}</button>
-                            ))}
-                          </div>
-                        </header>
+                {sheet.warning && (
+                  <p class="sheet-warning">
+                    <SecurityIcon name="shield" size={16} />
+                    <span>{sheet.warning}</span>
+                  </p>
+                )}
 
-                        <div class="terminal-block">
-                          <div class="terminal-head">
-                            <span>command</span>
-                            <span class="language-label">{entry.language}</span>
-                            <button type="button" class="copy-button" data-copy-command aria-label={`Copy ${entry.title} command`}>
-                              copy
-                            </button>
-                          </div>
-                          <pre data-language={entry.language}><code>{entry.command}</code></pre>
-                        </div>
-
-                        <div class="reference-notes">
-                          <div>
-                            <span>explains</span>
-                            <p>{entry.description}</p>
-                          </div>
-                          <div>
-                            <span>use when</span>
-                            <p>{entry.whenToUse}</p>
-                          </div>
-                          <div>
-                            <span>note</span>
-                            <p>{entry.notes}</p>
-                          </div>
-                          {entry.exampleOutput && (
-                            <div>
-                              <span>expected</span>
-                              <p>{entry.exampleOutput}</p>
-                            </div>
-                          )}
-                        </div>
-                      </article>
-                    );
-                  })}
+                <div class="command-list">
+                  {sheet.commands.map((command) => (
+                    <div class="command-block">
+                      <div class="command-head">
+                        <span>{command.label}</span>
+                        {command.copy !== false && (
+                          <button type="button" class="copy-button" data-copy-command aria-label={`Copy ${command.label}`}>
+                            Copy
+                          </button>
+                        )}
+                      </div>
+                      <pre><code>{command.code}</code></pre>
+                    </div>
+                  ))}
                 </div>
-              </section>
-            ))}
+
+                <ul class="sheet-notes">
+                  {sheet.notes.map((note) => (
+                    <li>{note}</li>
+                  ))}
+                </ul>
+
+                {sheet.links && sheet.links.length > 0 && (
+                  <div class="sheet-links">
+                    {sheet.links.map((link) => (
+                      <a href={link.href} target="_blank" rel="noreferrer">
+                        {link.label}
+                        <SecurityIcon name="external" size={14} />
+                      </a>
+                    ))}
+                  </div>
+                )}
+
+                <div class="sheet-tags" aria-label={`${sheet.title} tags`}>
+                  {sheet.tags.map((tag) => (
+                    <button type="button" data-tag-filter={tag}>#{tag}</button>
+                  ))}
+                </div>
+              </article>
+            );
+          })}
+        </div>
+
+        <div class="empty-state" id="cheatsheet-empty" hidden>
+          <SecurityIcon name="search" size={34} />
+          <h2>No matching cheat sheets</h2>
+          <p>Clear filters or search for a broader technique, tool, or category.</p>
+          <button type="button" class="button button-primary" data-clear-filters>Clear filters</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section cve-section">
+      <div class="container">
+        <div class="cve-layout">
+          <div>
+            <div class="meta-pill">
+              <SecurityIcon name="file" size={16} />
+              <span>CVE workflow</span>
+            </div>
+            <h2>CVE and exploit research</h2>
+            <p>
+              Use this as a source checklist. Do not invent live CVE details. Verify affected versions,
+              fixed versions, exploitability, and patch status from primary sources.
+            </p>
           </div>
 
-          <div class="empty-state" id="cheatsheet-empty" hidden>
-            <SecurityIcon name="search" size={34} />
-            <h2>No matching commands</h2>
-            <p>Clear filters or search for a broader command, tool, technique, tag, or category.</p>
-            <button type="button" class="button button-primary" data-clear-filters>clear filters</button>
+          <div class="cve-card">
+            <h3>Placeholder record format</h3>
+            <dl>
+              <div><dt>CVE</dt><dd>CVE-YYYY-NNNN</dd></div>
+              <div><dt>Vendor advisory</dt><dd>Official advisory URL</dd></div>
+              <div><dt>Affected version</dt><dd>Verified vulnerable range</dd></div>
+              <div><dt>Fixed version</dt><dd>Patched release or mitigation</dd></div>
+              <div><dt>CVSS / CWE</dt><dd>Score, vector, and weakness class</dd></div>
+              <div><dt>Exploitability</dt><dd>Auth, reachability, prerequisites, patch status</dd></div>
+            </dl>
           </div>
+        </div>
+
+        <div class="research-links">
+          {cveResearchLinks.map((link) => (
+            <a href={link.href} target="_blank" rel="noreferrer">
+              <span>{link.label}</span>
+              <SecurityIcon name="external" size={14} />
+            </a>
+          ))}
         </div>
       </div>
     </section>
@@ -213,189 +231,176 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
   }
 
   .cheatsheets-hero {
-    padding-top: calc(var(--section-spacing) * 1.05);
-    padding-bottom: 2rem;
-    background: var(--bg-main);
+    padding-top: calc(var(--section-spacing) * 1.15);
+    padding-bottom: 2.5rem;
     border-bottom: 1px solid var(--border-subtle);
+    background:
+      radial-gradient(circle at 82% 12%, rgba(56, 189, 248, 0.18), transparent 32%),
+      linear-gradient(135deg, rgba(8, 20, 47, 0.86), rgba(5, 11, 31, 0));
   }
 
   .hero-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(250px, 360px);
-    gap: clamp(1.25rem, 4vw, 3rem);
+    grid-template-columns: minmax(0, 1.18fr) minmax(280px, 0.82fr);
+    gap: 2rem;
     align-items: end;
   }
 
   .hero-copy h1 {
-    margin: 1rem 0 0.8rem;
-    font-family: var(--font-mono);
-    font-size: clamp(2.5rem, 7vw, 5.25rem);
-    letter-spacing: 0;
-    text-transform: lowercase;
+    max-width: 860px;
+    margin-top: 1.1rem;
+    text-wrap: balance;
   }
 
   .hero-copy p {
-    max-width: 70ch;
-    margin: 0;
+    max-width: 72ch;
     color: var(--text-secondary);
-    font-size: clamp(1rem, 2vw, 1.12rem);
+    font-size: 1.1rem;
   }
 
   .hero-panel {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1px;
-    overflow: hidden;
-    background: var(--border-subtle);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.8rem;
+  }
+
+  .hero-panel div,
+  .sheet-card,
+  .cve-card,
+  .empty-state {
+    background: var(--gradient-panel);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
+    border-radius: 12px;
+    box-shadow: var(--shadow-medium);
   }
 
   .hero-panel div {
-    min-width: 0;
     padding: 1rem;
-    background: var(--card-bg);
   }
 
   .hero-panel strong {
     display: block;
-    color: var(--text-primary);
+    color: var(--accent-blue);
     font-family: var(--font-mono);
-    font-size: clamp(1.35rem, 3vw, 2rem);
+    font-size: clamp(1.4rem, 3vw, 2rem);
     line-height: 1;
   }
 
   .hero-panel span {
     display: block;
-    margin-top: 0.5rem;
+    margin-top: 0.45rem;
     color: var(--muted-text);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.76rem;
     text-transform: uppercase;
   }
 
   .cheatsheet-controls {
-    margin-top: 1.5rem;
+    display: grid;
+    gap: 1rem;
+    margin-top: 2rem;
     padding: 1rem;
-    background: var(--card-bg);
+    background: rgba(8, 20, 47, 0.74);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
+    border-radius: 12px;
   }
 
   .search-group {
     display: grid;
-    gap: 0.5rem;
+    gap: 0.45rem;
   }
 
-  .search-group span,
-  .sidebar-label,
-  .command-card-category,
-  .terminal-head,
-  .reference-notes span,
-  .section-heading p {
-    color: var(--muted-text);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    font-weight: 800;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+  .search-group span {
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    font-weight: 700;
   }
 
   .search-group input {
     width: 100%;
-    min-height: 50px;
-    padding: 0.78rem 0.9rem;
+    min-height: 48px;
     color: var(--text-primary);
-    background: var(--bg-main);
+    background: rgba(5, 11, 31, 0.86);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    font-family: var(--font-mono);
-    font-size: 0.9rem;
+    border-radius: 8px;
+    padding: 0.75rem 0.9rem;
   }
 
-  .search-group input:focus,
-  .category-link:focus-visible,
-  .clear-button:focus-visible,
-  .copy-button:focus-visible,
-  .tag-row button:focus-visible {
+  .search-group input:focus {
     outline: none;
-    border-color: var(--border-strong);
-    box-shadow: 0 0 0 2px var(--accent-subtle);
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 0 3px var(--accent-blue-subtle);
   }
 
-  .reference-shell {
-    padding-top: 1.25rem;
-    background: var(--bg-main);
+  .filter-group,
+  .sheet-tags,
+  .sheet-links,
+  .research-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.65rem;
   }
 
-  .reference-layout {
-    display: grid;
-    grid-template-columns: minmax(200px, 240px) minmax(0, 1fr);
-    gap: clamp(1rem, 3vw, 2rem);
-    align-items: start;
-  }
-
-  .reference-sidebar {
-    position: sticky;
-    top: 96px;
-  }
-
-  .sidebar-inner {
-    padding: 0.85rem;
-    background: var(--card-bg);
+  .filter-chip,
+  .sheet-tags button,
+  .clear-button,
+  .category-tile {
+    color: var(--text-secondary);
+    background: rgba(8, 20, 47, 0.78);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
+    border-radius: 8px;
+    cursor: pointer;
   }
 
-  .sidebar-label {
-    margin: 0 0 0.65rem;
+  .filter-chip {
+    min-height: 38px;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.82rem;
+    font-weight: 700;
   }
 
-  .category-nav {
+  .filter-chip:hover,
+  .filter-chip.active,
+  .sheet-tags button:hover,
+  .sheet-tags button.active,
+  .category-tile:hover,
+  .category-tile.active {
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+    background: var(--accent-blue-subtle);
+  }
+
+  .category-band {
+    padding: 1.25rem 0;
+    border-bottom: 1px solid var(--border-subtle);
+    background: rgba(5, 11, 31, 0.4);
+  }
+
+  .category-grid {
     display: grid;
-    gap: 0.35rem;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.75rem;
   }
 
-  .category-link {
+  .category-tile {
     display: flex;
     justify-content: space-between;
+    gap: 0.7rem;
     align-items: center;
-    gap: 0.75rem;
-    width: 100%;
-    min-height: 44px;
-    padding: 0.5rem 0.65rem;
-    color: var(--text-secondary);
-    background: transparent;
-    border: 1px solid transparent;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
+    padding: 0.85rem;
     text-align: left;
-    transition: background var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease), color var(--motion-fast) var(--motion-ease);
   }
 
-  .category-link span {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  .category-tile span {
+    font-weight: 700;
   }
 
-  .category-link strong {
-    color: var(--muted-text);
-    font-size: 0.72rem;
+  .category-tile strong {
+    color: var(--accent-blue);
+    font-family: var(--font-mono);
   }
 
-  .category-link:hover,
-  .category-link.active {
-    color: var(--text-primary);
-    background: var(--accent-subtle);
-    border-color: var(--border-medium);
-  }
-
-  .reference-main {
-    min-width: 0;
+  .sheets-section {
+    padding-top: 2rem;
   }
 
   .results-line {
@@ -403,372 +408,292 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
     justify-content: space-between;
     gap: 1rem;
     align-items: center;
-    margin-bottom: 1rem;
-    padding: 0.75rem 0;
+    margin-bottom: 1.25rem;
     color: var(--text-secondary);
   }
 
   .results-line strong {
-    color: var(--text-primary);
+    color: var(--accent-blue);
     font-family: var(--font-mono);
-  }
-
-  .clear-button,
-  .copy-button,
-  .tag-row button {
-    color: var(--text-secondary);
-    background: var(--bg-main);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    font-family: var(--font-mono);
-    font-weight: 800;
-    transition: background var(--motion-fast) var(--motion-ease), border-color var(--motion-fast) var(--motion-ease), color var(--motion-fast) var(--motion-ease), transform var(--motion-fast) var(--motion-ease);
   }
 
   .clear-button {
-    min-height: 44px;
-    padding: 0.45rem 0.8rem;
-    font-size: 0.78rem;
-    text-transform: lowercase;
+    min-height: 38px;
+    padding: 0.45rem 0.75rem;
+    font-weight: 700;
   }
 
-  .reference-sections {
+  .sheets-grid {
     display: grid;
-    gap: 1rem;
-  }
-
-  .command-section {
-    scroll-margin-top: 110px;
-    padding: clamp(1rem, 2vw, 1.2rem);
-    background: rgba(20, 20, 20, 0.72);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-  }
-
-  .section-heading {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
+    gap: 1.2rem;
     align-items: start;
   }
 
-  .section-title-line {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0.8rem;
-    align-items: center;
+  .sheet-card {
+    display: flex;
     min-width: 0;
+    height: 100%;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.25rem;
   }
 
-  .section-icon {
+  .sheet-header {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.85rem;
+    align-items: start;
+  }
+
+  .sheet-icon {
     display: grid;
     width: 42px;
     height: 42px;
     place-items: center;
-    color: var(--text-secondary);
-    background: var(--bg-main);
+    color: var(--accent-blue);
+    background: var(--accent-blue-subtle);
     border: 1px solid var(--border-medium);
-    border-radius: var(--radius-sm);
+    border-radius: 10px;
   }
 
-  .section-heading h2 {
-    margin: 0.05rem 0 0;
-    font-size: clamp(1.35rem, 2.6vw, 2rem);
-    letter-spacing: 0;
-  }
-
-  .section-heading > span {
-    flex: 0 0 auto;
-    color: var(--muted-text);
+  .sheet-category {
+    margin: 0 0 0.25rem;
+    color: var(--accent-blue);
     font-family: var(--font-mono);
-    font-size: 0.78rem;
-  }
-
-  .section-summary {
-    max-width: 78ch;
-    margin: 0.9rem 0 1rem;
-    color: var(--text-secondary);
-    font-size: 0.94rem;
-  }
-
-  .command-card-list {
-    display: grid;
-    gap: 0.85rem;
-  }
-
-  .command-card {
-    min-width: 0;
-    padding: clamp(0.95rem, 2vw, 1.15rem);
-    background: var(--card-bg);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-  }
-
-  .command-card-header {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(180px, auto);
-    gap: 0.8rem;
-    align-items: start;
-    margin-bottom: 0.85rem;
-  }
-
-  .command-card h3 {
-    margin: 0;
-    font-size: clamp(1.02rem, 2vw, 1.2rem);
-    letter-spacing: 0;
-  }
-
-  .command-card-category {
-    margin: 0 0 0.2rem;
-  }
-
-  .tag-row {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 0.4rem;
-    max-width: 320px;
-  }
-
-  .tag-row button {
-    min-height: 34px;
-    padding: 0.25rem 0.5rem;
-    font-size: 0.68rem;
-  }
-
-  .clear-button:hover,
-  .copy-button:hover,
-  .tag-row button:hover,
-  .tag-row button.active {
-    color: var(--text-primary);
-    background: var(--accent-subtle);
-    border-color: var(--border-medium);
-  }
-
-  .clear-button:active,
-  .copy-button:active,
-  .tag-row button:active,
-  .category-link:active {
-    transform: translateY(1px);
-  }
-
-  .terminal-block {
-    min-width: 0;
-    overflow: hidden;
-    background: var(--bg-main);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-  }
-
-  .terminal-head {
-    display: grid;
-    grid-template-columns: minmax(0, auto) 1fr auto;
-    gap: 0.65rem;
-    align-items: center;
-    min-height: 42px;
-    padding: 0.45rem 0.55rem 0.45rem 0.75rem;
-    background: var(--panel-elevated);
-    border-bottom: 1px solid var(--border-subtle);
-  }
-
-  .terminal-head > span {
-    min-width: 0;
-    overflow-wrap: anywhere;
-  }
-
-  .language-label {
-    color: var(--muted-text);
-    text-transform: lowercase;
-  }
-
-  .copy-button {
-    justify-self: end;
-    min-height: 32px;
-    padding: 0.2rem 0.55rem;
-    font-size: 0.7rem;
+    font-size: 0.73rem;
+    font-weight: 800;
     text-transform: uppercase;
   }
 
-  .copy-button.copied {
-    color: var(--text-primary);
-    background: var(--accent-subtle);
-    border-color: var(--border-medium);
-  }
-
-  .terminal-block pre {
-    max-width: 100%;
+  .sheet-header h2 {
     margin: 0;
-    padding: 0.9rem;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
+    font-size: 1.18rem;
   }
 
-  .terminal-block code {
-    display: block;
-    min-width: max-content;
+  .sheet-description {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+  }
+
+  .sheet-warning {
+    display: flex;
+    gap: 0.55rem;
+    align-items: flex-start;
+    margin: 0;
+    padding: 0.75rem;
+    color: var(--soft-cyan);
+    background: rgba(37, 99, 235, 0.1);
+    border: 1px solid var(--border-medium);
+    border-radius: 8px;
+    font-size: 0.85rem;
+  }
+
+  .command-list {
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .command-block {
+    overflow: hidden;
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    background: rgba(5, 11, 31, 0.68);
+  }
+
+  .command-head {
+    display: flex;
+    min-height: 38px;
+    justify-content: space-between;
+    gap: 0.75rem;
+    align-items: center;
+    padding: 0.45rem 0.55rem 0.45rem 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .command-head span {
+    color: var(--text-secondary);
+    font-size: 0.78rem;
+    font-weight: 700;
+  }
+
+  .copy-button {
+    min-height: 30px;
+    padding: 0.25rem 0.55rem;
+    color: var(--accent-blue);
+    background: var(--accent-blue-subtle);
+    border: 1px solid var(--border-medium);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    font-weight: 800;
+  }
+
+  .copy-button.copied {
+    color: var(--bg-main);
+    background: var(--accent-blue);
+  }
+
+  .command-block pre {
+    margin: 0;
+    padding: 0.85rem;
+    overflow-x: auto;
+  }
+
+  .command-block code {
     color: var(--text-primary);
     font-family: var(--font-mono);
-    font-size: 0.84rem;
-    line-height: 1.6;
+    font-size: 0.82rem;
+    line-height: 1.55;
     white-space: pre;
   }
 
-  .reference-notes {
+  .sheet-notes {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1px;
-    overflow: hidden;
-    margin-top: 0.85rem;
-    background: var(--border-subtle);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-  }
-
-  .reference-notes div {
-    min-width: 0;
-    padding: 0.85rem;
-    background: var(--panel-elevated);
-  }
-
-  .reference-notes p {
-    margin: 0.35rem 0 0;
+    gap: 0.5rem;
+    margin: 0;
+    padding-left: 1.1rem;
     color: var(--text-secondary);
-    font-size: 0.88rem;
-    line-height: 1.55;
+    font-size: 0.9rem;
+  }
+
+  .sheet-links a,
+  .research-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--text-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    background: rgba(8, 20, 47, 0.72);
+    font-weight: 700;
+  }
+
+  .sheet-links a {
+    padding: 0.45rem 0.65rem;
+    font-size: 0.82rem;
+  }
+
+  .research-links a {
+    padding: 0.7rem 0.85rem;
+  }
+
+  .sheet-links a:hover,
+  .research-links a:hover {
+    color: var(--accent-blue);
+    border-color: var(--accent-blue);
+  }
+
+  .sheet-tags {
+    margin-top: auto;
+    padding-top: 0.25rem;
+  }
+
+  .sheet-tags button {
+    min-height: 32px;
+    padding: 0.3rem 0.55rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
   }
 
   .empty-state {
     padding: 3rem 1.25rem;
     text-align: center;
-    background: var(--card-bg);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
   }
 
   .empty-state svg {
-    margin: 0 auto 1rem;
-    color: var(--text-secondary);
+    color: var(--accent-blue);
+    margin-bottom: 1rem;
   }
 
   .empty-state h2 {
     font-size: 1.5rem;
   }
 
-  .empty-state p {
-    max-width: 48ch;
-    margin-inline: auto;
+  .cve-section {
+    border-top: 1px solid var(--border-subtle);
+    background: linear-gradient(180deg, rgba(8, 20, 47, 0.46), rgba(5, 11, 31, 0));
   }
 
-  @media (max-width: 1040px) {
-    .reference-layout {
-      grid-template-columns: 1fr;
-    }
-
-    .reference-sidebar {
-      position: sticky;
-      top: 76px;
-      z-index: 3;
-      margin-inline: calc(var(--container-padding) * -1);
-      padding-inline: var(--container-padding);
-      background: var(--bg-main);
-      border-bottom: 1px solid var(--border-subtle);
-    }
-
-    .sidebar-inner {
-      padding: 0.7rem 0;
-      background: transparent;
-      border: 0;
-      border-radius: 0;
-    }
-
-    .sidebar-label {
-      display: none;
-    }
-
-    .category-nav {
-      display: flex;
-      gap: 0.5rem;
-      overflow-x: auto;
-      padding-bottom: 0.7rem;
-      scrollbar-width: thin;
-      scroll-snap-type: x proximity;
-    }
-
-    .category-link {
-      flex: 0 0 auto;
-      width: auto;
-      min-width: 130px;
-      scroll-snap-align: start;
-    }
+  .cve-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(300px, 1.1fr);
+    gap: 1.5rem;
+    align-items: start;
+    margin-bottom: 1.5rem;
   }
 
-  @media (max-width: 820px) {
+  .cve-layout h2 {
+    margin-top: 1rem;
+  }
+
+  .cve-layout p {
+    max-width: 62ch;
+  }
+
+  .cve-card {
+    padding: 1.25rem;
+  }
+
+  .cve-card h3 {
+    margin: 0 0 1rem;
+    font-size: 1.1rem;
+  }
+
+  .cve-card dl {
+    display: grid;
+    gap: 0.7rem;
+    margin: 0;
+  }
+
+  .cve-card div {
+    display: grid;
+    grid-template-columns: minmax(120px, 0.45fr) minmax(0, 1fr);
+    gap: 0.75rem;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .cve-card div:last-child {
+    padding-bottom: 0;
+    border-bottom: 0;
+  }
+
+  .cve-card dt {
+    color: var(--accent-blue);
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .cve-card dd {
+    margin: 0;
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 980px) {
     .hero-grid,
-    .command-card-header,
-    .reference-notes {
+    .cve-layout {
       grid-template-columns: 1fr;
-    }
-
-    .tag-row {
-      justify-content: flex-start;
-      max-width: none;
     }
   }
 
   @media (max-width: 620px) {
-    .cheatsheets-page {
-      padding-top: 68px;
-    }
-
-    .cheatsheets-hero {
-      padding-top: 2.35rem;
-      padding-bottom: 1.4rem;
-    }
-
-    .hero-copy h1 {
-      font-size: clamp(2.25rem, 13vw, 3.1rem);
-    }
-
-    .hero-panel {
+    .hero-panel,
+    .sheets-grid {
       grid-template-columns: 1fr;
     }
 
-    .cheatsheet-controls,
-    .command-section,
-    .command-card {
-      padding: 0.9rem;
-    }
-
     .results-line {
-      align-items: stretch;
+      align-items: flex-start;
       flex-direction: column;
     }
 
-    .clear-button {
-      width: 100%;
-    }
-
-    .section-heading {
-      flex-direction: column;
-      gap: 0.65rem;
-    }
-
-    .terminal-head {
-      grid-template-columns: 1fr auto;
-    }
-
-    .terminal-block pre {
-      padding: 0.8rem;
-    }
-
-    .terminal-block code {
-      font-size: 0.78rem;
-      line-height: 1.55;
-    }
-
-    .terminal-head > span:first-child {
-      grid-column: 1 / -1;
+    .cve-card div {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
     }
   }
 </style>
@@ -777,8 +702,6 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
   document.addEventListener('DOMContentLoaded', () => {
     const cards = Array.from(document.querySelectorAll('[data-cheatsheet-card]'))
       .filter((card): card is HTMLElement => card instanceof HTMLElement);
-    const sections = Array.from(document.querySelectorAll('[data-cheatsheet-section]'))
-      .filter((section): section is HTMLElement => section instanceof HTMLElement);
     const searchInput = document.getElementById('cheatsheet-search');
     const countElement = document.getElementById('cheatsheet-count');
     const emptyState = document.getElementById('cheatsheet-empty');
@@ -824,12 +747,6 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
         if (shouldShow) visible += 1;
       });
 
-      sections.forEach((section) => {
-        const sectionCards = Array.from(section.querySelectorAll('[data-cheatsheet-card]'))
-          .filter((card): card is HTMLElement => card instanceof HTMLElement);
-        section.hidden = sectionCards.every((card) => card.hidden);
-      });
-
       if (countElement) countElement.textContent = String(visible);
       if (grid && emptyState) {
         grid.hidden = visible === 0;
@@ -841,17 +758,9 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
 
     categoryButtons.forEach((button) => {
       button.addEventListener('click', () => {
-        const category = button.dataset.categoryFilter || 'all';
-        setActiveCategory(category);
+        setActiveCategory(button.dataset.categoryFilter || 'all');
         filterCards();
-
-        if (category === 'all') {
-          document.querySelector('.reference-shell')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          return;
-        }
-
-        const section = sections.find((item) => item.dataset.category === category);
-        section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        document.querySelector('.sheets-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     });
 
@@ -877,13 +786,13 @@ const categoryIcons: Record<CheatSheetCategory, SecurityIconName> = {
       if (!(button instanceof HTMLButtonElement)) return;
 
       button.addEventListener('click', async () => {
-        const block = button.closest('.terminal-block');
+        const block = button.closest('.command-block');
         const code = block?.querySelector('code')?.textContent;
         if (!code || !navigator.clipboard) return;
 
         await navigator.clipboard.writeText(code);
-        const previous = button.textContent || 'copy';
-        button.textContent = 'copied';
+        const previous = button.textContent || 'Copy';
+        button.textContent = 'Copied';
         button.classList.add('copied');
         window.setTimeout(() => {
           button.textContent = previous;

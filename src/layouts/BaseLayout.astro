@@ -10,9 +10,9 @@ interface Props {
 
 const {
   title,
-  description = 'Cybersecurity portfolio documenting CTF writeups, penetration testing methodology, security tool development, and professional learning progress.'
+  description = 'Personal cybersecurity archive documenting penetration testing, CTF challenges, DFIR notes, malware analysis, and security tool development.'
 } = Astro.props;
-const pageTitle = `${title} | 0xG10D Security Portfolio`;
+const pageTitle = `${title} | 0xG10D`;
 ---
 
 <!doctype html>
@@ -34,23 +34,20 @@ const pageTitle = `${title} | 0xG10D Security Portfolio`;
 
     <title>{pageTitle}</title>
 
-    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Additional meta for security portfolio -->
-    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="theme-color" content="#0b0f14" />
     <meta name="color-scheme" content="dark" />
 
-    <!-- Structured Data for Security Portfolio -->
     <script type="application/ld+json" is:inline>
       {
         "@context": "https://schema.org",
         "@type": "WebSite",
-        "name": "0xG10D Security Portfolio",
-        "description": "Cybersecurity portfolio documenting CTF writeups, penetration testing methodology, and security tool development.",
-        "url": "https://portfolio.0xg10d.dev",
+        "name": "0xG10D",
+        "description": "Personal cybersecurity archive documenting CTF writeups, DFIR notes, penetration testing methodology, and security tool development.",
+        "url": "https://0xg10d.github.io",
         "author": {
           "@type": "Person",
           "name": "0xG10D"
@@ -71,12 +68,8 @@ const pageTitle = `${title} | 0xG10D Security Portfolio`;
       <Footer />
     </div>
 
-    <!-- Global JavaScript for enhanced interactions -->
     <script>
-      // Add loading animation removal
       document.addEventListener('DOMContentLoaded', () => {
-        document.body.classList.add('loaded');
-
         const findHashTarget = (hash: string) => {
           try {
             return document.getElementById(decodeURIComponent(hash));
@@ -85,7 +78,6 @@ const pageTitle = `${title} | 0xG10D Security Portfolio`;
           }
         };
 
-        // Smooth scroll for same-page anchor links without hijacking external links.
         document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
           if (!(anchor instanceof HTMLAnchorElement)) return;
 
@@ -100,34 +92,13 @@ const pageTitle = `${title} | 0xG10D Security Portfolio`;
 
             event.preventDefault();
             targetElement.scrollIntoView({
-              behavior: 'smooth',
+              behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
               block: 'start'
             });
             targetElement.focus({ preventScroll: true });
           });
         });
       });
-
-      // Performance optimization: lazy load images
-      if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries) => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) {
-              const img = entry.target;
-              if (!(img instanceof HTMLImageElement)) return;
-              const source = img.dataset.src;
-              if (!source) return;
-              img.src = source;
-              img.classList.add('loaded');
-              imageObserver.unobserve(img);
-            }
-          });
-        });
-
-        document.querySelectorAll('img[data-src]').forEach(img => {
-          imageObserver.observe(img);
-        });
-      }
     </script>
   </body>
 </html>
@@ -147,43 +118,4 @@ const pageTitle = `${title} | 0xG10D Security Portfolio`;
     outline: none;
   }
 
-  .skip-link {
-    position: fixed;
-    top: 1rem;
-    left: 1rem;
-    z-index: 10000;
-    transform: translateY(-140%);
-    padding: 0.75rem 1rem;
-    border-radius: 999px;
-    background: var(--text-primary);
-    color: var(--bg-main);
-    font-weight: 800;
-    box-shadow: var(--shadow-medium);
-  }
-
-  .skip-link:focus-visible {
-    transform: translateY(0);
-  }
-
-  /* Smooth page transitions */
-  body {
-    opacity: 0;
-    animation: fadeIn 0.5s ease forwards;
-  }
-
-  @keyframes fadeIn {
-    to {
-      opacity: 1;
-    }
-  }
-
-  /* Image loading animation */
-  img[data-src] {
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  img[data-src].loaded {
-    opacity: 1;
-  }
 </style>

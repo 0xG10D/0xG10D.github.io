@@ -14,8 +14,6 @@ const profile = {
   status: 'Active Learner'
 };
 
-const linkedInUrl = 'https://www.linkedin.com/in/irfanshahrizan/';
-
 const focusAreas: {
   icon: SecurityIconName;
   title: string;
@@ -24,7 +22,7 @@ const focusAreas: {
   {
     icon: 'target',
     title: 'Penetration Testing',
-    description: 'Network, web application, and Active Directory lab notes with repeatable documentation.'
+    description: 'Network exploitation, web application security, and Active Directory attacks with detailed methodology documentation.'
   },
   {
     icon: 'archive',
@@ -34,7 +32,7 @@ const focusAreas: {
   {
     icon: 'radar',
     title: 'Defensive Security',
-    description: 'Security monitoring, incident response basics, log review, and defensive tool development.'
+    description: 'Security monitoring, incident response, threat hunting, and defensive tool development.'
   },
   {
     icon: 'automation',
@@ -59,11 +57,9 @@ const contactLinks: {
   handle: string;
   url: string;
   icon: SecurityIconName;
-  ariaLabel: string;
 }[] = [
-  { platform: 'GitHub', handle: '@0xG10D', url: 'https://github.com/0xG10D', icon: 'github', ariaLabel: 'GitHub profile' },
-  { platform: 'LinkedIn', handle: 'Profile', url: linkedInUrl, icon: 'platform', ariaLabel: 'LinkedIn profile' },
-  { platform: 'Hack The Box', handle: '1228382', url: 'https://app.hackthebox.com/profile/1228382', icon: 'target', ariaLabel: 'Hack The Box profile' }
+  { platform: 'GitHub', handle: '@0xG10D', url: 'https://github.com/0xG10D', icon: 'github' },
+  { platform: 'Hack The Box', handle: '1228382', url: 'https://app.hackthebox.com/profile/1228382', icon: 'target' }
 ];
 
 const technicalSkills = [
@@ -76,36 +72,22 @@ const technicalSkills = [
 const currentFocus = [
   'Publishing structured HTB, TryHackMe, and CTF writeups',
   'Building defensive monitoring and security automation projects',
-  'Practicing web, network, and system security in authorized lab environments',
+  'Practicing offensive methodology in authorized lab environments',
   'Improving malware, SOC, and forensics documentation quality'
 ];
 ---
 
-<BaseLayout title="About" description="Cybersecurity learning profile for 0xG10D.">
+<BaseLayout title="About" description="Professional cybersecurity operator profile for 0xG10D.">
   <main class="about-page">
     <section class="operator-hero section">
       <div class="container">
-        <div class="hero-label">
-          <span>// ABOUT</span>
-        </div>
         <div class="operator-grid">
           <article class="operator-card">
-            <div class="operator-identity">
-              <img
-                src="/images/profile/katboy.jpg"
-                alt="0xG10D profile picture"
-                class="operator-avatar"
-                loading="eager"
-                decoding="async"
-              />
-              <div class="operator-heading">
-                <div class="operator-badge">
-                  <SecurityIcon name="profile" size={18} />
-                  <span>Learning profile</span>
-                </div>
-                <h1>{profile.name}</h1>
-              </div>
+            <div class="operator-badge">
+              <SecurityIcon name="profile" size={18} />
+              <span>Operator profile</span>
             </div>
+            <h1>{profile.name}</h1>
             <p class="operator-role">{profile.role}</p>
             <div class="operator-meta">
               <div><span>Alias</span><strong>@{profile.alias}</strong></div>
@@ -116,10 +98,10 @@ const currentFocus = [
 
           <article class="mission-panel">
             <span class="eyebrow-tag">Learning system</span>
-            <h2>Documented practice across labs, CTFs, and defensive basics.</h2>
+            <h2>Documented practice across offensive and defensive security.</h2>
             <p>
-              Keeping a small archive of cybersecurity practice through authorized labs,
-              CTFs, project work, and lessons learned along the way.
+              Building a comprehensive cybersecurity portfolio through practical application,
+              continuous learning, and detailed documentation of offensive and defensive security techniques.
             </p>
             <div class="mission-stats">
               <div><strong>{allWriteups.length}</strong><span>writeups</span></div>
@@ -210,13 +192,7 @@ const currentFocus = [
           </div>
           <div class="platform-grid">
             {contactLinks.map((contact) => (
-              <a
-                href={contact.url}
-                class="link-card"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={contact.ariaLabel}
-              >
+              <a href={contact.url} class="link-card" target="_blank" rel="noopener noreferrer">
                 <SecurityIcon name={contact.icon} />
                 <span>{contact.platform}</span>
                 <small>{contact.handle}</small>
@@ -250,22 +226,6 @@ const currentFocus = [
     padding-top: calc(var(--section-spacing) * 1.25);
   }
 
-  .hero-label {
-    margin-bottom: 1.5rem;
-  }
-
-  .hero-label span {
-    font-family: var(--font-mono);
-    font-size: 0.875rem;
-    color: var(--text-secondary);
-    background: var(--accent-subtle);
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--border-medium);
-    letter-spacing: 0.05em;
-    display: inline-block;
-  }
-
   .operator-grid,
   .platform-connect-grid {
     display: grid;
@@ -280,9 +240,10 @@ const currentFocus = [
   .skill-card,
   .link-card,
   .disclaimer-card {
-    background: var(--card-bg);
+    background: linear-gradient(180deg, rgba(16, 42, 76, 0.88), rgba(11, 29, 58, 0.92));
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
+    border-radius: 12px;
+    box-shadow: var(--shadow-medium);
   }
 
   .operator-card,
@@ -292,27 +253,13 @@ const currentFocus = [
     overflow: hidden;
   }
 
-  .operator-identity {
-    display: flex;
-    align-items: center;
-    gap: clamp(1rem, 3vw, 1.5rem);
-    position: relative;
-    min-width: 0;
-  }
-
-  .operator-avatar {
-    width: clamp(88px, 12vw, 132px);
-    height: clamp(88px, 12vw, 132px);
-    flex: 0 0 auto;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 1px solid var(--text-secondary);
-    filter: grayscale(1) contrast(1.05);
-    background: var(--bg-main);
-  }
-
-  .operator-heading {
-    min-width: 0;
+  .operator-card::before,
+  .mission-panel::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 20% 0%, rgba(56, 189, 248, 0.16), transparent 42%);
+    pointer-events: none;
   }
 
   .operator-badge,
@@ -321,17 +268,17 @@ const currentFocus = [
     align-items: center;
     gap: 0.5rem;
     width: fit-content;
-    color: var(--text-secondary);
-    background: var(--accent-subtle);
+    color: var(--accent-blue);
+    background: var(--accent-blue-subtle);
     border: 1px solid var(--border-medium);
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
     padding: 0.45rem 0.75rem;
     font-family: var(--font-mono);
     font-size: 0.75rem;
     text-transform: uppercase;
   }
 
-  .operator-heading h1,
+  .operator-card h1,
   .mission-panel h2 {
     position: relative;
     margin-top: 1.25rem;
@@ -350,7 +297,7 @@ const currentFocus = [
   .mission-stats {
     position: relative;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     margin-top: 2rem;
   }
@@ -358,9 +305,9 @@ const currentFocus = [
   .operator-meta div,
   .mission-stats div {
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
+    border-radius: 10px;
     padding: 1rem;
-    background: var(--bg-main);
+    background: rgba(8, 20, 47, 0.58);
   }
 
   .operator-meta span,
@@ -369,7 +316,6 @@ const currentFocus = [
     color: var(--muted-text);
     font-size: 0.78rem;
     text-transform: uppercase;
-    font-family: var(--font-mono);
   }
 
   .operator-meta strong,
@@ -383,7 +329,7 @@ const currentFocus = [
   .focus-grid,
   .skills-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 1.25rem;
   }
 
@@ -398,14 +344,14 @@ const currentFocus = [
     grid-template-columns: auto 1fr;
     gap: 0.9rem;
     align-items: start;
-    background: var(--card-bg);
+    background: linear-gradient(180deg, rgba(16, 42, 76, 0.86), rgba(11, 29, 58, 0.92));
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-md);
     color: var(--text-secondary);
   }
 
   .current-focus-card svg {
-    color: var(--text-secondary);
+    color: var(--accent-blue);
     margin-top: 0.1rem;
   }
 
@@ -415,10 +361,10 @@ const currentFocus = [
     width: 46px;
     height: 46px;
     margin-bottom: 1rem;
-    color: var(--text-secondary);
-    background: var(--panel-elevated, #1a1a1a);
+    color: var(--accent-blue);
+    background: var(--accent-blue-subtle);
     border: 1px solid var(--border-medium);
-    border-radius: var(--radius-sm);
+    border-radius: 10px;
   }
 
   .focus-card h3,
@@ -440,9 +386,9 @@ const currentFocus = [
 
   .skill-tags span {
     color: var(--text-secondary);
-    background: var(--bg-main);
+    background: rgba(8, 20, 47, 0.72);
     border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
+    border-radius: 7px;
     padding: 0.45rem 0.65rem;
     font-family: var(--font-mono);
     font-size: 0.78rem;
@@ -471,10 +417,8 @@ const currentFocus = [
     grid-template-columns: auto 1fr auto;
     align-items: center;
     gap: 0.9rem;
-    min-height: 56px;
     padding: 1rem;
     color: var(--text-primary);
-    min-width: 0;
     transition: transform var(--motion-medium) var(--motion-ease), border-color var(--motion-medium) var(--motion-ease);
   }
 
@@ -484,13 +428,12 @@ const currentFocus = [
   }
 
   .link-card svg {
-    color: var(--text-secondary);
+    color: var(--accent-blue);
   }
 
   .link-card small {
     color: var(--muted-text);
     font-family: var(--font-mono);
-    overflow-wrap: anywhere;
   }
 
   .disclaimer-section {
@@ -507,7 +450,7 @@ const currentFocus = [
 
   .disclaimer-card svg {
     flex: 0 0 auto;
-    color: var(--text-secondary);
+    color: var(--accent-blue);
   }
 
   .disclaimer-card p {
@@ -522,69 +465,9 @@ const currentFocus = [
   }
 
   @media (max-width: 640px) {
-    .about-page {
-      padding-top: 68px;
-    }
-
-    .operator-hero {
-      padding-top: 2.25rem;
-    }
-
-    .operator-card,
-    .mission-panel,
-    .current-focus-card,
-    .focus-card,
-    .skill-card,
-    .disclaimer-card {
-      padding: 1.15rem;
-    }
-
-    .operator-identity {
-      align-items: flex-start;
-      gap: 0.9rem;
-    }
-
-    .operator-avatar {
-      width: 78px;
-      height: 78px;
-    }
-
-    .operator-heading h1,
-    .mission-panel h2 {
-      font-size: clamp(1.85rem, 9vw, 2.4rem);
-    }
-
-    .operator-role,
-    .mission-panel p {
-      font-size: 1rem;
-      line-height: 1.65;
-    }
-
     .operator-meta,
     .mission-stats {
       grid-template-columns: 1fr;
-      gap: 0.75rem;
-      margin-top: 1.25rem;
-    }
-
-    .current-focus-grid,
-    .focus-grid,
-    .skills-grid {
-      grid-template-columns: 1fr;
-    }
-
-    .link-card {
-      grid-template-columns: auto 1fr;
-    }
-
-    .link-card small,
-    .link-card svg:last-child {
-      grid-column: 2;
-    }
-
-    .disclaimer-card {
-      display: grid;
-      grid-template-columns: auto 1fr;
     }
   }
 </style>

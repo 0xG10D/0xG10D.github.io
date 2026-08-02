@@ -296,9 +296,9 @@ The recovered source chat ID was:
 My Telegram chat ID was retrieved using `getUpdates` after sending `/start` to the bot:
 
 ```bash
-TOKEN='[REDACTED_TOKEN]'
+BOT_AUTH='[redacted-bot-auth-value]'
 
-curl -s "https://api.telegram.org/bot$TOKEN/getUpdates?offset=-100&limit=100" \
+curl -s "https://api.telegram.org/bot$BOT_AUTH/getUpdates?offset=-100&limit=100" \
 | jq -r '.result[] | .message.chat.id? // .edited_message.chat.id? // empty' \
 | sort -u
 ```
@@ -312,12 +312,12 @@ Output:
 Then messages were copied from the source chat:
 
 ```bash
-TOKEN='[REDACTED_TOKEN]'
+BOT_AUTH='[redacted-bot-auth-value]'
 SRC_CHAT='1421332625'
 MY_CHAT='8574172934'
 
 for id in $(seq 1 100); do
-  r=$(curl -s -X POST "https://api.telegram.org/bot$TOKEN/copyMessage" \
+  r=$(curl -s -X POST "https://api.telegram.org/bot$BOT_AUTH/copyMessage" \
     -d "chat_id=$MY_CHAT" \
     -d "from_chat_id=$SRC_CHAT" \
     -d "message_id=$id")

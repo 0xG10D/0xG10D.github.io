@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Sample HTB Cicada Notes"
 summary: "A clean example writeup showing frontmatter, commands, tables, images, code blocks, and Obsidian wikilinks."
 date: 2026-06-18

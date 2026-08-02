@@ -1,4 +1,4 @@
-﻿---
+---
 title: "HTB Checkpoint Writeup"
 summary: "Active Directory writeup covering ACL abuse, VSIX deployment, BadSuccessor/dMSA abuse, and memory forensics."
 date: 2026-06-15
@@ -8,9 +8,10 @@ tags:
   - active-directory
   - kerberos
   - memory-forensics
-category: "active-directory"
+  - recon
+category: "hack-the-box"
 difficulty: "medium"
-platform: "hack-the-box"
+platform: "hackthebox"
 boxImage: "https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/d90d9ba3228fb458485c03a1b4c2f6e5.png"
 draft: false
 ---
@@ -927,25 +928,25 @@ Output:
 ## Key Takeaways
 
 - Deleted AD objects can become a privilege escalation path if low-privileged users have reanimation rights.
-    
+
 - Writable software deployment shares are high-risk, especially when they trigger automated installation or execution.
-    
+
 - VS Code `.vsix` packages can execute code when activated, making extension deployment pipelines sensitive attack surfaces.
-    
+
 - `GenericWrite` over service accounts can be dangerous even without direct password retrieval.
-    
+
 - BadSuccessor/dMSA abuse can produce Kerberos tickets that inherit useful access paths.
-    
+
 - A plain TGT generated from a dMSA key may not preserve the BadSuccessor context; the Rubeus dMSA ticket path was required.
-    
+
 - Backup shares containing `.vmem`, `.vmsn`, or VMDK files should be treated as credential material.
-    
+
 - Volatile memory snapshots can expose registry hives, LSASS memory, and credential material.
-    
+
 - Local Administrator password reuse allowed an offline hash from a backup VM to authenticate against the live domain controller.
-    
+
 - NTLM pass-the-hash remains highly effective when administrative hashes are reused.
-    
+
 
 ---
 

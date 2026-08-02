@@ -1,4 +1,4 @@
-﻿---
+---
 title: "HTB Reactor Writeup"
 summary: "Linux writeup covering web application analysis, Node.js debugging exposure, and privilege escalation."
 date: 2026-06-05
@@ -8,9 +8,10 @@ tags:
   - web
   - nodejs
   - debugging
-category: "web-exploitation"
+  - recon
+category: "hack-the-box"
 difficulty: "medium"
-platform: "hack-the-box"
+platform: "hackthebox"
 boxImage: "https://htb-mp-prod-public-storage.s3.eu-central-1.amazonaws.com/avatars/56868ca419111fc0721393a2ffa0cefe.png"
 draft: false
 ---
@@ -554,45 +555,45 @@ The uptime monitor ran as root while exposing a powerful debugging interface. No
 ## 14. Remediation
 
 1. Upgrade Next.js to a patched version.
-    
+
     - For the 15.0.x branch, upgrade to at least `15.0.5`.
-        
+
 2. Upgrade React Server Components packages to patched releases.
-    
+
     - React RSC packages should be updated according to the official React advisory.
-        
+
 3. Disable Node.js inspector in production.
-    
+
     - Remove `--inspect`.
-        
+
     - Never expose debugging interfaces in production services.
-        
+
 4. Do not run monitoring workers as root unless strictly required.
-    
+
     - Use a dedicated low-privileged service account.
-        
+
     - Apply systemd hardening options such as:
-        
+
         - `NoNewPrivileges=true`
-            
+
         - `PrivateTmp=true`
-            
+
         - `ProtectSystem=strict`
-            
+
         - `ProtectHome=true`
-            
+
 5. Protect sensitive environment files.
-    
+
     - Restrict permissions.
-        
+
     - Avoid storing long-lived secrets directly in application directories.
-        
+
 6. Rotate leaked secrets.
-    
+
     - Rotate `SENSOR_API_KEY`.
-        
+
     - Review and rotate any webhook credentials.
-        
+
 
 ---
 

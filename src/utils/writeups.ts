@@ -11,6 +11,7 @@ const eventLabels: Record<string, string> = {
   'iboh-2025': 'IBOH 2025',
   'international-hack10-ctf-2026': 'International Hack10 CTF 2026',
   'knightctf-2026': 'KnightCTF 2026',
+  'letsdefend-jetbrains': 'LetsDefend JetBrains',
   'ligactf-2026': 'LigaCTF 2026',
   tryhackme: 'TryHackMe',
   'umassctf-2026': 'UMassCTF 2026',

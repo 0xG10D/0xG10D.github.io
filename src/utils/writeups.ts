@@ -7,7 +7,6 @@ const eventLabels: Record<string, string> = {
   'dfir-labs': 'DFIR Labs',
   'dicectf-2026': 'DiceCTF 2026',
   'hack-the-box-machines': 'Hack The Box Machines',
-  'hack-the-box-sherlocks': 'Hack The Box Sherlocks',
   'iboh-2025': 'IBOH 2025',
   'international-hack10-ctf-2026': 'International Hack10 CTF 2026',
   'knightctf-2026': 'KnightCTF 2026',
@@ -78,10 +77,6 @@ export function getChallengeType(post: WriteupEntry) {
 
   if (eventSlug === 'hack-the-box-machines') {
     return category === 'Machine' ? 'Machine' : `Machine / ${category}`;
-  }
-
-  if (eventSlug === 'hack-the-box-sherlocks') {
-    return category === 'Forensics' ? 'Sherlock / Forensics' : `Sherlock / ${category}`;
   }
 
   if (eventSlug === 'dfir-labs') {

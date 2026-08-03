@@ -15,40 +15,25 @@ const categoryCounts = categoryOrder.map((category) => ({
   title="Cybersecurity Cheat Sheets"
   description="Searchable cybersecurity quick-reference hub for CTF, labs, Hack The Box, TryHackMe, and authorized security testing."
 >
-  <main class="cheatsheets-page">
+  <div class="cheatsheets-page">
     <section class="cheatsheets-hero section">
       <div class="container">
         <div class="hero-grid">
           <div class="hero-copy">
-            <div class="meta-pill">
-              <SecurityIcon name="shield" size={16} />
-              <span>Authorized use only</span>
-            </div>
-            <h1>Cybersecurity Cheat Sheets</h1>
+            <p class="hero-eyebrow">authorized quick reference</p>
+            <h1>Cheat sheets</h1>
             <p>
-              A searchable quick-reference hub for CTFs, labs, Hack The Box, TryHackMe, and approved security testing.
-              Built for fast lookup during real workflow pressure.
+              Searchable notes for CTFs, labs, Hack The Box, TryHackMe, and approved testing.
+              Commands keep placeholder targets and scope warnings visible.
             </p>
           </div>
 
-          <div class="hero-panel" aria-label="Cheat sheet summary">
-            <div>
-              <strong>{cheatSheets.length}</strong>
-              <span>Reference cards</span>
-            </div>
-            <div>
-              <strong>{categoryOrder.length}</strong>
-              <span>Categories</span>
-            </div>
-            <div>
-              <strong>{totalCommands}</strong>
-              <span>Command snippets</span>
-            </div>
-            <div>
-              <strong>{allTags.length}</strong>
-              <span>Search tags</span>
-            </div>
-          </div>
+          <dl class="hero-panel" aria-label="Cheat sheet summary">
+            <div><dt>Cards</dt><dd>{cheatSheets.length}</dd></div>
+            <div><dt>Categories</dt><dd>{categoryOrder.length}</dd></div>
+            <div><dt>Commands</dt><dd>{totalCommands}</dd></div>
+            <div><dt>Tags</dt><dd>{allTags.length}</dd></div>
+          </dl>
         </div>
 
         <div class="cheatsheet-controls" aria-label="Cheat sheet filters">
@@ -114,11 +99,9 @@ const categoryCounts = categoryOrder.map((category) => ({
                 data-search={searchText}
               >
                 <header class="sheet-header">
-                  <div class="sheet-icon">
-                    <SecurityIcon name={sheet.icon} size={22} />
-                  </div>
+                  <SecurityIcon name={sheet.icon} size={21} />
                   <div>
-                    <p class="sheet-category">{sheet.category}</p>
+                    <p>{sheet.category}</p>
                     <h2>{sheet.title}</h2>
                   </div>
                 </header>
@@ -127,7 +110,7 @@ const categoryCounts = categoryOrder.map((category) => ({
 
                 {sheet.warning && (
                   <p class="sheet-warning">
-                    <SecurityIcon name="shield" size={16} />
+                    <SecurityIcon name="shield" size={15} />
                     <span>{sheet.warning}</span>
                   </p>
                 )}
@@ -149,9 +132,7 @@ const categoryCounts = categoryOrder.map((category) => ({
                 </div>
 
                 <ul class="sheet-notes">
-                  {sheet.notes.map((note) => (
-                    <li>{note}</li>
-                  ))}
+                  {sheet.notes.map((note) => <li>{note}</li>)}
                 </ul>
 
                 {sheet.links && sheet.links.length > 0 && (
@@ -176,7 +157,6 @@ const categoryCounts = categoryOrder.map((category) => ({
         </div>
 
         <div class="empty-state" id="cheatsheet-empty" hidden>
-          <SecurityIcon name="search" size={34} />
           <h2>No matching cheat sheets</h2>
           <p>Clear filters or search for a broader technique, tool, or category.</p>
           <button type="button" class="button button-primary" data-clear-filters>Clear filters</button>
@@ -188,10 +168,7 @@ const categoryCounts = categoryOrder.map((category) => ({
       <div class="container">
         <div class="cve-layout">
           <div>
-            <div class="meta-pill">
-              <SecurityIcon name="file" size={16} />
-              <span>CVE workflow</span>
-            </div>
+            <p class="hero-eyebrow">CVE workflow</p>
             <h2>CVE and exploit research</h2>
             <p>
               Use this as a source checklist. Do not invent live CVE details. Verify affected versions,
@@ -222,86 +199,76 @@ const categoryCounts = categoryOrder.map((category) => ({
         </div>
       </div>
     </section>
-  </main>
+  </div>
 </BaseLayout>
 
 <style>
-  .cheatsheets-page {
-    padding-top: 80px;
-  }
-
   .cheatsheets-hero {
-    padding-top: calc(var(--section-spacing) * 1.15);
-    padding-bottom: 2.5rem;
-    border-bottom: 1px solid var(--border-subtle);
-    background:
-      radial-gradient(circle at 82% 12%, rgba(56, 189, 248, 0.18), transparent 32%),
-      linear-gradient(135deg, rgba(8, 20, 47, 0.86), rgba(5, 11, 31, 0));
+    border-bottom: 1px solid var(--border);
   }
 
-  .hero-grid {
+  .hero-grid,
+  .cve-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1.18fr) minmax(280px, 0.82fr);
-    gap: 2rem;
+    grid-template-columns: minmax(0, 1.05fr) minmax(280px, 0.55fr);
+    gap: clamp(2rem, 6vw, 4rem);
     align-items: end;
   }
 
-  .hero-copy h1 {
-    max-width: 860px;
-    margin-top: 1.1rem;
-    text-wrap: balance;
+  .hero-eyebrow {
+    margin: 0 0 0.9rem;
+    color: var(--steel);
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
 
-  .hero-copy p {
+  .hero-copy h1 {
+    margin-bottom: 1rem;
+  }
+
+  .hero-copy p:not(.hero-eyebrow) {
     max-width: 72ch;
-    color: var(--text-secondary);
-    font-size: 1.1rem;
+    font-size: 1.08rem;
   }
 
   .hero-panel {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.8rem;
-  }
-
-  .hero-panel div,
-  .sheet-card,
-  .cve-card,
-  .empty-state {
-    background: var(--gradient-panel);
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    box-shadow: var(--shadow-medium);
+    margin: 0;
+    border-top: 1px solid var(--border);
+    border-left: 1px solid var(--border);
   }
 
   .hero-panel div {
-    padding: 1rem;
+    padding: 0.9rem;
+    border-right: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
   }
 
-  .hero-panel strong {
-    display: block;
-    color: var(--accent-blue);
+  .hero-panel dt {
+    color: var(--text-muted);
     font-family: var(--font-mono);
-    font-size: clamp(1.4rem, 3vw, 2rem);
-    line-height: 1;
+    font-size: 0.72rem;
+    text-transform: uppercase;
   }
 
-  .hero-panel span {
-    display: block;
-    margin-top: 0.45rem;
-    color: var(--muted-text);
-    font-size: 0.76rem;
-    text-transform: uppercase;
+  .hero-panel dd {
+    margin: 0.2rem 0 0;
+    color: var(--accent-strong);
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    line-height: 1;
   }
 
   .cheatsheet-controls {
     display: grid;
     gap: 1rem;
     margin-top: 2rem;
-    padding: 1rem;
-    background: rgba(8, 20, 47, 0.74);
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
   }
 
   .search-group {
@@ -310,25 +277,21 @@ const categoryCounts = categoryOrder.map((category) => ({
   }
 
   .search-group span {
-    color: var(--text-secondary);
-    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
     font-weight: 700;
+    text-transform: uppercase;
   }
 
   .search-group input {
     width: 100%;
-    min-height: 48px;
-    color: var(--text-primary);
-    background: rgba(5, 11, 31, 0.86);
-    border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    padding: 0.75rem 0.9rem;
-  }
-
-  .search-group input:focus {
-    outline: none;
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 0 3px var(--accent-blue-subtle);
+    min-height: 46px;
+    padding: 0.72rem 0.82rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-code);
+    color: var(--text);
   }
 
   .filter-group,
@@ -337,25 +300,27 @@ const categoryCounts = categoryOrder.map((category) => ({
   .research-links {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.65rem;
+    gap: 0.55rem;
   }
 
   .filter-chip,
   .sheet-tags button,
   .clear-button,
-  .category-tile {
-    color: var(--text-secondary);
-    background: rgba(8, 20, 47, 0.78);
-    border: 1px solid var(--border-subtle);
-    border-radius: 8px;
+  .category-tile,
+  .copy-button {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text-muted);
     cursor: pointer;
+    font-weight: 700;
   }
 
-  .filter-chip {
-    min-height: 38px;
-    padding: 0.45rem 0.75rem;
+  .filter-chip,
+  .clear-button {
+    min-height: 36px;
+    padding: 0.4rem 0.68rem;
     font-size: 0.82rem;
-    font-weight: 700;
   }
 
   .filter-chip:hover,
@@ -363,39 +328,43 @@ const categoryCounts = categoryOrder.map((category) => ({
   .sheet-tags button:hover,
   .sheet-tags button.active,
   .category-tile:hover,
-  .category-tile.active {
-    color: var(--accent-blue);
-    border-color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
+  .category-tile.active,
+  .clear-button:hover,
+  .copy-button:hover {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-strong);
   }
 
   .category-band {
-    padding: 1.25rem 0;
-    border-bottom: 1px solid var(--border-subtle);
-    background: rgba(5, 11, 31, 0.4);
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-soft);
   }
 
   .category-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 0.75rem;
+    gap: 0.55rem;
   }
 
   .category-tile {
     display: flex;
+    min-height: 40px;
     justify-content: space-between;
     gap: 0.7rem;
     align-items: center;
-    padding: 0.85rem;
+    padding: 0.58rem 0.68rem;
     text-align: left;
   }
 
   .category-tile span {
-    font-weight: 700;
+    min-width: 0;
+    font-size: 0.84rem;
   }
 
   .category-tile strong {
-    color: var(--accent-blue);
+    color: var(--accent-strong);
     font-family: var(--font-mono);
   }
 
@@ -409,24 +378,18 @@ const categoryCounts = categoryOrder.map((category) => ({
     gap: 1rem;
     align-items: center;
     margin-bottom: 1.25rem;
-    color: var(--text-secondary);
+    color: var(--text-muted);
   }
 
   .results-line strong {
-    color: var(--accent-blue);
+    color: var(--accent-strong);
     font-family: var(--font-mono);
-  }
-
-  .clear-button {
-    min-height: 38px;
-    padding: 0.45rem 0.75rem;
-    font-weight: 700;
   }
 
   .sheets-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
-    gap: 1.2rem;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1rem;
     align-items: start;
   }
 
@@ -436,114 +399,104 @@ const categoryCounts = categoryOrder.map((category) => ({
     height: 100%;
     flex-direction: column;
     gap: 1rem;
-    padding: 1.25rem;
+    padding: 1.1rem;
   }
 
   .sheet-header {
     display: grid;
     grid-template-columns: auto 1fr;
-    gap: 0.85rem;
+    gap: 0.8rem;
     align-items: start;
   }
 
-  .sheet-icon {
-    display: grid;
-    width: 42px;
-    height: 42px;
-    place-items: center;
-    color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
-    border: 1px solid var(--border-medium);
-    border-radius: 10px;
+  .sheet-header svg {
+    color: var(--steel);
+    margin-top: 0.18rem;
   }
 
-  .sheet-category {
+  .sheet-header p {
     margin: 0 0 0.25rem;
-    color: var(--accent-blue);
+    color: var(--steel);
     font-family: var(--font-mono);
-    font-size: 0.73rem;
-    font-weight: 800;
+    font-size: 0.72rem;
+    font-weight: 700;
     text-transform: uppercase;
   }
 
   .sheet-header h2 {
-    margin: 0;
     font-size: 1.18rem;
   }
 
   .sheet-description {
     margin: 0;
-    color: var(--text-secondary);
+    color: var(--text-soft);
     font-size: 0.95rem;
   }
 
   .sheet-warning {
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 1fr;
     gap: 0.55rem;
-    align-items: flex-start;
     margin: 0;
-    padding: 0.75rem;
-    color: var(--soft-cyan);
-    background: rgba(37, 99, 235, 0.1);
-    border: 1px solid var(--border-medium);
-    border-radius: 8px;
-    font-size: 0.85rem;
+    padding: 0.68rem;
+    border: 1px solid var(--border);
+    background: var(--bg-soft);
+    color: var(--accent-strong);
+    font-size: 0.84rem;
+  }
+
+  .sheet-warning svg {
+    margin-top: 0.12rem;
   }
 
   .command-list {
     display: grid;
-    gap: 0.75rem;
+    gap: 0.72rem;
   }
 
   .command-block {
     overflow: hidden;
-    border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    background: rgba(5, 11, 31, 0.68);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-code);
   }
 
   .command-head {
     display: flex;
-    min-height: 38px;
+    min-height: 36px;
+    align-items: center;
     justify-content: space-between;
     gap: 0.75rem;
-    align-items: center;
-    padding: 0.45rem 0.55rem 0.45rem 0.75rem;
-    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.42rem 0.55rem 0.42rem 0.68rem;
+    border-bottom: 1px solid var(--border);
   }
 
   .command-head span {
-    color: var(--text-secondary);
+    color: var(--text-muted);
     font-size: 0.78rem;
     font-weight: 700;
   }
 
   .copy-button {
-    min-height: 30px;
-    padding: 0.25rem 0.55rem;
-    color: var(--accent-blue);
-    background: var(--accent-blue-subtle);
-    border: 1px solid var(--border-medium);
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 0.75rem;
-    font-weight: 800;
+    min-height: 28px;
+    padding: 0.22rem 0.52rem;
+    font-size: 0.72rem;
   }
 
   .copy-button.copied {
-    color: var(--bg-main);
-    background: var(--accent-blue);
+    border-color: var(--accent);
+    background: var(--accent);
+    color: var(--bg);
   }
 
   .command-block pre {
     margin: 0;
-    padding: 0.85rem;
-    overflow-x: auto;
+    padding: 0.8rem;
+    border: 0;
   }
 
   .command-block code {
-    color: var(--text-primary);
-    font-family: var(--font-mono);
+    color: var(--text);
     font-size: 0.82rem;
     line-height: 1.55;
     white-space: pre;
@@ -551,10 +504,10 @@ const categoryCounts = categoryOrder.map((category) => ({
 
   .sheet-notes {
     display: grid;
-    gap: 0.5rem;
+    gap: 0.48rem;
     margin: 0;
     padding-left: 1.1rem;
-    color: var(--text-secondary);
+    color: var(--text-soft);
     font-size: 0.9rem;
   }
 
@@ -562,27 +515,28 @@ const categoryCounts = categoryOrder.map((category) => ({
   .research-links a {
     display: inline-flex;
     align-items: center;
-    gap: 0.4rem;
-    color: var(--text-secondary);
-    border: 1px solid var(--border-subtle);
-    border-radius: 8px;
-    background: rgba(8, 20, 47, 0.72);
+    gap: 0.38rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-muted);
     font-weight: 700;
+    text-decoration: none;
   }
 
   .sheet-links a {
-    padding: 0.45rem 0.65rem;
-    font-size: 0.82rem;
+    padding: 0.4rem 0.58rem;
+    font-size: 0.8rem;
   }
 
   .research-links a {
-    padding: 0.7rem 0.85rem;
+    padding: 0.58rem 0.68rem;
+    font-size: 0.86rem;
   }
 
   .sheet-links a:hover,
   .research-links a:hover {
-    color: var(--accent-blue);
-    border-color: var(--accent-blue);
+    border-color: var(--accent);
+    color: var(--accent-strong);
   }
 
   .sheet-tags {
@@ -591,54 +545,36 @@ const categoryCounts = categoryOrder.map((category) => ({
   }
 
   .sheet-tags button {
-    min-height: 32px;
-    padding: 0.3rem 0.55rem;
+    min-height: 30px;
+    padding: 0.28rem 0.5rem;
     font-family: var(--font-mono);
-    font-size: 0.72rem;
-  }
-
-  .empty-state {
-    padding: 3rem 1.25rem;
-    text-align: center;
-  }
-
-  .empty-state svg {
-    color: var(--accent-blue);
-    margin-bottom: 1rem;
-  }
-
-  .empty-state h2 {
-    font-size: 1.5rem;
+    font-size: 0.7rem;
   }
 
   .cve-section {
-    border-top: 1px solid var(--border-subtle);
-    background: linear-gradient(180deg, rgba(8, 20, 47, 0.46), rgba(5, 11, 31, 0));
+    border-top: 1px solid var(--border);
   }
 
   .cve-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 0.9fr) minmax(300px, 1.1fr);
-    gap: 1.5rem;
     align-items: start;
     margin-bottom: 1.5rem;
   }
 
   .cve-layout h2 {
-    margin-top: 1rem;
+    margin-bottom: 0.8rem;
   }
 
-  .cve-layout p {
-    max-width: 62ch;
+  .cve-layout p:not(.hero-eyebrow) {
+    max-width: 64ch;
   }
 
   .cve-card {
-    padding: 1.25rem;
+    padding: 1.1rem;
   }
 
   .cve-card h3 {
-    margin: 0 0 1rem;
-    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    font-size: 1.15rem;
   }
 
   .cve-card dl {
@@ -652,7 +588,7 @@ const categoryCounts = categoryOrder.map((category) => ({
     grid-template-columns: minmax(120px, 0.45fr) minmax(0, 1fr);
     gap: 0.75rem;
     padding-bottom: 0.7rem;
-    border-bottom: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border);
   }
 
   .cve-card div:last-child {
@@ -661,16 +597,16 @@ const categoryCounts = categoryOrder.map((category) => ({
   }
 
   .cve-card dt {
-    color: var(--accent-blue);
+    color: var(--steel);
     font-family: var(--font-mono);
-    font-size: 0.76rem;
-    font-weight: 800;
+    font-size: 0.74rem;
+    font-weight: 700;
     text-transform: uppercase;
   }
 
   .cve-card dd {
     margin: 0;
-    color: var(--text-secondary);
+    color: var(--text-soft);
   }
 
   @media (max-width: 980px) {
@@ -680,7 +616,7 @@ const categoryCounts = categoryOrder.map((category) => ({
     }
   }
 
-  @media (max-width: 620px) {
+  @media (max-width: 640px) {
     .hero-panel,
     .sheets-grid {
       grid-template-columns: 1fr;
@@ -694,6 +630,12 @@ const categoryCounts = categoryOrder.map((category) => ({
     .cve-card div {
       grid-template-columns: 1fr;
       gap: 0.25rem;
+    }
+  }
+
+  @media (max-width: 380px) {
+    .category-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>

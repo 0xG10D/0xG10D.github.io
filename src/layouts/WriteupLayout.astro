@@ -2,7 +2,7 @@
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import TableOfContents from '../components/TableOfContents.astro';
-import { getChallengeType } from '../utils/writeups';
+import { getChallengeType, getEventName, getEventSlug } from '../utils/writeups';
 
 interface Heading {
   depth: number;
@@ -23,8 +23,7 @@ const platformLabels: Record<string, string> = {
   tryhackme: 'TryHackMe',
   portswigger: 'PortSwigger',
   picoctf: 'picoCTF',
-  'international-ctf': 'International CTF',
-  'local-ctf': 'Local CTF',
+  research: 'Research',
   ctf: 'CTF',
   other: 'Other'
 };
@@ -47,6 +46,7 @@ const formatDate = (date: Date) =>
 const platformLabel = platformLabels[post.data.platform] ?? post.data.platform.replaceAll('-', ' ');
 const difficultyLabel = difficultyLabels[post.data.difficulty] ?? post.data.difficulty;
 const categoryLabel = getChallengeType(post);
+const eventLabel = getEventName(getEventSlug(post));
 ---
 
 <BaseLayout title={post.data.title} description={post.data.summary}>
@@ -55,6 +55,7 @@ const categoryLabel = getChallengeType(post);
       <header class="writeup-header">
         <a class="back-link" href="/writeups/">Back to writeups</a>
 
+        <p class="writeup-kicker">{eventLabel}</p>
         <h1>{post.data.title}</h1>
 
         {post.data.summary && <p class="writeup-summary">{post.data.summary}</p>}
@@ -86,7 +87,7 @@ const categoryLabel = getChallengeType(post);
 
         {post.data.boxImage && (
           <figure class="writeup-featured-image">
-            <img src={post.data.boxImage} alt={`${post.data.title} reference image`} loading="lazy" />
+            <img src={post.data.boxImage} alt={`${post.data.title} reference image`} loading="lazy" decoding="async" />
           </figure>
         )}
       </header>
@@ -108,8 +109,7 @@ const categoryLabel = getChallengeType(post);
 
       <footer class="writeup-footer">
         <p>
-          This note documents authorized security practice. Do not run these techniques on systems
-          without explicit permission.
+          Authorized security practice only. These notes are for lab, CTF, and explicitly permitted environments.
         </p>
       </footer>
     </div>
@@ -118,26 +118,38 @@ const categoryLabel = getChallengeType(post);
 
 <style>
   .writeup-article {
-    padding: clamp(2.5rem, 7vw, 5rem) 0 4rem;
+    padding: clamp(2rem, 6vw, 4.5rem) 0 4rem;
   }
 
   .writeup-header {
-    max-width: 900px;
+    max-width: 940px;
     margin-bottom: clamp(2rem, 5vw, 3.5rem);
   }
 
   .back-link {
-    display: inline-block;
+    display: inline-flex;
     margin-bottom: 1.25rem;
-    color: var(--muted-text);
-    font-size: 0.95rem;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
     font-weight: 700;
+    text-decoration: none;
   }
 
   .back-link::before {
-    content: "< ";
-    color: var(--accent-blue);
+    content: "<-";
+    margin-right: 0.45rem;
+    color: var(--accent);
+  }
+
+  .writeup-kicker {
+    margin: 0 0 0.85rem;
+    color: var(--steel);
     font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
 
   .writeup-header h1 {
@@ -146,9 +158,9 @@ const categoryLabel = getChallengeType(post);
   }
 
   .writeup-summary {
-    max-width: 72ch;
-    color: var(--text-secondary);
-    font-size: clamp(1.05rem, 2vw, 1.22rem);
+    max-width: 74ch;
+    color: var(--text-soft);
+    font-size: clamp(1.08rem, 2vw, 1.25rem);
     line-height: 1.7;
   }
 
@@ -157,43 +169,46 @@ const categoryLabel = getChallengeType(post);
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0;
     margin: 2rem 0 0;
-    border-top: 1px solid var(--border-subtle);
-    border-bottom: 1px solid var(--border-subtle);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
   }
 
   .report-meta-grid div {
-    padding: 0.85rem 1rem 0.85rem 0;
+    min-width: 0;
+    padding: 0.86rem 1rem 0.86rem 0;
   }
 
   .report-meta-grid dt {
-    color: var(--muted-text);
+    color: var(--text-muted);
     font-family: var(--font-mono);
-    font-size: 0.74rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
 
   .report-meta-grid dd {
-    margin: 0.25rem 0 0;
-    color: var(--text-primary);
-    text-transform: capitalize;
+    margin: 0.28rem 0 0;
+    color: var(--text);
   }
 
   .writeup-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.45rem;
+    gap: 0.45rem 0.65rem;
     margin-top: 1rem;
   }
 
   .writeup-tags span {
-    color: var(--muted-text);
+    color: var(--text-muted);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.74rem;
   }
 
   .writeup-featured-image {
     margin: 2rem 0 0;
-    border: 1px solid var(--border-subtle);
-    background: var(--card-bg);
+    border: 1px solid var(--border);
+    background: var(--bg-code);
   }
 
   .writeup-featured-image img {
@@ -203,90 +218,88 @@ const categoryLabel = getChallengeType(post);
 
   .writeup-body {
     display: grid;
-    grid-template-columns: minmax(0, var(--content-max)) minmax(220px, 280px);
-    gap: clamp(2rem, 6vw, 4rem);
+    grid-template-columns: minmax(0, var(--reading)) minmax(220px, 280px);
+    gap: clamp(2rem, 6vw, 4.5rem);
     align-items: start;
   }
 
   .writeup-content {
     min-width: 0;
-    max-width: var(--content-max);
+    max-width: var(--reading);
   }
 
   .writeup-content :global(h2),
   .writeup-content :global(h3),
-  .writeup-content :global(h4) {
+  .writeup-content :global(h4),
+  .writeup-content :global(h5),
+  .writeup-content :global(h6) {
     scroll-margin-top: 88px;
   }
 
   .writeup-content :global(h1) {
-    max-width: 20ch;
-    margin: 2.5rem 0 1rem;
+    margin: 2.75rem 0 1rem;
     padding-top: 1rem;
-    border-top: 1px solid var(--border-subtle);
-    font-size: clamp(1.8rem, 3.5vw, 2.6rem);
+    border-top: 1px solid var(--border);
+    font-size: clamp(1.8rem, 3.6vw, 2.5rem);
   }
 
   .writeup-content :global(h2) {
     margin: 3rem 0 1rem;
     padding-top: 1rem;
-    border-top: 1px solid var(--border-subtle);
-    font-size: clamp(1.55rem, 3vw, 2.15rem);
+    border-top: 1px solid var(--border);
+    font-size: clamp(1.55rem, 3vw, 2.18rem);
   }
 
   .writeup-content :global(h3) {
-    margin: 2.2rem 0 0.8rem;
+    margin: 2.15rem 0 0.75rem;
     font-size: clamp(1.25rem, 2.2vw, 1.55rem);
+  }
+
+  .writeup-content :global(h4) {
+    margin: 1.7rem 0 0.65rem;
+    color: var(--text-soft);
+    font-family: var(--font-mono);
+    font-size: 0.96rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
   }
 
   .writeup-content :global(p),
   .writeup-content :global(li) {
-    color: var(--text-secondary);
+    color: var(--text-soft);
     line-height: 1.78;
   }
 
   .writeup-content :global(a) {
-    color: var(--accent-blue);
+    color: var(--accent-strong);
     text-decoration: underline;
-    text-underline-offset: 0.18em;
   }
 
   .writeup-content :global(code) {
-    padding: 0.12rem 0.32rem;
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    background: var(--code-bg);
-    color: var(--accent-blue-soft);
+    padding: 0.1rem 0.28rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-code);
+    color: #d8cb98;
     font-size: 0.88em;
   }
 
   .writeup-content :global(pre) {
-    max-width: 100%;
     margin: 1.5rem 0;
     padding: 1rem;
-    overflow-x: auto;
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
-    background: var(--code-bg);
   }
 
   .writeup-content :global(pre code) {
-    display: block;
-    min-width: max-content;
     padding: 0;
-    border: 0;
-    background: transparent;
-    color: var(--text-primary);
-    font-size: 0.86rem;
-    line-height: 1.58;
+    color: var(--text);
   }
 
   .writeup-content :global(blockquote) {
     margin: 1.75rem 0;
     padding: 0.85rem 1rem;
-    border-left: 3px solid var(--accent-blue);
-    background: var(--bg-secondary);
-    color: var(--text-secondary);
+    border-left: 3px solid var(--accent);
+    background: var(--bg-soft);
+    color: var(--text-soft);
   }
 
   .writeup-content :global(blockquote p:last-child) {
@@ -295,42 +308,33 @@ const categoryLabel = getChallengeType(post);
 
   .writeup-content :global(table) {
     display: block;
-    width: 100%;
     max-width: 100%;
     margin: 1.75rem 0;
     overflow-x: auto;
-    border-collapse: collapse;
-    border: 1px solid var(--border-subtle);
-    font-size: 0.94rem;
-  }
-
-  .writeup-content :global(th),
-  .writeup-content :global(td) {
-    padding: 0.65rem 0.75rem;
-    border-bottom: 1px solid var(--border-subtle);
-    text-align: left;
-  }
-
-  .writeup-content :global(th) {
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-  }
-
-  .writeup-content :global(td) {
-    color: var(--text-secondary);
+    border: 1px solid var(--border);
   }
 
   .writeup-content :global(img) {
     display: block;
     max-width: 100%;
     margin: 1.75rem 0 0.6rem;
-    border: 1px solid var(--border-subtle);
+    border: 1px solid var(--border);
+    background: var(--bg-code);
+  }
+
+  .writeup-content :global(figure) {
+    margin: 1.75rem 0;
+  }
+
+  .writeup-content :global(figcaption) {
+    color: var(--text-muted);
+    font-size: 0.88rem;
   }
 
   .writeup-content :global(ul),
   .writeup-content :global(ol) {
     margin: 1rem 0 1.5rem;
-    padding-left: 1.4rem;
+    padding-left: 1.35rem;
   }
 
   .writeup-sidebar {
@@ -342,29 +346,30 @@ const categoryLabel = getChallengeType(post);
 
   .share-button {
     width: 100%;
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-sm);
+    min-height: 38px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     background: transparent;
-    color: var(--text-secondary);
+    color: var(--text-muted);
     cursor: pointer;
     font-weight: 700;
   }
 
   .share-button:hover {
-    border-color: var(--accent-blue);
-    color: var(--accent-blue);
+    border-color: var(--accent);
+    color: var(--accent-strong);
   }
 
   .writeup-footer {
-    max-width: var(--content-max);
+    max-width: var(--reading);
     margin-top: 3rem;
     padding-top: 1rem;
-    border-top: 1px solid var(--border-subtle);
+    border-top: 1px solid var(--border);
   }
 
   .writeup-footer p {
     margin: 0;
-    color: var(--muted-text);
+    color: var(--text-muted);
     font-size: 0.92rem;
   }
 

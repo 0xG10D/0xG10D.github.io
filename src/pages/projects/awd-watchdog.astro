@@ -10,7 +10,7 @@ if (!project) {
 ---
 
 <BaseLayout title={project.title} description={project.summary}>
-  <main class="project-detail-page">
+  <div class="project-detail-page">
   <div class="container">
     <!-- Back Navigation -->
     <a href="/projects/" class="button button-secondary project-back-link">
@@ -33,7 +33,7 @@ if (!project) {
     <section class="project-detail">
       <div class="project-detail-header">
         <span class="pill accent">Project Overview</span>
-        <h2>CASE_STUDY: {project.title}</h2>
+        <h2>Case study: {project.title}</h2>
         <p class="project-overview">{project.overview}</p>
       </div>
 
@@ -94,5 +94,5 @@ if (!project) {
       </div>
     </section>
   </div>
-</main>
+</div>
 </BaseLayout>

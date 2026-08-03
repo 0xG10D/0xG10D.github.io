@@ -1,6 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { getChallengeType, getWriteupUrl } from '../utils/writeups';
+import { getChallengeType, getEventName, getEventSlug, getWriteupUrl } from '../utils/writeups';
 
 interface Props {
   post: CollectionEntry<'writeups'>;
@@ -14,8 +14,7 @@ const platformLabels: Record<string, string> = {
   tryhackme: 'THM',
   portswigger: 'PortSwigger',
   picoctf: 'picoCTF',
-  'international-ctf': 'International CTF',
-  'local-ctf': 'Local CTF',
+  research: 'Research',
   ctf: 'CTF',
   other: 'Other'
 };
@@ -27,28 +26,24 @@ const formatDate = (date: Date) =>
     day: 'numeric'
   });
 
-const getPlatformLabel = (value: string) => platformLabels[value] ?? value.replaceAll('-', ' ');
-const date = formatDate(post.data.date);
-const difficulty = post.data.difficulty;
-const platformLabel = getPlatformLabel(post.data.platform);
+const platformLabel = platformLabels[post.data.platform] ?? post.data.platform.replaceAll('-', ' ');
 const challengeType = getChallengeType(post);
+const eventName = getEventName(getEventSlug(post));
 const cardId = `writeup-${post.id.replace(/[^a-z0-9-]/gi, '-')}`;
 const writeupUrl = getWriteupUrl(post);
 ---
 
-<article
-  class="writeup-card"
-  aria-labelledby={cardId}
->
+<article class="writeup-card" aria-labelledby={cardId}>
   <div class="card-date">
-    <time datetime={post.data.date.toISOString()}>{date}</time>
+    <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
+    <span>{eventName}</span>
   </div>
 
   <div class="card-main">
     <div class="card-meta">
       <span>{platformLabel}</span>
       <span>{challengeType}</span>
-      <span>{difficulty}</span>
+      <span>{post.data.difficulty}</span>
     </div>
 
     <h3 class="card-title" id={cardId}>
@@ -59,7 +54,7 @@ const writeupUrl = getWriteupUrl(post);
 
     {post.data.tags.length > 0 && (
       <div class="card-tags" aria-label={`${post.data.title} tags`}>
-        {post.data.tags.slice(0, 5).map((tag) => <span>#{tag}</span>)}
+        {post.data.tags.slice(0, 6).map((tag) => <span>#{tag}</span>)}
       </div>
     )}
   </div>
@@ -68,20 +63,27 @@ const writeupUrl = getWriteupUrl(post);
 <style>
   .writeup-card {
     display: grid;
-    grid-template-columns: 9rem minmax(0, 1fr);
-    gap: 1.25rem;
-    padding: 1rem 0;
-    border-top: 1px solid var(--border-subtle);
+    grid-template-columns: minmax(7rem, 10rem) minmax(0, 1fr);
+    gap: clamp(1rem, 3vw, 1.75rem);
+    padding: 1rem 0 1.05rem;
+    border-top: 1px solid var(--border);
   }
 
   .writeup-card:last-child {
-    border-bottom: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border);
   }
 
   .card-date {
-    color: var(--muted-text);
-    font-size: 0.82rem;
-    line-height: 1.5;
+    display: grid;
+    align-content: start;
+    gap: 0.22rem;
+    color: var(--text-muted);
+    font-size: 0.76rem;
+    line-height: 1.45;
+  }
+
+  .card-date span {
+    color: var(--text-faint);
   }
 
   .card-main {
@@ -91,50 +93,50 @@ const writeupUrl = getWriteupUrl(post);
   .card-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.35rem 0.75rem;
-    margin-bottom: 0.25rem;
-    color: var(--muted-text);
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
+    gap: 0.25rem 0.75rem;
+    margin-bottom: 0.3rem;
+    color: var(--steel);
+    font-size: 0.74rem;
     text-transform: lowercase;
   }
 
   .card-meta span + span::before {
     content: "/";
     margin-right: 0.75rem;
-    color: var(--border-medium);
+    color: var(--border-strong);
   }
 
   .card-title {
-    margin: 0 0 0.35rem;
-    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    margin-bottom: 0.35rem;
+    font-size: clamp(1.18rem, 2vw, 1.52rem);
   }
 
   .card-title a {
-    color: var(--text-primary);
+    color: var(--text);
+    text-decoration: none;
   }
 
   .card-title a:hover {
-    color: var(--accent-blue);
+    color: var(--accent-strong);
   }
 
   .card-summary {
-    max-width: 78ch;
+    max-width: 82ch;
     margin: 0;
-    color: var(--text-secondary);
+    color: var(--text-soft);
     font-size: 0.98rem;
-    line-height: 1.6;
+    line-height: 1.62;
   }
 
   .card-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.35rem;
-    margin-top: 0.7rem;
+    gap: 0.35rem 0.55rem;
+    margin-top: 0.72rem;
   }
 
   .card-tags span {
-    color: var(--muted-text);
+    color: var(--text-muted);
     font-family: var(--font-mono);
     font-size: 0.72rem;
   }
@@ -142,7 +144,7 @@ const writeupUrl = getWriteupUrl(post);
   @media (max-width: 640px) {
     .writeup-card {
       grid-template-columns: 1fr;
-      gap: 0.35rem;
+      gap: 0.45rem;
     }
   }
 </style>

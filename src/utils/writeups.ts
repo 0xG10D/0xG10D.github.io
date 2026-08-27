@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 type WriteupEntry = CollectionEntry<'writeups'>;
 
 const eventLabels: Record<string, string> = {
+  'bahtera-3108-2025': 'Bahtera 3108 2025',
   'cybergame-sk': 'CyberGame.sk',
   'dfir-labs': 'DFIR Labs',
   'dicectf-2026': 'DiceCTF 2026',

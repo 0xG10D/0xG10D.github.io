@@ -33,7 +33,7 @@ First, basic file inspection was performed:
 ```bash
 exiftool challenge.png
 pngcheck -v challenge.png
-````
+```
 
 Results:
 
@@ -251,3 +251,4 @@ Full analysis and command history available in the working notes:
 
 ```
 UMASS{perfectly-hidden-ready-to-strike}
+```

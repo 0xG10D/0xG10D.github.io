@@ -15,7 +15,7 @@ category: "international-ctf"
 difficulty: "medium"
 platform: "ctf"
 draft: false
-boxImage: "https://scontent.fkul11-2.fna.fbcdn.net/v/t39.30808-1/638315334_912211214722245_1753300060671872827_n.jpg?stp=dst-jpg_tt6&cstp=mx180x180&ctp=s180x180&_nc_cat=105&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=tmZZ3tgT6bwQ7kNvwGoDB83&_nc_oc=AdoJZqRKxReRj76CRTP46td-B7AaAkrMrDS2ghidHSGCPZQNz6wXSKnMjvyeQ-UJgSHUwYcx5DrUHcoHmVsz8zFB&_nc_zt=24&_nc_ht=scontent.fkul11-2.fna&_nc_gid=y1Q08Jq9DhDlqGjKjQUDEg&_nc_ss=7b289&oh=00_Af_Ow3s347ZkjkRHjGV77tVd8INvQ45jyBC3iw6yTuzRqA&oe=6A3ACF21"
+boxImage: ""
 ---
 ## 1. Challenge Overview
 

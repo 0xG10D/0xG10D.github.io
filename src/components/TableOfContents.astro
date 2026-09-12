@@ -51,12 +51,24 @@ const { headings } = Astro.props;
     margin: 0;
   }
 
+  /* The sidebar is sticky above 980px, so a long contents list has to scroll
+     on its own or its tail becomes unreachable. Below that it flows normally. */
+  @media (min-width: 981px) {
+    .toc ul {
+      max-height: min(62vh, 34rem);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+  }
+
   .toc-link {
     display: block;
-    padding: 0.25rem 0;
+    padding: 0.25rem 0 0.25rem 0.5rem;
+    border-left: 2px solid transparent;
     color: var(--text-muted);
     font-size: 0.86rem;
     line-height: 1.35;
+    overflow-wrap: anywhere;
     text-decoration: none;
   }
 
@@ -66,18 +78,17 @@ const { headings } = Astro.props;
   }
 
   .toc-link-active {
-    border-left: 2px solid var(--accent);
-    padding-left: 0.5rem;
+    border-left-color: var(--accent);
   }
 
-  .toc-depth-3 {
-    padding-left: 0.75rem;
-  }
-
-  .toc-depth-4,
-  .toc-depth-5,
-  .toc-depth-6 {
+  .toc-depth-3 .toc-link {
     padding-left: 1.25rem;
+  }
+
+  .toc-depth-4 .toc-link,
+  .toc-depth-5 .toc-link,
+  .toc-depth-6 .toc-link {
+    padding-left: 1.75rem;
   }
 </style>
 

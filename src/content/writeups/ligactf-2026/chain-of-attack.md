@@ -17,7 +17,7 @@ category: "local-ctf"
 difficulty: "medium"
 platform: "ctf"
 draft: false
-boxImage: "https://owasp.org/www-chapter-kuala-lumpur/owaspmy.jpeg"
+boxImage: ""
 ---
 ## Challenge Information
 

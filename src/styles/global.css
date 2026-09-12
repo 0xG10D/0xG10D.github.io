@@ -12,7 +12,7 @@
   --text: #e3dfd2;
   --text-soft: #c6c0ae;
   --text-muted: #8f8a7b;
-  --text-faint: #69665c;
+  --text-faint: #838072;
 
   --accent: #c8a96a;
   --accent-strong: #e0c27d;
@@ -137,6 +137,25 @@ h3 {
 p {
   margin: 0 0 1.2rem;
   color: var(--text-soft);
+}
+
+p,
+li,
+dd,
+dt,
+blockquote,
+figcaption,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+:not(pre) > code {
+  overflow-wrap: anywhere;
 }
 
 ul,
@@ -330,12 +349,12 @@ pre {
 
 pre code {
   display: block;
-  min-width: max-content;
   border: 0;
   background: transparent;
   color: var(--text);
   font-size: 0.86rem;
   line-height: 1.58;
+  overflow-wrap: normal;
 }
 
 table {

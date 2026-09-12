@@ -72,7 +72,7 @@ const statusLabels = {
     <section class="achievements-hero section">
       <div class="container hero-grid">
         <div>
-          <p class="hero-eyebrow">technical credentials</p>
+          <p class="hero-eyebrow">// technical credentials</p>
           <h1>Achievements</h1>
           <p>
             Certification records, CTF participation, and current learning tracks.
@@ -114,17 +114,17 @@ const statusLabels = {
 
     <section class="section snapshot-section">
       <div class="container snapshot-grid">
-        <article class="snapshot-card">
+        <article class="snapshot-card reveal">
           <SecurityIcon name="award" size={22} />
           <h2>Credential record</h2>
           <p>Certifications are grouped by domain and status for quick scanning.</p>
         </article>
-        <article class="snapshot-card">
+        <article class="snapshot-card reveal" data-reveal-delay="60">
           <SecurityIcon name="target" size={22} />
           <h2>Competitive practice</h2>
           <p>CTF records keep placement, organizer, team, and date facts intact.</p>
         </article>
-        <article class="snapshot-card">
+        <article class="snapshot-card reveal" data-reveal-delay="120">
           <SecurityIcon name="radar" size={22} />
           <h2>Learning roadmap</h2>
           <p>Current tracks are separated from verified credentials.</p>
@@ -135,7 +135,7 @@ const statusLabels = {
     <section class="section certifications-section">
       <div class="container">
         <div class="section-header">
-          <p class="section-kicker">credentials</p>
+          <p class="section-kicker">// credentials</p>
           <h2 class="section-title">Technical certifications</h2>
           <p class="section-subtitle">
             Networking, infrastructure, and cybersecurity credentials with status and credential metadata.
@@ -143,10 +143,10 @@ const statusLabels = {
         </div>
 
         <div class="certifications-grid">
-          {allCertifications.map((cert) => {
+          {allCertifications.map((cert, index) => {
             const status = (cert.status || 'verified') as keyof typeof statusLabels;
             return (
-              <article class="certification-card" data-status={status}>
+              <article class="certification-card reveal" data-reveal-delay={Math.min(index * 30, 240)} data-status={status}>
                 <header>
                   <p>{cert.provider}</p>
                   <span>{statusLabels[status]}</span>
@@ -169,15 +169,15 @@ const statusLabels = {
     <section class="section ctf-section">
       <div class="container">
         <div class="section-header">
-          <p class="section-kicker">competition record</p>
+          <p class="section-kicker">// competition record</p>
           <h2 class="section-title">CTF competitions</h2>
           <p class="section-subtitle">Event participation and placement history.</p>
         </div>
 
         {data.ctfCompetitions.length > 0 ? (
           <div class="ctf-grid">
-            {data.ctfCompetitions.map((competition) => (
-              <article class="ctf-card">
+            {data.ctfCompetitions.map((competition, index) => (
+              <article class="ctf-card reveal" data-reveal-delay={Math.min(index * 30, 240)}>
                 <header>
                   <h3>{competition.event}</h3>
                   <span>{competition.placement}</span>
@@ -204,15 +204,15 @@ const statusLabels = {
     <section class="section roadmap-section">
       <div class="container">
         <div class="section-header">
-          <p class="section-kicker">roadmap</p>
+          <p class="section-kicker">// roadmap</p>
           <h2 class="section-title">Learning tracks</h2>
           <p class="section-subtitle">Planned and ongoing certification work.</p>
         </div>
 
         {data.currentlyPursuing.length > 0 ? (
           <div class="roadmap">
-            {data.currentlyPursuing.map((track) => (
-              <article class="roadmap-item">
+            {data.currentlyPursuing.map((track, index) => (
+              <article class="roadmap-item reveal" data-reveal-delay={Math.min(index * 30, 240)}>
                 <SecurityIcon name="file" size={18} />
                 <div>
                   <h3>{track.name}</h3>
@@ -412,6 +412,23 @@ const statusLabels = {
     font-family: var(--font-mono);
     font-size: 0.7rem;
     white-space: nowrap;
+  }
+
+  .certification-card[data-status="in-progress"] header span {
+    border-color: var(--steel);
+    color: var(--steel);
+  }
+
+  .certification-card[data-status="planned"] header span {
+    color: var(--text-muted);
+  }
+
+  .certification-card[data-status="in-progress"] {
+    border-left-color: var(--steel);
+  }
+
+  .certification-card[data-status="planned"] {
+    border-left-style: dashed;
   }
 
   .certification-card h3,

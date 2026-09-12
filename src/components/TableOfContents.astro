@@ -13,6 +13,9 @@ const { headings } = Astro.props;
 ---
 
 <nav class="toc" aria-label="Table of contents">
+  <div class="toc-progress" role="presentation">
+    <div class="toc-progress-fill" data-toc-progress></div>
+  </div>
   <h2>Contents</h2>
   <ul>
     {headings.map((heading) => (
@@ -28,6 +31,21 @@ const { headings } = Astro.props;
     padding: 0.9rem 0;
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
+  }
+
+  .toc-progress {
+    height: 2px;
+    margin-bottom: 0.85rem;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .toc-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: var(--accent);
+    transition: width 120ms linear;
   }
 
   .toc h2 {
@@ -98,6 +116,29 @@ const { headings } = Astro.props;
       .filter((link): link is HTMLAnchorElement => link instanceof HTMLAnchorElement);
     const headings = Array.from(document.querySelectorAll('.writeup-content h2[id], .writeup-content h3[id], .writeup-content h4[id], .writeup-content h5[id], .writeup-content h6[id]'))
       .filter((heading): heading is HTMLElement => heading instanceof HTMLElement);
+
+    const progressFill = document.querySelector<HTMLElement>('[data-toc-progress]');
+    const content = document.querySelector<HTMLElement>('.writeup-content');
+
+    if (progressFill && content) {
+      let ticking = false;
+      const updateProgress = () => {
+        ticking = false;
+        const rect = content.getBoundingClientRect();
+        const total = rect.height - window.innerHeight;
+        const scrolled = -rect.top;
+        const percent = total > 0 ? Math.min(100, Math.max(0, (scrolled / total) * 100)) : 0;
+        progressFill.style.width = `${percent}%`;
+      };
+
+      window.addEventListener('scroll', () => {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(updateProgress);
+      }, { passive: true });
+
+      updateProgress();
+    }
 
     if (tocLinks.length === 0 || headings.length === 0 || !('IntersectionObserver' in window)) return;
 

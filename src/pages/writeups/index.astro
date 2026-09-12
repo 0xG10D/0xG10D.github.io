@@ -48,7 +48,7 @@ const latestWriteupDate = writeups[0]?.data.date
       <div class="container">
         <div class="archive-hero-grid">
           <div>
-            <p class="hero-eyebrow">security research archive</p>
+            <p class="hero-eyebrow">// security research archive</p>
             <h1>Writeups by event</h1>
             <p>
               Reports are grouped by source event or platform. Each entry keeps the original title,
@@ -78,7 +78,12 @@ const latestWriteupDate = writeups[0]?.data.date
         {events.length > 0 ? (
           <div class="event-archive" aria-label="Event archive">
             {events.map((event, index) => (
-              <details class="event-row" name="writeup-events" open={index === 0}>
+              <details
+                class={index === 0 ? 'event-row' : 'event-row reveal'}
+                data-reveal-delay={Math.min(index * 40, 240)}
+                name="writeup-events"
+                open={index === 0}
+              >
                 <summary>
                   <span class="event-name">{event.name}</span>
                   <span class="event-count">{event.count} {event.count === 1 ? 'writeup' : 'writeups'}</span>
@@ -88,7 +93,7 @@ const latestWriteupDate = writeups[0]?.data.date
                   {event.posts.map((post) => (
                     <li class="event-writeup">
                       <time datetime={post.data.date.toISOString()}>{formatArchiveDate(post.data.date)}</time>
-                      <a href={getWriteupUrl(post)}>{post.data.title}</a>
+                      <a href={getWriteupUrl(post)} class="event-writeup-link">{post.data.title}</a>
                       <span>{getChallengeType(post)}</span>
                       <span>{formatDifficulty(post.data.difficulty)}</span>
                     </li>
@@ -236,16 +241,24 @@ const latestWriteupDate = writeups[0]?.data.date
   }
 
   .event-writeup {
+    position: relative;
     display: grid;
     grid-template-columns: 8.5rem minmax(0, 1fr) minmax(8rem, 0.24fr) minmax(5rem, 0.12fr);
     gap: 1rem;
     align-items: baseline;
-    padding: 0.72rem 0;
+    padding: 0.72rem 0.6rem;
     border-bottom: 1px solid rgba(43, 44, 37, 0.72);
+    border-left: 2px solid transparent;
+    transition: border-left-color var(--motion), background-color var(--motion);
   }
 
   .event-writeup:last-child {
     border-bottom: 0;
+  }
+
+  .event-writeup:hover {
+    border-left-color: var(--accent);
+    background: var(--bg-panel);
   }
 
   .event-writeup time,
@@ -264,6 +277,12 @@ const latestWriteupDate = writeups[0]?.data.date
 
   .event-writeup a:hover {
     color: var(--accent-strong);
+  }
+
+  .event-writeup-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
   }
 
   @media (max-width: 820px) {

@@ -18,8 +18,8 @@ const links: NavLink[] = [
   <div class="container">
     <nav class="nav" aria-label="Main navigation">
       <a class="brand" href="/" aria-label="0xG10D home">
-        <span class="brand-mark">0xG10D</span>
-        <span class="brand-note">field notes</span>
+        <span class="brand-mark">0xG10D<span class="cursor-blink" aria-hidden="true"></span></span>
+        <span class="brand-note">// field notes</span>
       </a>
 
       <button
@@ -86,6 +86,10 @@ const links: NavLink[] = [
     font-weight: 700;
   }
 
+  .brand-mark .cursor-blink {
+    background: var(--accent);
+  }
+
   .brand-note {
     color: var(--text-faint);
     font-family: var(--font-mono);
@@ -99,6 +103,7 @@ const links: NavLink[] = [
   }
 
   .nav-link {
+    position: relative;
     padding: 0.35rem 0.58rem;
     border: 1px solid transparent;
     border-radius: var(--radius);
@@ -108,11 +113,27 @@ const links: NavLink[] = [
     text-decoration: none;
   }
 
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0.58rem;
+    right: 0.58rem;
+    bottom: 0.2rem;
+    height: 1px;
+    background: var(--accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--motion-enter);
+  }
+
   .nav-link:hover,
   .nav-link-active {
-    border-color: var(--border);
-    background: var(--bg-soft);
     color: var(--text);
+  }
+
+  .nav-link:hover::after,
+  .nav-link-active::after {
+    transform: scaleX(1);
   }
 
   .nav-link-active {

@@ -55,7 +55,7 @@ const eventLabel = getEventName(getEventSlug(post));
       <header class="writeup-header">
         <a class="back-link" href="/writeups/">Back to writeups</a>
 
-        <p class="writeup-kicker">{eventLabel}</p>
+        <p class="writeup-kicker">// {eventLabel}</p>
         <h1>{post.data.title}</h1>
 
         {post.data.summary && <p class="writeup-summary">{post.data.summary}</p>}
@@ -101,7 +101,7 @@ const eventLabel = getEventName(getEventSlug(post));
           <aside class="writeup-sidebar">
             <TableOfContents headings={headings} />
             <button class="share-button" type="button" data-share-url>
-              <span data-share-label>Copy link</span>
+              <span data-share-label aria-live="polite">Copy link</span>
             </button>
           </aside>
         )}
@@ -402,12 +402,21 @@ const eventLabel = getEventName(getEventSlug(post));
     if (!(button instanceof HTMLButtonElement)) return;
 
     button.addEventListener('click', async () => {
-      if (!navigator.clipboard) return;
-      await navigator.clipboard.writeText(window.location.href);
       const label = button.querySelector('[data-share-label]');
+      const previous = label?.textContent || 'Copy link';
+
+      try {
+        if (!navigator.clipboard) throw new Error('Clipboard API unavailable');
+        const timeout = new Promise<never>((_, reject) => {
+          window.setTimeout(() => reject(new Error('Clipboard write timed out')), 2000);
+        });
+        await Promise.race([navigator.clipboard.writeText(window.location.href), timeout]);
+        if (label) label.textContent = 'Copied';
+      } catch {
+        if (label) label.textContent = 'Copy failed - select URL manually';
+      }
+
       if (label) {
-        const previous = label.textContent || 'Copy link';
-        label.textContent = 'Copied';
         window.setTimeout(() => { label.textContent = previous; }, 1600);
       }
     });

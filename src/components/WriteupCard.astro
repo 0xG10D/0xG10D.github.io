@@ -33,7 +33,7 @@ const cardId = `writeup-${post.id.replace(/[^a-z0-9-]/gi, '-')}`;
 const writeupUrl = getWriteupUrl(post);
 ---
 
-<article class="writeup-card" aria-labelledby={cardId}>
+<article class="writeup-card reveal" aria-labelledby={cardId}>
   <div class="card-date">
     <time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time>
     <span>{eventName}</span>
@@ -47,7 +47,7 @@ const writeupUrl = getWriteupUrl(post);
     </div>
 
     <h3 class="card-title" id={cardId}>
-      <a href={writeupUrl}>{post.data.title}</a>
+      <a href={writeupUrl} class="card-title-link">{post.data.title}</a>
     </h3>
 
     {post.data.summary && <p class="card-summary">{post.data.summary}</p>}
@@ -62,15 +62,29 @@ const writeupUrl = getWriteupUrl(post);
 
 <style>
   .writeup-card {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(7rem, 10rem) minmax(0, 1fr);
     gap: clamp(1rem, 3vw, 1.75rem);
-    padding: 1rem 0 1.05rem;
+    padding: 1rem 0.6rem 1.05rem 0.85rem;
     border-top: 1px solid var(--border);
+    border-left: 2px solid transparent;
+    transition: border-left-color var(--motion), background-color var(--motion);
   }
 
   .writeup-card:last-child {
     border-bottom: 1px solid var(--border);
+  }
+
+  .writeup-card:hover {
+    border-left-color: var(--accent);
+    background: var(--bg-panel);
+  }
+
+  .card-title-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
   }
 
   .card-date {

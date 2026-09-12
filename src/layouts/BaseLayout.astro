@@ -22,6 +22,9 @@ const pageTitle = `${title} | 0xG10D`;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="robots" content="index,follow" />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+    </script>
 
     <!-- Open Graph / Social Meta -->
     <meta property="og:title" content={pageTitle} />
@@ -67,6 +70,8 @@ const pageTitle = `${title} | 0xG10D`;
 
       <Footer />
     </div>
+
+    <script src="../scripts/interactions.ts"></script>
 
     <script>
       document.addEventListener('DOMContentLoaded', () => {

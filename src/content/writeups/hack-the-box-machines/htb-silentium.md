@@ -332,7 +332,7 @@ ssh ben@[REDACTED_TARGET_IP]
 
 Password:
 
-[REDACTED_PASSWORD]
+```text
 [REDACTED_PASSWORD]
 ```
 

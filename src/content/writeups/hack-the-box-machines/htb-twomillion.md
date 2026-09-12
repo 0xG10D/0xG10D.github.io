@@ -581,7 +581,7 @@ Output:
 
 ```text
 uid=1000(admin) gid=1000(admin) groups=1000(admin)
-8815f99973ac3718b6ffa3e4aa831873
+[REDACTED_FLAG]
 ```
 
 Why it worked:
@@ -816,7 +816,7 @@ cat root.txt
 Output:
 
 ```text
-e9b6293c6dec269eaf779767864f8fef
+[REDACTED_FLAG]
 ```
 
 Why it worked:
@@ -828,8 +828,8 @@ CVE-2023-0386 abuses OverlayFS copy-up behavior involving a `nosuid` FUSE mount.
 ## Flags
 
 ```text
-user.txt: 8815f99973ac3718b6ffa3e4aa831873
-root.txt: e9b6293c6dec269eaf779767864f8fef
+user.txt: [REDACTED_FLAG]
+root.txt: [REDACTED_FLAG]
 ```
 
 ---

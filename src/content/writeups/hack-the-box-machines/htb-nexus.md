@@ -63,8 +63,8 @@ Nexus involved a multi-stage web-to-root attack path:
 Final flags:
 
 ```text
-user.txt: 347eede9407e77af48adea30ab6ec9b5
-root.txt: 58fd3ff233ccbf297022ef0dc9b5d4ec
+user.txt: [REDACTED_FLAG]
+root.txt: [REDACTED_FLAG]
 ```
 
 ---
@@ -916,7 +916,7 @@ Successful login:
 === jones ===
 uid=1000(jones) gid=1000(jones) groups=1000(jones),100(users)
 nexus
-347eede9407e77af48adea30ab6ec9b5
+[REDACTED_FLAG]
 ```
 
 Failed users:
@@ -950,7 +950,7 @@ cat ~/user.txt
 Output:
 
 ```text
-347eede9407e77af48adea30ab6ec9b5
+[REDACTED_FLAG]
 ```
 
 ---
@@ -1482,7 +1482,7 @@ cat /root/root.txt
 Output:
 
 ```text
-58fd3ff233ccbf297022ef0dc9b5d4ec
+[REDACTED_FLAG]
 ```
 
 Machine rooted.
@@ -1826,6 +1826,6 @@ Root:     path traversal arbitrary file write in root Gitea template sync job
 Flags:
 
 ```text
-user.txt: 347eede9407e77af48adea30ab6ec9b5
-root.txt: 58fd3ff233ccbf297022ef0dc9b5d4ec
+user.txt: [REDACTED_FLAG]
+root.txt: [REDACTED_FLAG]
 ```

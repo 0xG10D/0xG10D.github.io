@@ -31,8 +31,8 @@ draft: false
 Flags:
 
 ```text
-user.txt: 1a8d17c8660adf346a2e0c7653c42e2a
-root.txt: 6d2e6fffb09e80590982247a22d98f50
+user.txt: [REDACTED_FLAG]
+root.txt: [REDACTED_FLAG]
 ```
 
 ![Screenshot 2026 06 29 035157](/images/writeups/hackthebox/enigma/screenshot-2026-06-29-035157.png)
@@ -377,7 +377,7 @@ cat user.txt
 ```
 
 ```text
-1a8d17c8660adf346a2e0c7653c42e2a
+[REDACTED_FLAG]
 ```
 
 ### Decision Making
@@ -475,7 +475,7 @@ Output:
 ```text
 uid=1000(haris) gid=1000(haris) euid=0(root) groups=1000(haris),100(users)
 root
-6d2e6fffb09e80590982247a22d98f50
+[REDACTED_FLAG]
 ```
 
 ---

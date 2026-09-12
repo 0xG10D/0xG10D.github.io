@@ -573,7 +573,6 @@ Password:
 
 ```text
 [REDACTED_PASSWORD]
-[REDACTED_PASSWORD]
 ```
 
 After login:

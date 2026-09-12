@@ -33,8 +33,8 @@ draft: false
 | OS         | Linux                              |
 | Difficulty | Hard                               |
 | Target IP  | `10.129.12.178`                    |
-| User Flag  | `3c8b1de37ef451ace0cdbc0c7ead0cfb` |
-| Root Flag  | `e34b9a179da213bf31b5ea3af14937e8` |
+| User Flag  | `[REDACTED_FLAG]` |
+| Root Flag  | `[REDACTED_FLAG]` |
 
 Nimbus is a cloud-themed Linux machine built around an internal job scheduler, fake AWS services through Floci/LocalStack, SQS queues, worker containers, CodeBuild, and a final privileged-container escape.
 
@@ -466,13 +466,13 @@ cat user.txt
 Output:
 
 ```text
-3c8b1de37ef451ace0cdbc0c7ead0cfb
+[REDACTED_FLAG]
 ```
 
 User flag:
 
 ```text
-3c8b1de37ef451ace0cdbc0c7ead0cfb
+[REDACTED_FLAG]
 ```
 
 ---
@@ -810,13 +810,13 @@ nc -lvnp 9071
 Received:
 
 ```text
-e34b9a179da213bf31b5ea3af14937e8
+[REDACTED_FLAG]
 ```
 
 Root flag:
 
 ```text
-e34b9a179da213bf31b5ea3af14937e8
+[REDACTED_FLAG]
 ```
 
 HTB confirmed the machine was solved.
@@ -855,7 +855,7 @@ The complete chain was:
 12. Worker parses message and executes reverse shell.
 
 13. Read user.txt as worker:
-   3c8b1de37ef451ace0cdbc0c7ead0cfb.
+   [REDACTED_FLAG].
 
 14. Use internal Floci endpoint from the worker container.
 
@@ -872,7 +872,7 @@ The complete chain was:
 20. Host executes exploit.sh as root.
 
 21. Read root.txt:
-   e34b9a179da213bf31b5ea3af14937e8.
+   [REDACTED_FLAG].
 ```
 
 ---
@@ -1124,8 +1124,8 @@ Once those trusts were chained together, the attacker moved from a simple web pr
 ## 22. Final Flags
 
 ```text
-User: 3c8b1de37ef451ace0cdbc0c7ead0cfb
-Root: e34b9a179da213bf31b5ea3af14937e8
+User: [REDACTED_FLAG]
+Root: [REDACTED_FLAG]
 ```
 
 Nimbus solved.

@@ -123,6 +123,19 @@
   },
   "ctfCompetitions": [
     {
+      "event": "CTF Da Nang 2026 Preliminary",
+      "organizer": "CTF Da Nang",
+      "date": "2026",
+      "placement": "17th",
+      "category": "Qualified for the Final Round in Da Nang, Vietnam"
+    },
+    {
+      "event": "SunCTF 2026",
+      "organizer": "Sunway Cybersecurity",
+      "date": "2026",
+      "placement": "8th Runner-Up"
+    },
+    {
       "event": "UMCS 2026 Final Attack-Defense",
       "organizer": "UM",
       "date": "May 2026",

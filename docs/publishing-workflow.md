@@ -446,3 +446,29 @@ npm run preview
 
 Fix every build error before pushing. A clean build means Astro checked the content
 schema, Markdown rendering, routes, and static output.
+
+## Hack The Box Publication Status
+
+Only retired Hack The Box content may be published. Per the Hack The Box
+platform rules, publishing solutions is allowed for retired Machines, retired
+Sherlocks, retired Challenges, Starting Point, and Tier 0 Academy modules.
+Sharing solutions for active Machines, Challenges, or Sherlocks is prohibited.
+
+Note that a Season ending does not retire its machines. Hack The Box documents
+that a Seasonal machine "remains active on the platform for about six months"
+after release, so retirement must be confirmed per machine, not inferred from
+the season calendar.
+
+Verify retirement before importing a note into `src/content/writeups/`. Do not
+stage an unverified writeup as `draft: true` either: this repository is public,
+so the Markdown would still be readable on GitHub. Keep it in the vault until
+retirement is confirmed.
+
+The following notes exist in the vault and are intentionally **not** in this
+repository because retirement could not be confirmed:
+
+- Machines: `MakeSense`, `Paperwork`
+- Sherlocks: `Baggage`, `KitsuneHook`, `PhantomRing`, `ShadowBait`
+
+`BFT` (Sherlock) is retired but the vault note stops mid-task, so it is held
+back as incomplete rather than for policy reasons.

@@ -8,14 +8,17 @@ const eventLabels: Record<string, string> = {
   'dfir-labs': 'DFIR Labs',
   'dicectf-2026': 'DiceCTF 2026',
   'hack-the-box-machines': 'Hack The Box Machines',
+  'hack-the-box-sherlocks': 'Hack The Box Sherlocks',
   'iboh-2025': 'IBOH 2025',
   'international-hack10-ctf-2026': 'International Hack10 CTF 2026',
   'knightctf-2026': 'KnightCTF 2026',
   'letsdefend-jetbrains': 'LetsDefend JetBrains',
   'ligactf-2026': 'LigaCTF 2026',
+  'malware-analysis': 'Malware Analysis',
   tryhackme: 'TryHackMe',
   'umassctf-2026': 'UMassCTF 2026',
-  'umcs-preliminary': 'UMCS Preliminary'
+  'umcs-preliminary': 'UMCS Preliminary',
+  'wireless-labs': 'Wireless Network Labs'
 };
 
 const categoryLabels: Record<string, string> = {
@@ -80,8 +83,20 @@ export function getChallengeType(post: WriteupEntry) {
     return category === 'Machine' ? 'Machine' : `Machine / ${category}`;
   }
 
+  if (eventSlug === 'hack-the-box-sherlocks') {
+    return category === 'Forensics' ? 'Sherlock / Forensics' : `Sherlock / ${category}`;
+  }
+
   if (eventSlug === 'dfir-labs') {
     return 'DFIR';
+  }
+
+  if (eventSlug === 'malware-analysis') {
+    return 'Malware';
+  }
+
+  if (eventSlug === 'wireless-labs') {
+    return 'Wireless Lab';
   }
 
   return category;

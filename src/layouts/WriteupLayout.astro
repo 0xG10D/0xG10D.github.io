@@ -1,8 +1,14 @@
 ---
+import { getCollection } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from './BaseLayout.astro';
 import TableOfContents from '../components/TableOfContents.astro';
-import { getChallengeType, getEventName, getEventSlug } from '../utils/writeups';
+import {
+  formatArchiveDate,
+  getCategoryLabel,
+  getChallengeType,
+  getWriteupUrl
+} from '../utils/writeups';
 
 interface Heading {
   depth: number;
@@ -16,17 +22,6 @@ interface Props {
 }
 
 const { post, headings } = Astro.props;
-
-const platformLabels: Record<string, string> = {
-  hackthebox: 'Hack The Box',
-  'hack-the-box': 'Hack The Box',
-  tryhackme: 'TryHackMe',
-  portswigger: 'PortSwigger',
-  picoctf: 'picoCTF',
-  research: 'Research',
-  ctf: 'CTF',
-  other: 'Other'
-};
 
 const difficultyLabels: Record<string, string> = {
   easy: 'Easy',
@@ -43,189 +38,299 @@ const formatDate = (date: Date) =>
     day: 'numeric'
   });
 
-const platformLabel = platformLabels[post.data.platform] ?? post.data.platform.replaceAll('-', ' ');
+const categoryLabel = getCategoryLabel(post.data.category);
 const difficultyLabel = difficultyLabels[post.data.difficulty] ?? post.data.difficulty;
-const categoryLabel = getChallengeType(post);
-const eventLabel = getEventName(getEventSlug(post));
+
+const wordCount = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
+const readMinutes = Math.max(1, Math.round(wordCount / 200));
+
+const allWriteups = await getCollection('writeups', ({ data }) => !data.draft);
+const sameCategory = allWriteups
+  .filter((entry) => entry.id !== post.id && entry.data.category === post.data.category)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const others = allWriteups
+  .filter((entry) => entry.id !== post.id && entry.data.category !== post.data.category)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const related = [...sameCategory, ...others].slice(0, 3);
 ---
 
 <BaseLayout title={post.data.title} description={post.data.summary}>
   <article class="writeup-article">
-    <div class="container">
-      <header class="writeup-header">
-        <a class="back-link" href="/writeups/">Back to writeups</a>
+    <nav class="writeup-breadcrumb" aria-label="Breadcrumb">
+      <div class="writeup-breadcrumb-inner">
+        <a href="/">Home</a>
+        <svg class="crumb-chevron" viewBox="0 0 12 12" width="10" height="10" fill="none" aria-hidden="true">
+          <path d="M4.5 2.5L8 6l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <a href="/writeups/">Archive</a>
+        <svg class="crumb-chevron" viewBox="0 0 12 12" width="10" height="10" fill="none" aria-hidden="true">
+          <path d="M4.5 2.5L8 6l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+        <span class="crumb-current">{categoryLabel}</span>
+      </div>
+    </nav>
 
-        <p class="writeup-kicker">// {eventLabel}</p>
-        <h1>{post.data.title}</h1>
+    <header class="writeup-hero">
+      <h1>{post.data.title}</h1>
 
-        {post.data.summary && <p class="writeup-summary">{post.data.summary}</p>}
+      {post.data.summary && <p class="writeup-hero-excerpt">{post.data.summary}</p>}
 
-        <dl class="report-meta-grid" aria-label="Report metadata">
-          <div>
-            <dt>Date</dt>
-            <dd><time datetime={post.data.date.toISOString()}>{formatDate(post.data.date)}</time></dd>
-          </div>
-          <div>
-            <dt>Platform</dt>
-            <dd>{platformLabel}</dd>
-          </div>
-          <div>
-            <dt>Category</dt>
-            <dd>{categoryLabel}</dd>
-          </div>
-          <div>
-            <dt>Difficulty</dt>
-            <dd>{difficultyLabel}</dd>
-          </div>
-        </dl>
-
-        {post.data.tags.length > 0 && (
-          <div class="writeup-tags" aria-label="Tags">
-            {post.data.tags.map((tag) => <span>#{tag}</span>)}
-          </div>
-        )}
-
-        {post.data.boxImage && (
-          <figure class="writeup-featured-image">
-            <img src={post.data.boxImage} alt={`${post.data.title} reference image`} loading="lazy" decoding="async" />
-          </figure>
-        )}
-      </header>
-
-      <div class="writeup-body">
-        <div class="writeup-content">
-          <slot />
-        </div>
-
-        {headings.length > 0 && (
-          <aside class="writeup-sidebar">
-            <TableOfContents headings={headings} />
-            <button class="share-button" type="button" data-share-url>
-              <span data-share-label aria-live="polite">Copy link</span>
-            </button>
-          </aside>
-        )}
+      <div class="writeup-hero-meta">
+        <span>By <span class="meta-accent">0xG10D</span></span>
+        <span class="meta-sep">|</span>
+        <span>Last updated: {formatDate(post.data.date)}</span>
+        <span class="meta-sep">|</span>
+        <span>{readMinutes} minute{readMinutes === 1 ? '' : 's'} read</span>
       </div>
 
-      <footer class="writeup-footer">
-        <p>
-          Authorized security practice only. These notes are for lab, CTF, and explicitly permitted environments.
-        </p>
-      </footer>
+      <div class="writeup-hero-pills" aria-label="Writeup details">
+        <span class="hero-pill hero-pill-accent">{difficultyLabel}</span>
+        {post.data.tags.map((tag) => <span class="hero-pill">#{tag}</span>)}
+      </div>
+    </header>
+
+    {post.data.boxImage && (
+      <div class="writeup-featured">
+        <div class="writeup-featured-frame">
+          <img src={post.data.boxImage} alt={`${post.data.title} reference image`} loading="eager" decoding="async" />
+        </div>
+      </div>
+    )}
+
+    <div class="writeup-main">
+      <div class="writeup-content">
+        <slot />
+      </div>
+
+      <aside class="writeup-aside">
+        <div class="writeup-aside-sticky">
+          {headings.length > 0 && <TableOfContents headings={headings} />}
+
+          <button class="share-button" type="button" data-share-url>
+            <span data-share-label aria-live="polite">Copy link</span>
+          </button>
+        </div>
+      </aside>
     </div>
+
+    {related.length > 0 && (
+      <section class="writeup-related">
+        <h2>Related Writeups</h2>
+
+        <div class="related-grid">
+          {related.map((item) => (
+            <a class="related-card" href={getWriteupUrl(item)}>
+              {item.data.boxImage ? (
+                <div class="related-media">
+                  <img src={item.data.boxImage} alt="" loading="lazy" decoding="async" />
+                </div>
+              ) : (
+                <div class="related-media related-media-empty">
+                  <span>{getCategoryLabel(item.data.category)}</span>
+                </div>
+              )}
+
+              <div class="related-body">
+                <p class="related-meta">
+                  <time datetime={item.data.date.toISOString()}>{formatArchiveDate(item.data.date)}</time>
+                  <span>{getChallengeType(item)}</span>
+                </p>
+                <h3 class="related-title">{item.data.title}</h3>
+                <span class="related-more">Read more</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <p class="writeup-disclaimer">
+      Authorized security practice only. These notes are for lab, CTF, and explicitly permitted environments.
+    </p>
   </article>
 </BaseLayout>
 
 <style>
   .writeup-article {
-    padding: clamp(2rem, 6vw, 4.5rem) 0 4rem;
+    padding: clamp(2rem, 6vw, 3rem) 0 4rem;
   }
 
-  .writeup-header {
-    max-width: 940px;
-    margin-bottom: clamp(2rem, 5vw, 3.5rem);
-  }
+  /* ----- breadcrumb ----- */
 
-  .back-link {
-    display: inline-flex;
-    margin-bottom: 1.25rem;
-    color: var(--text-muted);
+  .writeup-breadcrumb-inner {
+    display: flex;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: clamp(1.75rem, 4vw, 2.5rem);
+    color: var(--text-faint);
     font-family: var(--font-mono);
-    font-size: 0.78rem;
-    font-weight: 700;
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .writeup-breadcrumb-inner a {
+    color: var(--text-faint);
     text-decoration: none;
   }
 
-  .back-link::before {
-    content: "<-";
-    margin-right: 0.45rem;
-    color: var(--accent);
-  }
-
-  .writeup-kicker {
-    margin: 0 0 0.85rem;
-    color: var(--steel);
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .writeup-header h1 {
-    max-width: 18ch;
-    margin-bottom: 1rem;
-  }
-
-  .writeup-summary {
-    max-width: 74ch;
-    color: var(--text-soft);
-    font-size: clamp(1.08rem, 2vw, 1.25rem);
-    line-height: 1.7;
-  }
-
-  .report-meta-grid {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 0;
-    margin: 2rem 0 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .report-meta-grid div {
-    min-width: 0;
-    padding: 0.86rem 1rem 0.86rem 0;
-  }
-
-  .report-meta-grid dt {
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .report-meta-grid dd {
-    margin: 0.28rem 0 0;
+  .writeup-breadcrumb-inner a:hover {
     color: var(--text);
   }
 
-  .writeup-tags {
+  .crumb-chevron {
+    flex-shrink: 0;
+    color: var(--text-faint);
+    opacity: 0.6;
+  }
+
+  .crumb-current {
+    color: var(--accent-strong);
+  }
+
+  /* ----- hero ----- */
+
+  .writeup-hero {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    text-align: center;
+  }
+
+  .writeup-hero h1 {
+    max-width: none;
+    margin-bottom: 1.25rem;
+    font-size: clamp(2.1rem, 4.6vw, 3.2rem);
+    line-height: 1.14;
+  }
+
+  .writeup-hero-excerpt {
+    max-width: 60ch;
+    margin: 0 auto 2rem;
+    color: var(--text-soft);
+    font-size: clamp(1.05rem, 1.8vw, 1.18rem);
+    line-height: 1.75;
+  }
+
+  .writeup-hero-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.45rem 0.65rem;
-    margin-top: 1rem;
+    justify-content: center;
+    gap: 0.45rem 1rem;
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
   }
 
-  .writeup-tags span {
+  .meta-accent {
+    color: var(--accent-strong);
+  }
+
+  .meta-sep {
+    color: var(--text-faint);
+    opacity: 0.4;
+  }
+
+  .writeup-hero-pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.4rem;
+    margin-top: 1.25rem;
+  }
+
+  .hero-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.16rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
     color: var(--text-muted);
     font-family: var(--font-mono);
-    font-size: 0.74rem;
+    font-size: 0.68rem;
   }
 
-  .writeup-featured-image {
-    margin: 2rem 0 0;
+  .hero-pill-accent {
+    border-color: color-mix(in srgb, var(--accent-strong) 45%, transparent);
+    color: var(--accent-strong);
+  }
+
+  /* ----- featured image ----- */
+
+  .writeup-featured {
+    max-width: 56rem;
+    margin: clamp(2rem, 5vw, 3rem) auto 0;
+    padding: 0 var(--gutter);
+  }
+
+  .writeup-featured-frame {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 16 / 9;
+    padding: clamp(0.75rem, 3vw, 1.75rem);
     border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
     background: var(--bg-code);
+    overflow: hidden;
   }
 
-  .writeup-featured-image img {
-    display: block;
-    width: 100%;
+  .writeup-featured-frame img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
   }
 
-  .writeup-body {
+  /* ----- main grid ----- */
+
+  .writeup-main {
     display: grid;
-    grid-template-columns: minmax(0, var(--reading)) minmax(220px, 280px);
-    gap: clamp(2rem, 6vw, 4.5rem);
-    align-items: start;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 6vw, 4rem) var(--gutter);
+    gap: clamp(2rem, 4vw, 3rem);
+  }
+
+  @media (min-width: 1024px) {
+    .writeup-main {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      align-items: start;
+    }
+
+    .writeup-content {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    .writeup-aside {
+      grid-column: 1;
+      grid-row: 1;
+    }
+  }
+
+  .writeup-aside-sticky {
+    display: grid;
+    gap: 1rem;
+  }
+
+  @media (min-width: 1024px) {
+    .writeup-aside-sticky {
+      position: sticky;
+      top: 7rem;
+    }
   }
 
   .writeup-content {
     min-width: 0;
-    max-width: var(--reading);
   }
 
   .writeup-content :global(h2),
@@ -237,31 +342,34 @@ const eventLabel = getEventName(getEventSlug(post));
   }
 
   .writeup-content :global(h1) {
-    margin: 2.75rem 0 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-    font-size: clamp(1.8rem, 3.6vw, 2.5rem);
+    margin: 2.5rem 0 1rem;
+    font-size: clamp(1.7rem, 3.2vw, 2.3rem);
   }
 
   .writeup-content :global(h2) {
-    margin: 3rem 0 1rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-    font-size: clamp(1.55rem, 3vw, 2.18rem);
+    margin: 2.5rem 0 1rem;
+    font-size: clamp(1.5rem, 2.8vw, 1.875rem);
+    font-weight: 700;
   }
 
   .writeup-content :global(h3) {
-    margin: 2.15rem 0 0.75rem;
-    font-size: clamp(1.25rem, 2.2vw, 1.55rem);
+    margin: 2rem 0 0.75rem;
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    font-weight: 700;
   }
 
   .writeup-content :global(h4) {
-    margin: 1.7rem 0 0.65rem;
-    color: var(--text-soft);
+    margin: 1.5rem 0 0.75rem;
+    color: var(--accent-strong);
     font-family: var(--font-mono);
-    font-size: 0.96rem;
+    font-size: 0.82rem;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.04em;
+    letter-spacing: 0.1em;
+  }
+
+  .writeup-content :global(p) {
+    margin-bottom: 1.25rem;
   }
 
   .writeup-content :global(p),
@@ -273,10 +381,15 @@ const eventLabel = getEventName(getEventSlug(post));
   .writeup-content :global(a) {
     color: var(--accent-strong);
     text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .writeup-content :global(a:hover) {
+    color: var(--text);
   }
 
   .writeup-content :global(code) {
-    padding: 0.1rem 0.28rem;
+    padding: 0.1rem 0.3rem;
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: var(--bg-code);
@@ -291,15 +404,17 @@ const eventLabel = getEventName(getEventSlug(post));
 
   .writeup-content :global(pre code) {
     padding: 0;
+    border: 0;
+    background: transparent;
     color: var(--text);
   }
 
   .writeup-content :global(blockquote) {
     margin: 1.75rem 0;
-    padding: 0.85rem 1rem;
-    border-left: 3px solid var(--accent);
-    background: var(--bg-soft);
+    padding: 0.5rem 0 0.5rem 1.5rem;
+    border-left: 3px solid var(--accent-strong);
     color: var(--text-soft);
+    font-style: italic;
   }
 
   .writeup-content :global(blockquote p:last-child) {
@@ -312,6 +427,8 @@ const eventLabel = getEventName(getEventSlug(post));
     margin: 1.75rem 0;
     overflow-x: auto;
     border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-soft);
   }
 
   .writeup-content :global(img) {
@@ -319,6 +436,7 @@ const eventLabel = getEventName(getEventSlug(post));
     max-width: 100%;
     margin: 1.75rem 0 0.6rem;
     border: 1px solid var(--border);
+    border-radius: var(--radius);
     background: var(--bg-code);
   }
 
@@ -331,69 +449,191 @@ const eventLabel = getEventName(getEventSlug(post));
     font-size: 0.88rem;
   }
 
+  .writeup-content :global(hr) {
+    margin: 2.5rem 0;
+    border: 0;
+    border-top: 1px solid var(--border);
+  }
+
   .writeup-content :global(ul),
   .writeup-content :global(ol) {
     margin: 1rem 0 1.5rem;
     padding-left: 1.35rem;
   }
 
-  .writeup-sidebar {
-    position: sticky;
-    top: 88px;
-    display: grid;
-    gap: 1rem;
+  .writeup-content :global(li) {
+    margin-bottom: 0.4rem;
   }
 
   .share-button {
     width: 100%;
-    min-height: 38px;
+    min-height: 40px;
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: var(--radius-lg);
     background: transparent;
     color: var(--text-muted);
     cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: color var(--motion), border-color var(--motion);
   }
 
   .share-button:hover {
-    border-color: var(--accent);
+    border-color: var(--accent-strong);
     color: var(--accent-strong);
   }
 
-  .writeup-footer {
-    max-width: var(--reading);
-    margin-top: 3rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
+  /* ----- related writeups ----- */
+
+  .writeup-related {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 var(--gutter) clamp(2rem, 5vw, 3rem);
   }
 
-  .writeup-footer p {
-    margin: 0;
-    color: var(--text-muted);
-    font-size: 0.92rem;
+  .writeup-related h2 {
+    margin-bottom: clamp(1.5rem, 4vw, 2.25rem);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    text-align: center;
   }
 
-  @media (max-width: 980px) {
-    .writeup-body {
-      grid-template-columns: 1fr;
-    }
-
-    .writeup-sidebar {
-      position: static;
-      order: -1;
-    }
+  .related-grid {
+    display: grid;
+    gap: clamp(1.25rem, 3vw, 2rem);
   }
 
-  @media (max-width: 720px) {
-    .report-meta-grid {
+  @media (min-width: 640px) {
+    .related-grid {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
-  @media (max-width: 460px) {
-    .report-meta-grid {
-      grid-template-columns: 1fr;
+  @media (min-width: 1024px) {
+    .related-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
+  }
+
+  .related-card {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-panel);
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color var(--motion), background-color var(--motion);
+  }
+
+  .related-card:hover {
+    border-color: var(--accent);
+    background: var(--bg-raised);
+  }
+
+  .related-card:hover .related-media img {
+    transform: scale(1.04);
+  }
+
+  .related-card:hover .related-title {
+    color: var(--accent-strong);
+  }
+
+  .related-media {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-code);
+  }
+
+  .related-media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform var(--motion-enter);
+  }
+
+  .related-media-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .related-media-empty span {
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .related-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1.1rem 1.2rem 1.25rem;
+  }
+
+  .related-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7rem;
+    margin: 0 0 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .related-meta time {
+    color: var(--text-muted);
+  }
+
+  .related-meta span:not(time) {
+    color: var(--accent-strong);
+  }
+
+  .related-title {
+    margin: 0 0 0.9rem;
+    font-size: 1.1rem;
+    line-height: 1.32;
+    transition: color var(--motion);
+  }
+
+  .related-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: auto;
+    color: var(--accent-strong);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .related-more::after {
+    content: "->";
+  }
+
+  /* ----- end note ----- */
+
+  .writeup-disclaimer {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: clamp(1.5rem, 4vw, 2rem) var(--gutter) 0;
+    border-top: 1px solid var(--border);
+    color: var(--text-faint);
+    font-size: 0.85rem;
+    font-style: italic;
+    text-align: center;
   }
 </style>
 

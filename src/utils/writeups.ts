@@ -46,6 +46,10 @@ const difficultyLabels: Record<string, string> = {
   info: 'Info'
 };
 
+export function getCategoryLabel(category: string) {
+  return categoryLabels[category] ?? category.replaceAll('-', ' ');
+}
+
 export function getWriteupSlug(post: WriteupEntry) {
   return post.data.slug ?? post.id;
 }

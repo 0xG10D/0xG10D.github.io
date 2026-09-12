@@ -1,5 +1,5 @@
 ---
-event: "letsdefend-jetbrains"
+event: "letsdefend"
 title: "JetBrains Lab"
 summary: "LetsDefend JetBrains lab writeup using Wireshark to reconstruct TeamCity exploitation, webshell activity, and MITRE ATT&CK mapping."
 date: 2026-07-23

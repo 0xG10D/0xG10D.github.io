@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import achievementContent from '../content/achievements/certifications.json';
 import SecurityIcon from '../components/SecurityIcon.astro';
+import { parseAchievementDate, formatAchievementYear } from '../utils/achievements';
 
 type Certification = {
   name: string;
@@ -41,6 +42,14 @@ const allCertifications = [
   ...data.certifications.cybersecurity.map((cert) => ({ ...cert, category: 'Cybersecurity' })),
   ...data.currentlyPursuing.map((cert) => ({ ...cert, category: 'In Progress', status: 'in-progress' as const }))
 ];
+
+const certTimeline = allCertifications
+  .map((cert) => ({ ...cert, sortDate: parseAchievementDate(cert.date ?? '') }))
+  .sort((a, b) => b.sortDate.valueOf() - a.sortDate.valueOf());
+
+const ctfTimeline = data.ctfCompetitions
+  .map((ctf) => ({ ...ctf, sortDate: parseAchievementDate(ctf.date) }))
+  .sort((a, b) => b.sortDate.valueOf() - a.sortDate.valueOf());
 
 const stats = [
   {
@@ -134,31 +143,20 @@ const statusLabels = {
 
     <section class="section certifications-section">
       <div class="container">
-        <div class="section-header">
-          <p class="section-kicker">// credentials</p>
-          <h2 class="section-title">Technical certifications</h2>
-          <p class="section-subtitle">
-            Networking, infrastructure, and cybersecurity credentials with status and credential metadata.
-          </p>
+        <div class="field-head">
+          <span class="field-num">(01)</span>
+          <span class="field-rule" aria-hidden="true"></span>
+          <span class="field-label">Certifications</span>
         </div>
 
-        <div class="certifications-grid">
-          {allCertifications.map((cert, index) => {
+        <div class="ach-timeline">
+          {certTimeline.map((cert, index) => {
             const status = (cert.status || 'verified') as keyof typeof statusLabels;
             return (
-              <article class="certification-card reveal" data-reveal-delay={Math.min(index * 30, 240)} data-status={status}>
-                <header>
-                  <p>{cert.provider}</p>
-                  <span>{statusLabels[status]}</span>
-                </header>
-
-                <h3>{cert.name}</h3>
-
-                <dl class="certification-meta">
-                  {cert.date && <div><dt>Date</dt><dd>{cert.date}</dd></div>}
-                  <div><dt>Domain</dt><dd>{cert.category}</dd></div>
-                  {cert.credentialId && <div><dt>ID</dt><dd>{cert.credentialId}</dd></div>}
-                </dl>
+              <article class="ach-item reveal" data-reveal-delay={Math.min(index * 20, 240)} data-status={status}>
+                <p class="ach-year">{cert.date ? `${cert.date} • ${statusLabels[status]}` : statusLabels[status]}</p>
+                <h3 class="ach-title">{cert.name}</h3>
+                <p class="ach-meta">{cert.provider} — {cert.category}</p>
               </article>
             );
           })}
@@ -168,27 +166,23 @@ const statusLabels = {
 
     <section class="section ctf-section">
       <div class="container">
-        <div class="section-header">
-          <p class="section-kicker">// competition record</p>
-          <h2 class="section-title">CTF competitions</h2>
-          <p class="section-subtitle">Event participation and placement history.</p>
+        <div class="field-head">
+          <span class="field-num">(02)</span>
+          <span class="field-rule" aria-hidden="true"></span>
+          <span class="field-label">CTF Record</span>
         </div>
 
-        {data.ctfCompetitions.length > 0 ? (
-          <div class="ctf-grid">
-            {data.ctfCompetitions.map((competition, index) => (
-              <article class="ctf-card reveal" data-reveal-delay={Math.min(index * 30, 240)}>
-                <header>
-                  <h3>{competition.event}</h3>
-                  <span>{competition.placement}</span>
-                </header>
-
-                <dl class="ctf-meta">
-                  <div><dt>Date</dt><dd>{competition.date}</dd></div>
-                  <div><dt>Organizer</dt><dd>{competition.organizer}</dd></div>
-                  {competition.category && <div><dt>Category</dt><dd>{competition.category}</dd></div>}
-                  {competition.team && <div><dt>Team</dt><dd>{competition.team}</dd></div>}
-                </dl>
+        {ctfTimeline.length > 0 ? (
+          <div class="ach-timeline">
+            {ctfTimeline.map((competition, index) => (
+              <article class="ach-item reveal" data-reveal-delay={Math.min(index * 20, 240)}>
+                <p class="ach-year">{formatAchievementYear(competition.sortDate)} • {competition.placement}</p>
+                <h3 class="ach-title">{competition.event}</h3>
+                <p class="ach-meta">
+                  {competition.organizer}
+                  {competition.category ? ` — ${competition.category}` : ''}
+                  {competition.team ? ` — ${competition.team}` : ''}
+                </p>
               </article>
             ))}
           </div>
@@ -203,22 +197,19 @@ const statusLabels = {
 
     <section class="section roadmap-section">
       <div class="container">
-        <div class="section-header">
-          <p class="section-kicker">// roadmap</p>
-          <h2 class="section-title">Learning tracks</h2>
-          <p class="section-subtitle">Planned and ongoing certification work.</p>
+        <div class="field-head">
+          <span class="field-num">(03)</span>
+          <span class="field-rule" aria-hidden="true"></span>
+          <span class="field-label">Roadmap</span>
         </div>
 
         {data.currentlyPursuing.length > 0 ? (
-          <div class="roadmap">
+          <div class="ach-timeline">
             {data.currentlyPursuing.map((track, index) => (
-              <article class="roadmap-item reveal" data-reveal-delay={Math.min(index * 30, 240)}>
-                <SecurityIcon name="file" size={18} />
-                <div>
-                  <h3>{track.name}</h3>
-                  <p>{track.provider}{track.date ? ` / Target: ${track.date}` : ''}</p>
-                </div>
-                <span>In progress</span>
+              <article class="ach-item reveal" data-reveal-delay={Math.min(index * 20, 240)} data-status="in-progress">
+                <p class="ach-year">In progress</p>
+                <h3 class="ach-title">{track.name}</h3>
+                <p class="ach-meta">{track.provider}{track.date ? ` — Target: ${track.date}` : ''}</p>
               </article>
             ))}
           </div>
@@ -335,17 +326,13 @@ const statusLabels = {
     gap: 0.45rem;
   }
 
-  .status-card dl,
-  .certification-meta,
-  .ctf-meta {
+  .status-card dl {
     display: grid;
     gap: 0.6rem;
     padding: 0;
   }
 
-  .status-card dl div,
-  .certification-meta div,
-  .ctf-meta div {
+  .status-card dl div {
     display: grid;
     grid-template-columns: minmax(6rem, 0.35fr) 1fr;
     gap: 0.75rem;
@@ -363,9 +350,7 @@ const statusLabels = {
     color: var(--text-soft);
   }
 
-  .snapshot-grid,
-  .certifications-grid,
-  .ctf-grid {
+  .snapshot-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
     gap: 1rem;
@@ -379,86 +364,9 @@ const statusLabels = {
     margin: 0;
   }
 
-  .certification-card,
-  .ctf-card {
-    display: grid;
-    gap: 1rem;
-  }
-
-  .certification-card header,
-  .ctf-card header {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    align-items: flex-start;
-  }
-
-  .certification-card header p {
-    margin: 0;
+  .ach-item[data-status="in-progress"] .ach-year,
+  .ach-item[data-status="planned"] .ach-year {
     color: var(--steel);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-  }
-
-  .certification-card header span,
-  .ctf-card header span,
-  .roadmap-item > span {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 0.18rem 0.45rem;
-    color: var(--accent-strong);
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    white-space: nowrap;
-  }
-
-  .certification-card[data-status="in-progress"] header span {
-    border-color: var(--steel);
-    color: var(--steel);
-  }
-
-  .certification-card[data-status="planned"] header span {
-    color: var(--text-muted);
-  }
-
-  .certification-card[data-status="in-progress"] {
-    border-left-color: var(--steel);
-  }
-
-  .certification-card[data-status="planned"] {
-    border-left-style: dashed;
-  }
-
-  .certification-card h3,
-  .ctf-card h3,
-  .roadmap-item h3 {
-    font-size: 1.2rem;
-  }
-
-  .roadmap {
-    display: grid;
-    gap: 0.8rem;
-  }
-
-  .roadmap-item {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    gap: 0.85rem;
-    align-items: start;
-  }
-
-  .roadmap-item svg {
-    color: var(--steel);
-    margin-top: 0.18rem;
-  }
-
-  .roadmap-item p {
-    margin: 0.25rem 0 0;
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
   }
 
   @media (max-width: 820px) {
@@ -469,19 +377,6 @@ const statusLabels = {
 
     .achievement-stats dd {
       text-align: left;
-    }
-  }
-
-  @media (max-width: 560px) {
-    .certification-card header,
-    .ctf-card header,
-    .roadmap-item {
-      grid-template-columns: 1fr;
-    }
-
-    .certification-card header,
-    .ctf-card header {
-      display: grid;
     }
   }
 </style>

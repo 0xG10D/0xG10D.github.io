@@ -1,107 +1,154 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import {
-  formatArchiveDate,
-  formatDifficulty,
-  getChallengeType,
-  getEventName,
-  getEventSlug,
-  getWriteupUrl,
-  sortEventsByName,
-  sortWriteupsNewestFirst
-} from '../../utils/writeups';
+import { getCategoryLabel, getWriteupUrl, sortWriteupsNewestFirst } from '../../utils/writeups';
 
-const allWriteups = await getCollection('writeups');
-const writeups = allWriteups
-  .filter((post) => !post.data.draft)
-  .sort(sortWriteupsNewestFirst);
+const allWriteups = await getCollection('writeups', ({ data }) => !data.draft);
+const archive = allWriteups.sort(sortWriteupsNewestFirst);
 
-const eventMap = new Map<string, typeof writeups>();
+const [featured, ...rest] = archive;
+const topReads = rest.slice(0, 3);
 
-writeups.forEach((post) => {
-  const eventSlug = getEventSlug(post);
-  const eventWriteups = eventMap.get(eventSlug) ?? [];
-  eventWriteups.push(post);
-  eventMap.set(eventSlug, eventWriteups);
+const categoryGroups = new Map<string, string[]>();
+archive.forEach((post) => {
+  const label = getCategoryLabel(post.data.category);
+  const values = categoryGroups.get(label) ?? [];
+  if (!values.includes(post.data.category)) values.push(post.data.category);
+  categoryGroups.set(label, values);
 });
+const categoryPills = Array.from(categoryGroups.entries())
+  .sort((a, b) => a[0].localeCompare(b[0]))
+  .map(([label, values]) => ({ label, key: values.join(',') }));
 
-const events = Array.from(eventMap.entries())
-  .map(([slug, posts]) => ({
-    slug,
-    name: getEventName(slug),
-    posts: posts.sort(sortWriteupsNewestFirst),
-    count: posts.length,
-    latest: posts[0]?.data.date
-  }))
-  .sort(sortEventsByName);
+const formatLongDate = (date: Date) =>
+  date.toLocaleDateString('en', { year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase();
 
-const totalWriteups = writeups.length;
-const latestWriteupDate = writeups[0]?.data.date
-  ? formatArchiveDate(writeups[0].data.date)
-  : 'No posts yet';
+const buildSearchIndex = (post: (typeof archive)[number]) =>
+  [post.data.title, post.data.summary ?? '', post.data.tags.join(' '), getCategoryLabel(post.data.category)]
+    .join(' ')
+    .toLowerCase();
 ---
 
 <BaseLayout title="Writeups" description="Event-based archive of CTF writeups, lab notes, and security research.">
-  <div class="writeups-page">
-    <section class="archive-hero section">
-      <div class="container">
-        <div class="archive-hero-grid">
-          <div>
-            <p class="hero-eyebrow">// security research archive</p>
-            <h1>Writeups by event</h1>
-            <p>
-              Reports are grouped by source event or platform. Each entry keeps the original title,
-              metadata, tags, and writeup route.
-            </p>
+  <div class="blog-page">
+    {featured && (
+      <section class="section blog-top">
+        <div class="container blog-top-grid">
+          <div class="latest-col">
+            <h2 class="blog-heading">The Latest</h2>
+
+            <a class="featured-card" href={getWriteupUrl(featured)}>
+              {featured.data.boxImage ? (
+                <div class="media-frame">
+                  <img src={featured.data.boxImage} alt="" loading="eager" decoding="async" />
+                </div>
+              ) : (
+                <div class="media-frame media-frame-empty">
+                  <span>{getCategoryLabel(featured.data.category)}</span>
+                </div>
+              )}
+
+              <h3 class="featured-title">{featured.data.title}</h3>
+
+              <p class="card-meta-line">
+                <time datetime={featured.data.date.toISOString()}>{formatLongDate(featured.data.date)}</time>
+                <span>{getCategoryLabel(featured.data.category)}</span>
+              </p>
+
+              {featured.data.summary && <p class="featured-excerpt">{featured.data.summary}</p>}
+
+              <span class="read-more">Read more</span>
+            </a>
           </div>
-          <dl class="archive-metrics" aria-label="Archive metrics">
-            <div>
-              <dt>Total writeups</dt>
-              <dd>{totalWriteups}</dd>
+
+          {topReads.length > 0 && (
+            <div class="top-reads-col">
+              <h2 class="blog-heading">Top Reads</h2>
+
+              <div class="top-reads-list">
+                {topReads.map((post) => (
+                  <a class="top-read-row" href={getWriteupUrl(post)}>
+                    <div class="top-read-thumb">
+                      {post.data.boxImage ? (
+                        <img src={post.data.boxImage} alt="" loading="lazy" decoding="async" />
+                      ) : (
+                        <span>{getCategoryLabel(post.data.category).slice(0, 3)}</span>
+                      )}
+                    </div>
+                    <div class="top-read-copy">
+                      <h3 class="top-read-title">{post.data.title}</h3>
+                      <p class="top-read-meta">
+                        <time datetime={post.data.date.toISOString()}>{formatLongDate(post.data.date)}</time>
+                        <span>{getCategoryLabel(post.data.category)}</span>
+                      </p>
+                    </div>
+                  </a>
+                ))}
+              </div>
             </div>
-            <div>
-              <dt>Events</dt>
-              <dd>{events.length}</dd>
-            </div>
-            <div>
-              <dt>Latest update</dt>
-              <dd>{latestWriteupDate}</dd>
-            </div>
-          </dl>
+          )}
         </div>
-      </div>
-    </section>
+      </section>
+    )}
 
-    <section class="section archive-section">
+    <section class="section blog-archive">
       <div class="container">
-        {events.length > 0 ? (
-          <div class="event-archive" aria-label="Event archive">
-            {events.map((event, index) => (
-              <details
-                class={index === 0 ? 'event-row' : 'event-row reveal'}
-                data-reveal-delay={Math.min(index * 40, 240)}
-                name="writeup-events"
-                open={index === 0}
-              >
-                <summary>
-                  <span class="event-name">{event.name}</span>
-                  <span class="event-count">{event.count} {event.count === 1 ? 'writeup' : 'writeups'}</span>
-                </summary>
+        <div class="archive-toolbar">
+          <h2 class="blog-heading">Browse by categories</h2>
 
-                <ol class="event-writeups">
-                  {event.posts.map((post) => (
-                    <li class="event-writeup">
-                      <time datetime={post.data.date.toISOString()}>{formatArchiveDate(post.data.date)}</time>
-                      <a href={getWriteupUrl(post)} class="event-writeup-link">{post.data.title}</a>
-                      <span>{getChallengeType(post)}</span>
-                      <span>{formatDifficulty(post.data.difficulty)}</span>
-                    </li>
-                  ))}
-                </ol>
-              </details>
-            ))}
+          <div class="search-field">
+            <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
+              <circle cx="8.5" cy="8.5" r="6" stroke="currentColor" stroke-width="1.5" />
+              <path d="M17 17L13.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+            <input type="search" id="writeup-search" placeholder="Search writeups" aria-label="Search writeups" />
           </div>
+        </div>
+
+        <div class="category-pills" role="group" aria-label="Filter by category">
+          <button type="button" class="category-pill is-active" data-category="all">All</button>
+          {categoryPills.map(({ label, key }) => (
+            <button type="button" class="category-pill" data-category={key}>
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {archive.length > 0 ? (
+          <>
+            <div class="archive-grid" id="writeup-grid">
+              {archive.map((post) => (
+                <article class="archive-card" data-category={post.data.category} data-search={buildSearchIndex(post)}>
+                  <a class="archive-card-link" href={getWriteupUrl(post)}>
+                    {post.data.boxImage ? (
+                      <div class="media-frame">
+                        <img src={post.data.boxImage} alt="" loading="lazy" decoding="async" />
+                      </div>
+                    ) : (
+                      <div class="media-frame media-frame-empty">
+                        <span>{getCategoryLabel(post.data.category)}</span>
+                      </div>
+                    )}
+
+                    <div class="archive-card-body">
+                      <p class="card-meta-line">
+                        <time datetime={post.data.date.toISOString()}>{formatLongDate(post.data.date)}</time>
+                        <span>{getCategoryLabel(post.data.category)}</span>
+                      </p>
+
+                      <h3 class="archive-card-title">{post.data.title}</h3>
+
+                      {post.data.summary && <p class="archive-card-excerpt">{post.data.summary}</p>}
+
+                      <span class="read-more">Read more</span>
+                    </div>
+                  </a>
+                </article>
+              ))}
+            </div>
+
+            <p class="archive-empty" id="writeup-empty" hidden>No writeups match your search.</p>
+          </>
         ) : (
           <div class="empty-state">
             <h2>No writeups available</h2>
@@ -114,20 +161,79 @@ const latestWriteupDate = writeups[0]?.data.date
 </BaseLayout>
 
 <style>
-  .archive-hero {
+  .blog-top {
     border-bottom: 1px solid var(--border);
   }
 
-  .archive-hero-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(260px, 0.38fr);
-    gap: clamp(2rem, 6vw, 4rem);
-    align-items: end;
+  .blog-heading {
+    margin: 0 0 clamp(1.25rem, 3vw, 1.75rem);
+    font-size: clamp(1.35rem, 2.4vw, 1.75rem);
+    font-weight: 600;
   }
 
-  .hero-eyebrow {
-    margin: 0 0 0.9rem;
-    color: var(--steel);
+  .blog-top-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(260px, 5fr);
+    gap: clamp(2rem, 5vw, 3.5rem);
+    align-items: start;
+  }
+
+  .media-frame {
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-code);
+  }
+
+  .media-frame img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    transition: transform var(--motion-enter);
+  }
+
+  .media-frame-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .media-frame-empty span {
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .card-meta-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 0 0 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .card-meta-line time {
+    color: var(--text-muted);
+  }
+
+  .card-meta-line span {
+    color: var(--accent-strong);
+  }
+
+  .read-more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin-top: auto;
+    color: var(--accent-strong);
     font-family: var(--font-mono);
     font-size: 0.76rem;
     font-weight: 700;
@@ -135,181 +241,325 @@ const latestWriteupDate = writeups[0]?.data.date
     letter-spacing: 0.04em;
   }
 
-  .archive-hero h1 {
-    max-width: 16ch;
-    margin-bottom: 1rem;
+  .read-more::after {
+    content: "->";
   }
 
-  .archive-hero p:not(.hero-eyebrow) {
-    max-width: 68ch;
-    color: var(--text-soft);
-    font-size: 1.08rem;
-  }
-
-  .archive-metrics {
-    display: grid;
-    gap: 0;
-    margin: 0;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-  }
-
-  .archive-metrics div {
-    display: grid;
-    grid-template-columns: 7rem 1fr;
-    gap: 1rem;
-    padding: 0.82rem 0;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .archive-metrics div:last-child {
-    border-bottom: 0;
-  }
-
-  .archive-metrics dt {
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: 0.74rem;
-    text-transform: uppercase;
-  }
-
-  .archive-metrics dd {
-    margin: 0;
-    color: var(--text);
-    text-align: right;
-  }
-
-  .archive-section {
-    padding-top: clamp(2rem, 5vw, 3rem);
-  }
-
-  .event-archive {
-    border-top: 1px solid var(--border);
-  }
-
-  .event-row {
-    border-bottom: 1px solid var(--border);
-  }
-
-  .event-row summary {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
-    gap: 0.7rem 1rem;
-    align-items: center;
-    min-height: 58px;
-    padding: 0.95rem 0;
-    color: var(--text);
-    cursor: pointer;
-    list-style: none;
-  }
-
-  .event-row summary::-webkit-details-marker {
-    display: none;
-  }
-
-  .event-row summary::before {
-    content: "+";
-    width: 1rem;
-    color: var(--accent);
-    font-family: var(--font-mono);
-  }
-
-  .event-row[open] summary::before {
-    content: "-";
-  }
-
-  .event-name {
-    min-width: 0;
-    font-family: var(--font-heading);
-    font-size: clamp(1.12rem, 2vw, 1.38rem);
-    font-weight: 650;
-  }
-
-  .event-count {
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    text-align: right;
-  }
-
-  .event-writeups {
-    display: grid;
-    margin: 0 0 1rem;
-    padding: 0;
-    list-style: none;
-    border-top: 1px solid var(--border);
-  }
-
-  .event-writeup {
-    position: relative;
-    display: grid;
-    grid-template-columns: 8.5rem minmax(0, 1fr) minmax(8rem, 0.24fr) minmax(5rem, 0.12fr);
-    gap: 1rem;
-    align-items: baseline;
-    padding: 0.72rem 0.6rem;
-    border-bottom: 1px solid rgba(43, 44, 37, 0.72);
-    border-left: 2px solid transparent;
-    transition: border-left-color var(--motion), background-color var(--motion);
-  }
-
-  .event-writeup:last-child {
-    border-bottom: 0;
-  }
-
-  .event-writeup:hover {
-    border-left-color: var(--accent);
-    background: var(--bg-panel);
-  }
-
-  .event-writeup time,
-  .event-writeup span {
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-  }
-
-  .event-writeup a {
-    min-width: 0;
-    color: var(--text);
-    font-weight: 700;
+  .featured-card {
+    display: flex;
+    flex-direction: column;
+    color: inherit;
     text-decoration: none;
   }
 
-  .event-writeup a:hover {
+  .featured-card:hover .media-frame img {
+    transform: scale(1.03);
+  }
+
+  .featured-title {
+    margin: 1rem 0 0.5rem;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+  }
+
+  .featured-card:hover .featured-title {
     color: var(--accent-strong);
   }
 
-  .event-writeup-link::after {
-    content: "";
-    position: absolute;
-    inset: 0;
+  .featured-excerpt {
+    max-width: 62ch;
+    margin: 0 0 0.85rem;
+    color: var(--text-soft);
   }
 
-  @media (max-width: 820px) {
-    .archive-hero-grid {
+  .top-reads-list {
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .top-read-row {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 0.85rem;
+    align-items: center;
+    padding: 0.6rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-panel);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color var(--motion), background-color var(--motion);
+  }
+
+  .top-read-row:hover {
+    border-color: var(--accent);
+    background: var(--bg-raised);
+  }
+
+  .top-read-thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 16 / 12;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--bg-code);
+  }
+
+  .top-read-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .top-read-thumb span {
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  .top-read-copy {
+    min-width: 0;
+  }
+
+  .top-read-title {
+    margin: 0 0 0.3rem;
+    font-size: 1rem;
+    line-height: 1.3;
+  }
+
+  .top-read-row:hover .top-read-title {
+    color: var(--accent-strong);
+  }
+
+  .top-read-meta {
+    display: flex;
+    gap: 0.5rem;
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    text-transform: uppercase;
+  }
+
+  .top-read-meta time {
+    color: var(--text-muted);
+  }
+
+  .top-read-meta span {
+    color: var(--accent-strong);
+  }
+
+  .blog-archive {
+    padding-top: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .archive-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .archive-toolbar .blog-heading {
+    margin: 0;
+  }
+
+  .search-field {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-width: 240px;
+    padding: 0.5rem 0.95rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    background: var(--bg-soft);
+    color: var(--text-faint);
+    transition: border-color var(--motion);
+  }
+
+  .search-field:focus-within {
+    border-color: var(--accent);
+  }
+
+  .search-field input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+  }
+
+  .search-field input::placeholder {
+    color: var(--text-faint);
+  }
+
+  .category-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: clamp(1.5rem, 4vw, 2.25rem);
+  }
+
+  .category-pill {
+    padding: 0.4rem 0.95rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    transition: border-color var(--motion), color var(--motion), background-color var(--motion);
+  }
+
+  .category-pill:hover {
+    border-color: var(--accent);
+    color: var(--text);
+  }
+
+  .category-pill.is-active {
+    border-color: var(--text);
+    background: var(--text);
+    color: var(--bg);
+  }
+
+  .archive-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1.25rem, 3vw, 1.75rem);
+  }
+
+  .archive-card-link {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    background: var(--bg-panel);
+    overflow: hidden;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color var(--motion), background-color var(--motion);
+  }
+
+  .archive-card-link:hover {
+    border-color: var(--accent);
+    background: var(--bg-raised);
+  }
+
+  .archive-card-link:hover .media-frame img {
+    transform: scale(1.04);
+  }
+
+  .archive-card-link:hover .archive-card-title {
+    color: var(--accent-strong);
+  }
+
+  .archive-card-link .media-frame {
+    border: 0;
+    border-bottom: 1px solid var(--border);
+    border-radius: 0;
+  }
+
+  .archive-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 1rem 1.1rem 1.2rem;
+  }
+
+  .archive-card-title {
+    margin: 0 0 0.5rem;
+    font-size: 1.15rem;
+    line-height: 1.3;
+  }
+
+  .archive-card-excerpt {
+    display: -webkit-box;
+    margin: 0 0 0.9rem;
+    overflow: hidden;
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.6;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+  }
+
+  .archive-card[hidden] {
+    display: none;
+  }
+
+  .archive-empty {
+    padding: 2.5rem 0;
+    color: var(--text-muted);
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .blog-top-grid {
       grid-template-columns: 1fr;
     }
 
-    .archive-metrics dd {
-      text-align: left;
-    }
-
-    .event-writeup {
-      grid-template-columns: 1fr;
-      gap: 0.22rem;
-      padding: 0.88rem 0;
+    .archive-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
-  @media (max-width: 520px) {
-    .event-row summary {
-      grid-template-columns: auto minmax(0, 1fr);
-      gap: 0.25rem 0.7rem;
+  @media (max-width: 640px) {
+    .archive-toolbar {
+      flex-direction: column;
+      align-items: stretch;
     }
 
-    .event-count {
-      grid-column: 2;
-      text-align: left;
+    .archive-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
+
+<script>
+  const grid = document.getElementById('writeup-grid');
+  const cards = grid ? Array.from(grid.querySelectorAll('.archive-card')) : [];
+  const searchInput = document.getElementById('writeup-search');
+  const pills = Array.from(document.querySelectorAll<HTMLButtonElement>('.category-pill'));
+  const emptyState = document.getElementById('writeup-empty');
+
+  let activeCategory = 'all';
+
+  function applyFilters() {
+    const query = searchInput instanceof HTMLInputElement ? searchInput.value.trim().toLowerCase() : '';
+    let visibleCount = 0;
+
+    cards.forEach((card) => {
+      if (!(card instanceof HTMLElement)) return;
+      const matchesCategory =
+        activeCategory === 'all' || activeCategory.split(',').includes(card.dataset.category ?? '');
+      const matchesSearch = !query || (card.dataset.search ?? '').includes(query);
+      const isVisible = matchesCategory && matchesSearch;
+      card.hidden = !isVisible;
+      if (isVisible) visibleCount += 1;
+    });
+
+    if (emptyState instanceof HTMLElement) emptyState.hidden = visibleCount !== 0;
+  }
+
+  pills.forEach((pill) => {
+    pill.addEventListener('click', () => {
+      activeCategory = pill.dataset.category ?? 'all';
+      pills.forEach((p) => p.classList.toggle('is-active', p === pill));
+      applyFilters();
+    });
+  });
+
+  if (searchInput instanceof HTMLInputElement) {
+    searchInput.addEventListener('input', applyFilters);
+  }
+</script>

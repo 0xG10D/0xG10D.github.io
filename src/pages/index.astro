@@ -2,16 +2,11 @@
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import WriteupCard from '../components/WriteupCard.astro';
-import { projects } from '../data/projects';
 
 const allWriteups = await getCollection('writeups', ({ data }) => !data.draft);
 const latestWriteups = allWriteups
   .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 10);
-
-const featuredProjects = projects.filter((project) =>
-  ['awd-watchdog', 'wavesentinel-wids'].includes(project.id)
-);
 
 const categories = [...new Set(allWriteups.map((post) => post.data.category))].length;
 
@@ -74,34 +69,6 @@ const formatDate = (date: Date) =>
             <p>Published notes will appear here when they are ready.</p>
           </div>
         )}
-      </div>
-    </section>
-
-    <section class="section projects-section">
-      <div class="container">
-        <div class="section-header section-header-row">
-          <div>
-            <p class="section-kicker">side work</p>
-            <h2 class="section-title">Security projects</h2>
-            <p class="section-subtitle">Tooling and lab projects documented as case studies.</p>
-          </div>
-          <a href="/projects/" class="text-link">All projects</a>
-        </div>
-
-        <div class="project-list">
-          {featuredProjects.map((project) => (
-            <article class="project-row">
-              <div>
-                <p class="project-type">{project.type}</p>
-                <h3><a href={project.route}>{project.title}</a></h3>
-                <p>{project.summary}</p>
-              </div>
-              <div class="project-stack" aria-label={`${project.title} stack`}>
-                {project.stack.slice(0, 6).map((tech) => <span>{tech}</span>)}
-              </div>
-            </article>
-          ))}
-        </div>
       </div>
     </section>
   </div>
@@ -187,64 +154,12 @@ const formatDate = (date: Date) =>
     gap: 1.5rem;
   }
 
-  .writeup-list,
-  .project-list {
+  .writeup-list {
     display: grid;
-  }
-
-  .project-row {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(190px, 0.32fr);
-    gap: 1.5rem;
-    padding: 1.15rem 0;
-    border-top: 1px solid var(--border);
-  }
-
-  .project-row:last-child {
-    border-bottom: 1px solid var(--border);
-  }
-
-  .project-row h3 {
-    margin: 0.15rem 0 0.45rem;
-    font-size: 1.35rem;
-  }
-
-  .project-row h3 a {
-    text-decoration: none;
-  }
-
-  .project-row p {
-    max-width: 74ch;
-    margin: 0;
-  }
-
-  .project-type {
-    color: var(--steel) !important;
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
-    text-transform: uppercase;
-  }
-
-  .project-stack {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
-    align-content: start;
-    justify-content: flex-end;
-  }
-
-  .project-stack span {
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 0.18rem 0.45rem;
-    color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
   }
 
   @media (max-width: 820px) {
-    .intro-layout,
-    .project-row {
+    .intro-layout {
       grid-template-columns: 1fr;
     }
 
@@ -254,10 +169,6 @@ const formatDate = (date: Date) =>
 
     .archive-notes dd {
       text-align: left;
-    }
-
-    .project-stack {
-      justify-content: flex-start;
     }
   }
 </style>

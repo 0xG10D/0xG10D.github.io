@@ -5,10 +5,11 @@ type NavLink = {
 };
 
 const currentPath = Astro.url.pathname;
+// Cheatsheets and Projects are kept in the repo but unpublished.
+// Their sources live at src/pages/_cheatsheets.astro and src/pages/_projects*.
+// Re-enable by dropping the leading underscore and restoring the links below.
 const links: NavLink[] = [
   { href: '/writeups/', label: 'Writeups' },
-  { href: '/cheatsheets/', label: 'Cheatsheets' },
-  { href: '/projects/', label: 'Projects' },
   { href: '/achievements/', label: 'Achievements' }
 ];
 ---

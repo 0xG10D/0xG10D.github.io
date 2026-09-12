@@ -472,3 +472,26 @@ repository because retirement could not be confirmed:
 
 `BFT` (Sherlock) is retired but the vault note stops mid-task, so it is held
 back as incomplete rather than for policy reasons.
+
+## Unpublished Pages
+
+Cheatsheets and Projects are kept in the repository but are not published. They
+are excluded from routing with Astro's leading-underscore convention, so no
+routes, no build output, and no sitemap or feed entries are generated:
+
+```text
+src/pages/_cheatsheets.astro
+src/pages/_projects.astro
+src/pages/_projects/awd-watchdog.astro
+src/pages/_projects/wavesentinel-wids.astro
+```
+
+Their data modules (`src/data/cheatsheets.ts`, `src/data/projects.ts`) and their
+images under `public/images/projects/` are untouched.
+
+To republish either page:
+
+1. Remove the leading underscore from the file or directory name.
+2. Restore the link in `src/components/Header.astro` (`links` array) and in
+   `src/components/Footer.astro` (`.footer-nav`).
+3. For Projects, restore the featured-projects section on `src/pages/index.astro`.

@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro check && astro build",
+    "validate:images": "node scripts/validate-images.mjs",
+    "build": "npm run validate:images && astro check && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },

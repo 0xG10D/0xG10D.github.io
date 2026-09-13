@@ -18,7 +18,7 @@ category: "forensics"
 difficulty: "easy"
 platform: "other"
 draft: false
-boxImage: "/public/images/writeups/Malops/AuraWiper/image.png"
+boxImage: "/images/writeups/Malops/AuraWiper/image.png"
 ---
 
 ## Introduction

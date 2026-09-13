@@ -16,7 +16,7 @@ category: "forensics"
 difficulty: "info"
 platform: "other"
 draft: false
-boxImage: "/public/images/writeups/dfir-first-image-analysis/Autopsy.png"
+boxImage: "/images/writeups/dfir-first-image-analysis/Autopsy.png"
 ---
 
 # DFIR First Image Analysis: Autopsy Walkthrough

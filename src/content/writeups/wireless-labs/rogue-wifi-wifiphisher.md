@@ -16,6 +16,7 @@ category: "network"
 difficulty: "info"
 platform: "other"
 draft: false
+boxImage: "https://5.imimg.com/data5/AW/AZ/YD/SELLER-10280074/wireless-penetration-testing-service.jpg"
 ---
 
 ## 1.0 Introduction

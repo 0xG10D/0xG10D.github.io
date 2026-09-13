@@ -62,24 +62,16 @@ const { headings } = Astro.props;
   .toc ul {
     display: grid;
     gap: 0.55rem;
+    height: auto;
+    max-height: none;
     margin: 0;
     padding: 0;
+    overflow: visible;
     list-style: none;
   }
 
   .toc li {
     margin: 0;
-  }
-
-  /* The sidebar is sticky above 1024px, so a long contents list has to scroll
-     on its own or its tail becomes unreachable. Below that it flows normally. */
-  @media (min-width: 1024px) {
-    .toc ul {
-      max-height: min(58vh, 30rem);
-      overflow-y: auto;
-      overscroll-behavior: contain;
-      padding-right: 0.25rem;
-    }
   }
 
   .toc-link {

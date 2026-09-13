@@ -24,6 +24,7 @@ const writeups = defineCollection({
       'mobile',
       'network',
       'research',
+      'letsdefend',
       'tryhackme',
       'international-ctf',
       'local-ctf',

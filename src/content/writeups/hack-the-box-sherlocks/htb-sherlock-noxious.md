@@ -20,6 +20,7 @@ category: "forensics"
 difficulty: "easy"
 platform: "hackthebox"
 draft: false
+boxImage: "https://cdn.services-k8s.prod.aws.htb.systems/content/sherlocks/avatar/9e4d9101-1ea9-40f3-b4a7-7879c7533528.png"
 ---
 
 ## Introduction

@@ -16,6 +16,7 @@ category: "forensics"
 difficulty: "info"
 platform: "other"
 draft: false
+boxImage: "/public/images/writeups/axiom-first-image-analysis/image.png"
 ---
 
 # DFIR First Image Analysis — Magnet AXIOM

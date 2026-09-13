@@ -16,6 +16,7 @@ category: "network"
 difficulty: "info"
 platform: "other"
 draft: false
+boxImage: "https://www.kali.org/tools/mdk3/images/mdk3-logo.svg"
 ---
 
 # Beacon Flooding Lab Report Using MDK3

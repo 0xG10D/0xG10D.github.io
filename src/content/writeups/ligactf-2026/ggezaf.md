@@ -13,7 +13,7 @@ category: "local-ctf"
 difficulty: "medium"
 platform: "ctf"
 draft: false
-boxImage: ""
+boxImage: "https://pbs.twimg.com/profile_images/1887468252189892609/jfsITy0N_400x400.png"
 ---
 ## Challenge Information
 

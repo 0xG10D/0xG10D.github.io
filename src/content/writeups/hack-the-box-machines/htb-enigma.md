@@ -18,6 +18,7 @@ category: "hack-the-box"
 difficulty: "info"
 platform: "hackthebox"
 draft: false
+boxImage: "https://cdn.services-k8s.prod.aws.htb.systems/content/machines/avatar/a1e514a2-69e8-4e79-82ab-176c3b5a26b4-1780052657.png"
 ---
 
 # Hack The Box - Enigma Writeup

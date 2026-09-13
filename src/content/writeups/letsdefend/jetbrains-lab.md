@@ -16,6 +16,7 @@ category: "forensics"
 difficulty: "info"
 platform: "other"
 draft: false
+boxImage: "https://cyberdefenders.org/media/terraform/JetBrains/JetBrains_w96gGwO.webp"
 ---
 ## Lab Objective
 

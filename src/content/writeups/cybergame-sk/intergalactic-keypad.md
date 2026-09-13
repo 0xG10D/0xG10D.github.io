@@ -15,7 +15,7 @@ category: "international-ctf"
 difficulty: "medium"
 platform: "ctf"
 draft: false
-boxImage: ""
+boxImage: "https://cybergame.sk/img/CG26.sv.white.svg"
 ---
 ## 1. Challenge Overview
 

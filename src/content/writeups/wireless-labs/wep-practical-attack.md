@@ -16,6 +16,7 @@ category: "network"
 difficulty: "info"
 platform: "other"
 draft: false
+boxImage: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIWcGUZz5FXG9WHc20PxADKXT-BufgUX1Q9RRbD8NdnGWxw1ToBTv3dlY&s=10"
 ---
 
 # WEP Practical Attack Lab Report

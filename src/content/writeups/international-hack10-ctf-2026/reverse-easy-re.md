@@ -16,7 +16,7 @@ category: "local-ctf"
 difficulty: "easy"
 platform: "ctf"
 draft: false
-boxImage: ""
+boxImage: "/public/images/writeups/hack10ctf2026/image.png"
 ---
 CTF: International HACK@10 CTF 2026
 Category: Reversing

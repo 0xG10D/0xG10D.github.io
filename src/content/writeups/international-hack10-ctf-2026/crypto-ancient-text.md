@@ -13,7 +13,7 @@ category: "local-ctf"
 difficulty: "medium"
 platform: "ctf"
 draft: false
-boxImage: ""
+boxImage: "/public/images/writeups/hack10ctf2026/image.png"
 ---
 # Challenge Overview
 

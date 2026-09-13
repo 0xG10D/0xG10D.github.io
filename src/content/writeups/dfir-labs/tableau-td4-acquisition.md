@@ -15,6 +15,7 @@ category: "forensics"
 difficulty: "info"
 platform: "other"
 draft: false
+boxImage: "/public/images/writeups/tableau-td4-acquisition/image.png"
 ---
 
 ## Objective

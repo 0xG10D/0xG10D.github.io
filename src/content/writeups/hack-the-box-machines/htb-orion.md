@@ -21,6 +21,7 @@ category: "hack-the-box"
 difficulty: "easy"
 platform: "hackthebox"
 draft: false
+boxImage: "https://cdn.services-k8s.prod.aws.htb.systems/content/machines/avatar/a217731f-ce7c-4015-ba0f-d68c7f6f7215-1782215994.png"
 ---
 
 ## Machine Overview

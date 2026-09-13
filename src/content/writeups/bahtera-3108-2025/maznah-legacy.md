@@ -13,6 +13,7 @@ category: "local-ctf"
 difficulty: "medium"
 platform: "ctf"
 draft: false
+boxImage: "/images/writeups/Bahtera-3108-2025/1.png"
 ---
 
 # Maznah Legacy

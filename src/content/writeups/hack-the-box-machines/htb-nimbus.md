@@ -20,6 +20,7 @@ category: "hack-the-box"
 difficulty: "hard"
 platform: "hackthebox"
 draft: false
+boxImage: "https://cdn.services-k8s.prod.aws.htb.systems/content/machines/avatar/a1e513f0-690d-4dc2-bd2c-946d3983d026-1780052541.png"
 ---
 
 # Hack The Box — Nimbus Writeup

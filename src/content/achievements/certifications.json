@@ -123,16 +123,23 @@
   },
   "ctfCompetitions": [
     {
-      "event": "CTF Da Nang 2026 Preliminary",
-      "organizer": "CTF Da Nang",
-      "date": "2026",
-      "placement": "17th",
-      "category": "Qualified for the Final Round in Da Nang, Vietnam"
+      "event": "Digital Dragon CTF 2026 – Final Round",
+      "organizer": "Digital Dragon CTF",
+      "date": "Sep 2026",
+      "placement": "15th Place",
+      "category": "CTF Final Round — VKU, Da Nang, Vietnam"
+    },
+    {
+      "event": "Digital Dragon CTF 2026 – Preliminary Round",
+      "organizer": "Digital Dragon CTF",
+      "date": "Aug 2026",
+      "placement": "17th Place",
+      "category": "CTF Preliminary Round — VKU, Da Nang, Vietnam"
     },
     {
       "event": "SunCTF 2026",
       "organizer": "Sunway Cybersecurity",
-      "date": "2026",
+      "date": "Sep 2026",
       "placement": "8th Runner-Up"
     },
     {

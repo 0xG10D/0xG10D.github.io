@@ -47,9 +47,27 @@ const certTimeline = allCertifications
   .map((cert) => ({ ...cert, sortDate: parseAchievementDate(cert.date ?? '') }))
   .sort((a, b) => b.sortDate.valueOf() - a.sortDate.valueOf());
 
+const hasMonth = (value: string) => /([A-Za-z]{3,})\s+(\d{4})/.test(value);
+
 const ctfTimeline = data.ctfCompetitions
   .map((ctf) => ({ ...ctf, sortDate: parseAchievementDate(ctf.date) }))
   .sort((a, b) => b.sortDate.valueOf() - a.sortDate.valueOf());
+
+type CtfGroup = { key: string; label: string; items: typeof ctfTimeline };
+
+const ctfGroups: CtfGroup[] = [];
+for (const ctf of ctfTimeline) {
+  const label = hasMonth(ctf.date)
+    ? ctf.sortDate.toLocaleDateString('en', { month: 'long', year: 'numeric' })
+    : formatAchievementYear(ctf.sortDate);
+  const key = `${ctf.sortDate.getFullYear()}-${label}`;
+  let group = ctfGroups.find((g) => g.key === key);
+  if (!group) {
+    group = { key, label, items: [] };
+    ctfGroups.push(group);
+  }
+  group.items.push(ctf);
+}
 
 const stats = [
   {
@@ -172,18 +190,25 @@ const statusLabels = {
           <span class="field-label">CTF Record</span>
         </div>
 
-        {ctfTimeline.length > 0 ? (
-          <div class="ach-timeline">
-            {ctfTimeline.map((competition, index) => (
-              <article class="ach-item reveal" data-reveal-delay={Math.min(index * 20, 240)}>
-                <p class="ach-year">{formatAchievementYear(competition.sortDate)} • {competition.placement}</p>
-                <h3 class="ach-title">{competition.event}</h3>
-                <p class="ach-meta">
-                  {competition.organizer}
-                  {competition.category ? ` — ${competition.category}` : ''}
-                  {competition.team ? ` — ${competition.team}` : ''}
-                </p>
-              </article>
+        {ctfGroups.length > 0 ? (
+          <div class="ach-groups">
+            {ctfGroups.map((group) => (
+              <div class="ach-group">
+                <h3 class="ach-group-heading">{group.label}</h3>
+                <div class="ach-timeline">
+                  {group.items.map((competition, index) => (
+                    <article class="ach-item reveal" data-reveal-delay={Math.min(index * 20, 240)}>
+                      <p class="ach-year">{competition.placement}</p>
+                      <h3 class="ach-title">{competition.event}</h3>
+                      <p class="ach-meta">
+                        {competition.organizer}
+                        {competition.category ? ` — ${competition.category}` : ''}
+                        {competition.team ? ` — ${competition.team}` : ''}
+                      </p>
+                    </article>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         ) : (
@@ -362,6 +387,23 @@ const statusLabels = {
 
   .snapshot-card p {
     margin: 0;
+  }
+
+  .ach-groups {
+    display: grid;
+    gap: 1.8rem;
+  }
+
+  .ach-group-heading {
+    margin: 0 0 0.9rem;
+    color: var(--steel);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
   }
 
   .ach-item[data-status="in-progress"] .ach-year,

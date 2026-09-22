@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import ConstellationGrid from '../components/ConstellationGrid.astro';
 import achievementContent from '../content/achievements/certifications.json';
 import { formatArchiveDate, getChallengeType, getWriteupUrl, sortWriteupsNewestFirst } from '../utils/writeups';
 import { parseAchievementDate, formatAchievementYear } from '../utils/achievements';
@@ -47,6 +48,7 @@ const latestCert = allCertifications.sort((a, b) => b.date.valueOf() - a.date.va
 <BaseLayout title="Cybersecurity Writeup Archive">
   <div class="homepage">
     <section class="intro">
+      <ConstellationGrid />
       <div class="container intro-grid">
         <div class="intro-copy">
           <p class="field-tag">Field Note // 001</p>
@@ -128,16 +130,45 @@ const latestCert = allCertifications.sort((a, b) => b.date.valueOf() - a.date.va
         </div>
       </div>
     </section>
+
+    <section class="section playlist-section">
+      <div class="container">
+        <div class="field-head">
+          <span class="field-num">(04)</span>
+          <span class="field-rule" aria-hidden="true"></span>
+          <span class="field-label">Soundtrack</span>
+        </div>
+
+        <p class="playlist-caption">On loop during late-night CTF grinds and writeups.</p>
+
+        <div class="playlist-embed">
+          <iframe
+            title="Spotify playlist embed"
+            style="border-radius:12px"
+            src="https://open.spotify.com/embed/playlist/37i9dQZF1DWTl4y3vgJOXW?utm_source=generator&theme=0"
+            width="100%"
+            height="352"
+            allowfullscreen
+            loading="lazy"
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          ></iframe>
+        </div>
+      </div>
+    </section>
   </div>
 </BaseLayout>
 
 <style>
   .intro {
+    position: relative;
     padding: clamp(2.75rem, 8vw, 5rem) 0 clamp(2.25rem, 6vw, 3.5rem);
     border-bottom: 1px solid var(--border);
+    overflow: hidden;
   }
 
   .intro-grid {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(220px, 0.42fr);
     gap: clamp(2rem, 6vw, 4rem);
@@ -247,6 +278,30 @@ const latestCert = allCertifications.sort((a, b) => b.date.valueOf() - a.date.va
     font-style: italic;
     font-size: 0.94rem;
     line-height: 1.6;
+  }
+
+  .playlist-section {
+    padding-top: clamp(2.5rem, 6vw, 4rem);
+    border-top: 1px solid var(--border);
+  }
+
+  .playlist-caption {
+    max-width: 56ch;
+    margin: 0 0 1.5rem;
+    color: var(--text-muted);
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 0.94rem;
+  }
+
+  .playlist-embed {
+    max-width: var(--content);
+  }
+
+  .playlist-embed iframe {
+    display: block;
+    width: 100%;
+    border: 0;
   }
 
   @media (max-width: 820px) {

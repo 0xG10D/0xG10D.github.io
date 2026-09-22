@@ -1,0 +1,225 @@
+<canvas class="constellation-grid" aria-hidden="true"></canvas>
+
+<style>
+  .constellation-grid {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 0%, black 60%, transparent 100%);
+  }
+
+  @media (max-width: 780px) {
+    .constellation-grid {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .constellation-grid {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  interface GridNode {
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    baseX: number;
+    baseY: number;
+    radius: number;
+    label: string;
+    pulse: number;
+  }
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isNarrowViewport = window.matchMedia('(max-width: 780px)').matches;
+
+  function initConstellationGrid() {
+    const canvas = document.querySelector<HTMLCanvasElement>('.constellation-grid');
+    if (!canvas) return;
+
+    const host = canvas.parentElement;
+    if (!host) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Site palette: --text and --steel from global.css, read as rgb triples for canvas alpha blending.
+    const NODE_COLOR = '225, 220, 201';
+    const ACCENT_COLOR = '135, 166, 161';
+
+    const SPACING = 58;
+    const MAX_CONN_DIST = 66;
+    const MAX_CONN_DIST_SQ = MAX_CONN_DIST * MAX_CONN_DIST;
+    const SPRING_K = 18;
+    const DAMPING = 0.82;
+
+    let width = 0;
+    let height = 0;
+    let nodes: GridNode[] = [];
+    let animationFrameId = 0;
+    let lastTime = performance.now();
+
+    const mouse = { x: -1000, y: -1000, prevX: -1000, prevY: -1000, vx: 0, vy: 0, radius: 190 };
+
+    const initNodes = () => {
+      nodes = [];
+      const cols = Math.ceil(width / SPACING) + 1;
+      const rows = Math.ceil(height / SPACING) + 1;
+
+      for (let i = 0; i < cols; i++) {
+        for (let j = 0; j < rows; j++) {
+          const x = i * SPACING;
+          const y = j * SPACING;
+          nodes.push({
+            x,
+            y,
+            vx: 0,
+            vy: 0,
+            baseX: x,
+            baseY: y,
+            radius: Math.random() * 1 + 1,
+            label: `${(i * 7).toString(16).toUpperCase()}:${(j * 11).toString(16).toUpperCase()}`,
+            pulse: Math.random() * Math.PI * 2
+          });
+        }
+      }
+    };
+
+    const resize = () => {
+      const rect = host.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = rect.width;
+      height = rect.height;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      canvas.style.width = `${width}px`;
+      canvas.style.height = `${height}px`;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+      initNodes();
+    };
+
+    const handleMouseMove = (event: MouseEvent) => {
+      const rect = host.getBoundingClientRect();
+      mouse.x = event.clientX - rect.left;
+      mouse.y = event.clientY - rect.top;
+    };
+
+    const handleMouseLeave = () => {
+      mouse.x = -1000;
+      mouse.y = -1000;
+    };
+
+    const render = (now: number) => {
+      const dt = Math.min((now - lastTime) / 1000, 0.05);
+      lastTime = now;
+
+      mouse.vx = (mouse.x - mouse.prevX) / (dt * 1000 || 1);
+      mouse.vy = (mouse.y - mouse.prevY) / (dt * 1000 || 1);
+      mouse.prevX = mouse.x;
+      mouse.prevY = mouse.y;
+      const speed = Math.sqrt(mouse.vx * mouse.vx + mouse.vy * mouse.vy);
+
+      ctx.clearRect(0, 0, width, height);
+
+      for (const n of nodes) {
+        n.pulse += dt * 3;
+
+        const dx = mouse.x - n.x;
+        const dy = mouse.y - n.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+
+        if (dist < mouse.radius && dist > 0) {
+          const power = 1 - dist / mouse.radius;
+          const force = power * (1100 + speed * 110);
+          const angle = Math.atan2(dy, dx);
+          n.vx -= Math.cos(angle) * force * dt;
+          n.vy -= Math.sin(angle) * force * dt;
+        }
+
+        const homeDx = n.baseX - n.x;
+        const homeDy = n.baseY - n.y;
+        n.vx += homeDx * SPRING_K * dt;
+        n.vy += homeDy * SPRING_K * dt;
+        n.vx *= DAMPING;
+        n.vy *= DAMPING;
+        n.x += n.vx * dt * 60;
+        n.y += n.vy * dt * 60;
+      }
+
+      for (let i = 0; i < nodes.length; i++) {
+        const n = nodes[i];
+        for (let j = i + 1; j < nodes.length; j++) {
+          const n2 = nodes[j];
+          const ndx = n.x - n2.x;
+          const ndy = n.y - n2.y;
+          const distSq = ndx * ndx + ndy * ndy;
+
+          if (distSq < MAX_CONN_DIST_SQ) {
+            const nDist = Math.sqrt(distSq);
+            const alpha = (1 - nDist / MAX_CONN_DIST) * 0.14;
+            ctx.strokeStyle = `rgba(${NODE_COLOR}, ${alpha})`;
+            ctx.lineWidth = 0.6;
+            ctx.beginPath();
+            ctx.moveTo(n.x, n.y);
+            ctx.lineTo(n2.x, n2.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      for (const n of nodes) {
+        const dx = mouse.x - n.x;
+        const dy = mouse.y - n.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        const isNear = dist < mouse.radius;
+
+        const baseAlpha = isNear ? 0.85 : 0.16 + Math.sin(n.pulse) * 0.06;
+        ctx.fillStyle = isNear ? `rgba(${ACCENT_COLOR}, ${baseAlpha})` : `rgba(${NODE_COLOR}, ${baseAlpha})`;
+
+        const currentRadius = isNear ? n.radius * 2 : n.radius + Math.sin(n.pulse) * 0.25;
+        ctx.beginPath();
+        ctx.arc(n.x, n.y, Math.max(0.5, currentRadius), 0, Math.PI * 2);
+        ctx.fill();
+
+        if (dist < 80) {
+          const pulseRing = ((n.pulse * 20) % 26) + 4;
+          const ringAlpha = (1 - pulseRing / 30) * 0.3;
+
+          ctx.strokeStyle = `rgba(${ACCENT_COLOR}, ${ringAlpha})`;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.arc(n.x, n.y, pulseRing, 0, Math.PI * 2);
+          ctx.stroke();
+
+          ctx.font = '8px "JetBrains Mono", monospace';
+          ctx.fillStyle = `rgba(${ACCENT_COLOR}, 0.7)`;
+          ctx.fillText(n.label, n.x + 9, n.y - 9);
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    resize();
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseleave', handleMouseLeave);
+    animationFrameId = requestAnimationFrame(render);
+
+    window.addEventListener('pagehide', () => cancelAnimationFrame(animationFrameId), { once: true });
+  }
+
+  if (!prefersReducedMotion && !isNarrowViewport) {
+    document.addEventListener('DOMContentLoaded', initConstellationGrid);
+  }
+</script>

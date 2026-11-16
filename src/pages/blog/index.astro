@@ -1,0 +1,78 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import PostRow from '../../components/PostRow.astro';
+import { getSection, sectionLabels, sortWriteupsNewestFirst } from '../../utils/writeups';
+import type { Section } from '../../utils/writeups';
+
+const posts = (await getCollection('writeups', ({ data }) => !data.draft)).sort(sortWriteupsNewestFirst);
+const filters = (Object.keys(sectionLabels) as Section[]).map((section) => ({
+  id: section,
+  label: sectionLabels[section],
+  count: posts.filter((post) => getSection(post) === section).length
+}));
+---
+
+<BaseLayout title="Blog" description="Every post on 0xG10D: CTF writeups, Hack The Box notes, DFIR labs, and research, newest first.">
+  <section class="page-hero">
+    <div class="container">
+      <p class="prompt">0xG10D://blog</p>
+      <h1>Blog</h1>
+      <p class="lede">Every post in one place, newest first. Search by title, tag, or event, or narrow by section.</p>
+    </div>
+  </section>
+
+  <section class="container block" data-archive>
+    <div class="toolbar">
+      <div class="filter-pills" role="group" aria-label="Filter by section">
+        <button type="button" class="filter-pill" data-archive-filter="all" aria-pressed="true">
+          All<span class="count">{posts.length}</span>
+        </button>
+        {filters.map((filter) => (
+          <button type="button" class="filter-pill" data-archive-filter={filter.id} aria-pressed="false">
+            {filter.label}<span class="count">{filter.count}</span>
+          </button>
+        ))}
+      </div>
+
+      <label class="search-field">
+        <Icon name="search" size={16} />
+        <input type="search" placeholder="Search posts..." aria-label="Search posts" autocomplete="off" data-archive-search />
+      </label>
+    </div>
+
+    <p class="result-count" data-archive-count aria-live="polite">{posts.length} posts</p>
+
+    <h2 class="sr-only">Posts</h2>
+    <div class="post-list">
+      {posts.map((post) => <PostRow post={post} showTags />)}
+    </div>
+
+    <div class="empty-state" data-archive-empty hidden>
+      <h2>No posts match</h2>
+      <p>Try a shorter search term or a different section.</p>
+      <button type="button" class="button" data-archive-reset>Clear search and filters</button>
+    </div>
+
+    <nav class="pager" aria-label="Pagination" data-archive-pager hidden>
+      <button type="button" data-archive-prev>Newer</button>
+      <span data-archive-page aria-live="polite"></span>
+      <button type="button" data-archive-next>Older</button>
+    </nav>
+  </section>
+</BaseLayout>
+
+<style>
+  .empty-state {
+    margin-top: 1rem;
+  }
+
+  .empty-state .button {
+    margin-top: 1rem;
+  }
+</style>
+
+<script>
+  import '../../scripts/archive.ts';
+</script>

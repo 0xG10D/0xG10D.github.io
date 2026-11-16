@@ -1,0 +1,85 @@
+/* 0xG10D design tokens. Single source of truth for colour, type, spacing. */
+
+/* Fallback faces sized to the web fonts, so text does not reflow when they arrive. */
+@font-face {
+  font-family: "JetBrains Mono Fallback";
+  src: local("Consolas");
+  size-adjust: 109.1%;
+}
+
+@font-face {
+  font-family: "Oxanium Fallback";
+  src: local("Arial Bold"), local("Arial");
+  size-adjust: 97%;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* Colour */
+  --bg: #050505;
+  --surface: #0b0d10;
+  --elevated: #111419;
+  --text: #f5f5f5;
+  --text-2: #a1a1aa;
+  --border: #30343b;
+  --border-strong: #4a4f58;
+  --border-bright: rgba(245, 245, 245, 0.62);
+  --accent: #a3ff12;
+  --accent-soft: rgba(163, 255, 18, 0.08);
+  --danger: #ff6b5e;
+  --success: var(--accent);
+
+  /* Type */
+  --font-display: "Oxanium", "Oxanium Fallback", "JetBrains Mono", ui-monospace, monospace;
+  --font-mono: "JetBrains Mono", "JetBrains Mono Fallback", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --font-read: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --text-xs: 0.72rem;
+  --text-sm: 0.82rem;
+  --text-md: 0.94rem;
+  --text-lg: 1.12rem;
+
+  /* Layout */
+  /* Pages run edge to edge; only prose is held to a reading measure. */
+  --content: 760px;
+  --reading: 46rem;
+  --gutter: 48px;
+  --section: clamp(2.25rem, 5vw, 3.5rem);
+  --radius: 6px;
+  --radius-lg: 8px;
+
+  /* Motion */
+  --motion: 160ms ease;
+  --motion-enter: 480ms cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-exit: 220ms cubic-bezier(0.4, 0, 1, 1);
+
+  /* Legacy aliases: older scoped styles still read these names. */
+  --bg-soft: var(--surface);
+  --bg-panel: var(--surface);
+  --bg-raised: var(--elevated);
+  --bg-code: #08090b;
+  --text-soft: #d4d4d8;
+  --text-muted: var(--text-2);
+  --text-faint: #8a8f98;
+  --accent-strong: var(--text);
+  --steel: var(--text-2);
+  --steel-soft: rgba(161, 161, 170, 0.12);
+  --warning: var(--text);
+  --info: var(--text-2);
+  --font-heading: var(--font-display);
+  --font-body: var(--font-mono);
+}
+
+/* Gutters: 48px desktop, 24px tablet, 16px mobile. */
+@media (max-width: 1024px) {
+  :root {
+    --gutter: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --gutter: 16px;
+  }
+}

@@ -1,0 +1,185 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Icon from '../components/Icon.astro';
+import achievementContent from '../content/achievements/certifications.json';
+import { parseAchievementDate } from '../utils/achievements';
+
+const data = achievementContent;
+
+const certifications = [...data.certifications.networkingSecurity, ...data.certifications.cybersecurity]
+  .map((cert) => ({ ...cert, sortDate: parseAchievementDate(cert.date ?? '') }))
+  .sort((a, b) => b.sortDate.valueOf() - a.sortDate.valueOf());
+---
+
+<BaseLayout title="About" description={data.overview.summary}>
+  <section class="page-hero">
+    <div class="container about-hero">
+      <div>
+        <p class="prompt">whoami</p>
+        <h1>{data.overview.identity}</h1>
+        <p class="lede">{data.overview.summary}</p>
+        <p class="page-hero-stats">
+          <span><strong>{certifications.length}</strong>certifications</span>
+          <span><strong>{data.ctfCompetitions.length}</strong>CTF events</span>
+          <span><strong>{data.currentlyPursuing.length}</strong>tracks in progress</span>
+        </p>
+      </div>
+      <img class="about-mascot" src="/images/brand/mascot.webp" alt="0xG10D mascot" width="640" height="602" />
+    </div>
+  </section>
+
+  <div class="container about-grid block">
+    <section aria-labelledby="focus-heading">
+      <p class="eyebrow">Focus</p>
+      <h2 id="focus-heading">What I work on</h2>
+      <ul class="focus-list">
+        {data.overview.focusAreas.map((area) => <li>{area}</li>)}
+      </ul>
+    </section>
+
+    <section aria-labelledby="certs-heading">
+      <p class="eyebrow">Credentials</p>
+      <h2 id="certs-heading">Latest certifications</h2>
+      <ul class="cert-list">
+        {certifications.slice(0, 5).map((cert) => (
+          <li>
+            <span>{cert.name}</span>
+            <small>{cert.provider}{cert.date ? `, ${cert.date}` : ''}</small>
+          </li>
+        ))}
+      </ul>
+      <a class="more-link" href="/achievements/">All certifications and CTF record <Icon name="arrow" size={17} /></a>
+    </section>
+  </div>
+
+  <section class="container block" aria-labelledby="connect-heading">
+    <p class="eyebrow">Connect</p>
+    <h2 id="connect-heading">Find me</h2>
+    <div class="social-links connect">
+      <a href="https://github.com/0xG10D" target="_blank" rel="noopener noreferrer" aria-label="0xG10D on GitHub">
+        <Icon name="github" size={20} />
+      </a>
+    </div>
+  </section>
+
+  <section class="container block" aria-labelledby="soundtrack-heading">
+    <p class="eyebrow">Soundtrack</p>
+    <h2 id="soundtrack-heading">On loop</h2>
+    <p class="soundtrack-note">Playing during late-night CTF grinds and writeups.</p>
+    <div class="soundtrack-slot" data-soundtrack="https://open.spotify.com/embed/playlist/37i9dQZF1DWTl4y3vgJOXW?utm_source=generator&theme=0">
+      <button type="button" class="button" data-soundtrack-load>Load Spotify player</button>
+      <a class="more-link" href="https://open.spotify.com/playlist/37i9dQZF1DWTl4y3vgJOXW" target="_blank" rel="noopener noreferrer">
+        Open on Spotify <Icon name="arrow" size={17} />
+      </a>
+      <p class="soundtrack-privacy">The player is loaded from Spotify, which sets its own cookies.</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const slot = document.querySelector<HTMLElement>('[data-soundtrack]');
+  slot?.querySelector('[data-soundtrack-load]')?.addEventListener('click', () => {
+    const frame = document.createElement('iframe');
+    frame.className = 'soundtrack';
+    frame.title = 'Spotify playlist';
+    frame.src = slot.dataset.soundtrack ?? '';
+    frame.width = '100%';
+    frame.height = '352';
+    frame.allow = 'autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture';
+    slot.replaceChildren(frame);
+  });
+</script>
+
+<style>
+  .about-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .about-mascot {
+    width: clamp(120px, 18vw, 200px);
+    height: auto;
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem 3rem;
+  }
+
+  h2 {
+    margin-bottom: 0.9rem;
+    font-size: clamp(1.3rem, 2.6vw, 1.6rem);
+  }
+
+  .focus-list,
+  .cert-list {
+    padding: 0;
+    border-top: 1px solid var(--border);
+    list-style: none;
+  }
+
+  .focus-list li,
+  .cert-list li {
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-soft);
+    font-size: var(--text-md);
+  }
+
+  .focus-list li::before {
+    content: "> ";
+    color: var(--accent);
+  }
+
+  .cert-list li {
+    display: grid;
+    gap: 0.1rem;
+  }
+
+  .cert-list small {
+    color: var(--text-2);
+    font-size: var(--text-xs);
+  }
+
+  .soundtrack-note {
+    margin: -0.4rem 0 1rem;
+    color: var(--text-2);
+    font-size: var(--text-sm);
+  }
+
+  .soundtrack-slot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.5rem;
+  }
+
+  .soundtrack-privacy {
+    flex-basis: 100%;
+    margin: 0;
+    color: var(--text-faint);
+    font-size: var(--text-xs);
+  }
+
+  .soundtrack-slot :global(.soundtrack) {
+    display: block;
+    width: 100%;
+    max-width: var(--content);
+    border: 0;
+    border-radius: 12px;
+  }
+
+  @media (max-width: 720px) {
+    .about-hero,
+    .about-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .about-mascot {
+      display: none;
+    }
+  }
+</style>

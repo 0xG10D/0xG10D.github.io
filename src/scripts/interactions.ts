@@ -67,7 +67,27 @@ function initCodeCopyButtons() {
   });
 }
 
+function initHeadingAnchors() {
+  document.querySelectorAll<HTMLElement>('.writeup-content :is(h2, h3, h4)[id]').forEach((heading) => {
+    const anchor = document.createElement('a');
+    anchor.className = 'heading-anchor';
+    anchor.href = `#${heading.id}`;
+    anchor.textContent = '#';
+    anchor.setAttribute('aria-label', `Link to section: ${heading.textContent ?? ''}`);
+    heading.appendChild(anchor);
+  });
+}
+
+// Wide tables and code blocks scroll sideways; make that reachable from the keyboard.
+function initScrollRegions() {
+  document.querySelectorAll<HTMLElement>('.writeup-content table, .writeup-content pre').forEach((region) => {
+    if (region.scrollWidth > region.clientWidth) region.tabIndex = 0;
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initScrollReveal();
   initCodeCopyButtons();
+  initHeadingAnchors();
+  initScrollRegions();
 });

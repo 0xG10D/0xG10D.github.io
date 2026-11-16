@@ -1,0 +1,47 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Page not found" description="This page does not exist on 0xG10D.">
+  <section class="container not-found">
+    <img src="/images/brand/mascot-96.png" alt="" width="72" height="68" />
+    <p class="prompt">cat ./requested-page</p>
+    <h1>404: no such file</h1>
+    <p class="lede">That page is not here. It may have moved, or the link is wrong.</p>
+    <div class="not-found-actions">
+      <a class="button button-primary" href="/">Go home</a>
+      <a class="button" href="/blog/">Search the blog</a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .not-found {
+    display: grid;
+    justify-items: start;
+    gap: 0.4rem;
+    padding-block: clamp(3rem, 12vw, 7rem);
+  }
+
+  .not-found img {
+    width: 72px;
+    height: auto;
+    margin-bottom: 1rem;
+  }
+
+  .not-found h1 {
+    font-size: clamp(2rem, 6vw, 3.25rem);
+  }
+
+  .lede {
+    max-width: 48ch;
+    margin: 0.6rem 0 1.4rem;
+    color: var(--text-2);
+  }
+
+  .not-found-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.9rem;
+  }
+</style>

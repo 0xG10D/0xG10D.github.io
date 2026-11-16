@@ -1,0 +1,48 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './Icon.astro';
+import {
+  formatShortDate,
+  getChallengeType,
+  getEventName,
+  getEventSlug,
+  getReadMinutes,
+  getSearchText,
+  getSection,
+  getWriteupUrl
+} from '../utils/writeups';
+
+interface Props {
+  post: CollectionEntry<'writeups'>;
+  showTags?: boolean;
+}
+
+const { post, showTags = false } = Astro.props;
+const minutes = getReadMinutes(post);
+---
+
+<article class="post-row" data-post data-section={getSection(post)} data-search={getSearchText(post)}>
+  <a class="post-row-thumb" href={getWriteupUrl(post)} tabindex="-1" aria-hidden="true">
+    {post.data.boxImage ? (
+      <img src={post.data.boxImage} alt="" loading="lazy" decoding="async" width="136" height="80" />
+    ) : (
+      <img class="post-row-fallback" src="/images/brand/mascot-96.png" alt="" loading="lazy" width="40" height="38" />
+    )}
+  </a>
+
+  <div class="post-row-body">
+    {showTags && (
+      <p class="post-row-tags">
+        <span class="pill">{getChallengeType(post)}</span>
+        <span class="pill">{getEventName(getEventSlug(post))}</span>
+      </p>
+    )}
+    <h3 class="post-row-title"><a href={getWriteupUrl(post)}>{post.data.title}</a></h3>
+    {post.data.summary && <p class="post-row-summary">{post.data.summary}</p>}
+  </div>
+
+  <div class="post-row-meta">
+    <span class="meta"><Icon name="calendar" size={14} /><time datetime={post.data.date.toISOString()}>{formatShortDate(post.data.date)}</time></span>
+    <span class="meta"><Icon name="clock" size={14} />{minutes} min read</span>
+  </div>
+</article>

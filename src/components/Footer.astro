@@ -1,22 +1,36 @@
 ---
+import Icon from './Icon.astro';
+
 const currentYear = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
   <div class="container">
     <div class="footer-layout">
-      <div>
-        <a class="footer-brand" href="/">0xG10D</a>
+      <div class="footer-about">
+        <a class="footer-brand" href="/">
+          <img src="/images/brand/mascot-96.png" alt="" width="32" height="30" loading="lazy" />
+          <span>0xG10D</span>
+        </a>
         <p class="footer-note">
-          // cybersecurity student archive for CTF writeups, DFIR notes, lab tooling, and authorized security practice.
+          Cybersecurity student archive for CTF writeups, DFIR notes, lab tooling, and authorized security practice.
         </p>
       </div>
 
       <nav class="footer-nav" aria-label="Footer navigation">
+        <a href="/blog/">Blog</a>
         <a href="/writeups/">Writeups</a>
+        <a href="/research/">Research</a>
+        <a href="/projects/">Projects</a>
         <a href="/achievements/">Achievements</a>
-        <a href="https://github.com/0xG10D" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="/about/">About</a>
       </nav>
+
+      <div class="social-links">
+        <a href="https://github.com/0xG10D" target="_blank" rel="noopener noreferrer" aria-label="0xG10D on GitHub">
+          <Icon name="github" size={20} />
+        </a>
+      </div>
     </div>
 
     <div class="footer-bottom">
@@ -28,73 +42,80 @@ const currentYear = new Date().getFullYear();
 
 <style>
   .site-footer {
-    margin-top: auto;
-    padding: clamp(2rem, 5vw, 3.25rem) 0 2rem;
+    margin-top: clamp(2rem, 5vw, 3.5rem);
+    padding: clamp(1.75rem, 4vw, 2.5rem) 0 1.5rem;
     border-top: 1px solid var(--border);
-    background: var(--bg-soft);
+    background: var(--bg);
   }
 
   .footer-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 2rem;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) auto;
+    gap: 1.5rem 2.5rem;
     align-items: start;
   }
 
   .footer-brand {
-    display: inline-block;
-    margin-bottom: 0.6rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
     color: var(--text);
-    font-family: var(--font-mono);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
     font-weight: 700;
     text-decoration: none;
   }
 
-  .footer-layout p {
-    max-width: 66ch;
-    margin: 0;
-    color: var(--text-muted);
-    font-size: 0.95rem;
+  .footer-brand img {
+    width: 32px;
+    height: auto;
+  }
+
+  .footer-note {
+    max-width: 44ch;
+    margin: 0.7rem 0 0;
+    color: var(--text-2);
+    font-size: var(--text-sm);
   }
 
   .footer-nav {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 0.4rem 0.9rem;
+    display: grid;
+    grid-template-columns: repeat(2, max-content);
+    gap: 0 2.5rem;
   }
 
   .footer-nav a {
-    color: var(--text-muted);
-    font-size: 0.9rem;
-    font-weight: 700;
+    display: inline-flex;
+    min-height: 36px;
+    align-items: center;
+    color: var(--text-2);
+    font-size: var(--text-sm);
     text-decoration: none;
+  }
+
+  .footer-nav a:hover {
+    color: var(--text);
   }
 
   .footer-bottom {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 0.75rem;
-    margin-top: 2rem;
-    padding-top: 1rem;
+    gap: 0.4rem 2rem;
+    margin-top: 1.75rem;
+    padding-top: 1.1rem;
     border-top: 1px solid var(--border);
   }
 
   .footer-bottom p {
     margin: 0;
     color: var(--text-faint);
-    font-family: var(--font-mono);
-    font-size: 0.76rem;
+    font-size: var(--text-xs);
   }
 
   @media (max-width: 720px) {
     .footer-layout {
       grid-template-columns: 1fr;
-    }
-
-    .footer-nav {
-      justify-content: flex-start;
     }
   }
 </style>

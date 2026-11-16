@@ -1,565 +1,212 @@
 ---
 import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getCategoryLabel, getWriteupUrl, sortWriteupsNewestFirst } from '../../utils/writeups';
+import {
+  formatDifficulty,
+  formatShortDate,
+  getCategoryLabel,
+  getEventName,
+  getEventSlug,
+  getSection,
+  getWriteupUrl,
+  sectionLabels,
+  sortWriteupsNewestFirst
+} from '../../utils/writeups';
+import type { Section } from '../../utils/writeups';
 
-const allWriteups = await getCollection('writeups', ({ data }) => !data.draft);
-const archive = allWriteups.sort(sortWriteupsNewestFirst);
+type Post = CollectionEntry<'writeups'>;
 
-const [featured, ...rest] = archive;
-const topReads = rest.slice(0, 3);
+const posts = (await getCollection('writeups', ({ data }) => !data.draft)).sort(sortWriteupsNewestFirst);
 
-const categoryGroups = new Map<string, string[]>();
-archive.forEach((post) => {
-  const label = getCategoryLabel(post.data.category);
-  const values = categoryGroups.get(label) ?? [];
-  if (!values.includes(post.data.category)) values.push(post.data.category);
-  categoryGroups.set(label, values);
+const blurbs: Record<Section, string> = {
+  htb: 'Retired Hack The Box machines: enumeration, foothold, and privilege escalation.',
+  sherlock: 'Hack The Box Sherlocks: defensive investigations from logs, memory, and disk artifacts.',
+  ctf: 'Competition challenges grouped by event, newest event first.',
+  lab: 'DFIR, wireless, and malware lab notes plus guided platform rooms.'
+};
+
+// Posts are already newest-first, so events come out ordered by their latest post.
+const groupByEvent = (items: Post[]) =>
+  [...new Set(items.map(getEventSlug))].map((slug) => ({
+    slug,
+    name: getEventName(slug),
+    posts: items.filter((post) => getEventSlug(post) === slug)
+  }));
+
+const sections = (Object.keys(sectionLabels) as Section[]).map((id) => {
+  const items = posts.filter((post) => getSection(post) === id);
+  return { id, label: sectionLabels[id], blurb: blurbs[id], count: items.length, events: groupByEvent(items) };
 });
-const categoryPills = Array.from(categoryGroups.entries())
-  .sort((a, b) => a[0].localeCompare(b[0]))
-  .map(([label, values]) => ({ label, key: values.join(',') }));
-
-const formatLongDate = (date: Date) =>
-  date.toLocaleDateString('en', { year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase();
-
-const buildSearchIndex = (post: (typeof archive)[number]) =>
-  [post.data.title, post.data.summary ?? '', post.data.tags.join(' '), getCategoryLabel(post.data.category)]
-    .join(' ')
-    .toLowerCase();
 ---
 
-<BaseLayout title="Writeups" description="Event-based archive of CTF writeups, lab notes, and security research.">
-  <div class="blog-page">
-    {featured && (
-      <section class="section blog-top">
-        <div class="container blog-top-grid">
-          <div class="latest-col">
-            <h2 class="blog-heading">The Latest</h2>
+<BaseLayout title="Writeups" description="CTF, Hack The Box machine, Sherlock, and lab writeups grouped by platform and event.">
+  <section class="page-hero">
+    <div class="container">
+      <p class="prompt">0xG10D://writeups</p>
+      <h1>Writeups</h1>
+      <p class="lede">
+        Grouped by platform and event. To search across everything, use the <a href="/blog/">blog archive</a>.
+      </p>
+      <nav class="filter-pills jump" aria-label="Jump to section">
+        {sections.map((section) => (
+          <a class="filter-pill" href={`#${section.id}`}>{section.label}<span class="count">{section.count}</span></a>
+        ))}
+      </nav>
+    </div>
+  </section>
 
-            <a class="featured-card" href={getWriteupUrl(featured)}>
-              {featured.data.boxImage ? (
-                <div class="media-frame">
-                  <img src={featured.data.boxImage} alt="" loading="eager" decoding="async" />
-                </div>
-              ) : (
-                <div class="media-frame media-frame-empty">
-                  <span>{getCategoryLabel(featured.data.category)}</span>
-                </div>
-              )}
-
-              <h3 class="featured-title">{featured.data.title}</h3>
-
-              <p class="card-meta-line">
-                <time datetime={featured.data.date.toISOString()}>{formatLongDate(featured.data.date)}</time>
-                <span>{getCategoryLabel(featured.data.category)}</span>
-              </p>
-
-              {featured.data.summary && <p class="featured-excerpt">{featured.data.summary}</p>}
-
-              <span class="read-more">Read more</span>
-            </a>
-          </div>
-
-          {topReads.length > 0 && (
-            <div class="top-reads-col">
-              <h2 class="blog-heading">Top Reads</h2>
-
-              <div class="top-reads-list">
-                {topReads.map((post) => (
-                  <a class="top-read-row" href={getWriteupUrl(post)}>
-                    <div class="top-read-thumb">
-                      {post.data.boxImage ? (
-                        <img src={post.data.boxImage} alt="" loading="lazy" decoding="async" />
-                      ) : (
-                        <span>{getCategoryLabel(post.data.category).slice(0, 3)}</span>
-                      )}
-                    </div>
-                    <div class="top-read-copy">
-                      <h3 class="top-read-title">{post.data.title}</h3>
-                      <p class="top-read-meta">
-                        <time datetime={post.data.date.toISOString()}>{formatLongDate(post.data.date)}</time>
-                        <span>{getCategoryLabel(post.data.category)}</span>
-                      </p>
-                    </div>
-                  </a>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-      </section>
-    )}
-
-    <section class="section blog-archive">
-      <div class="container">
-        <div class="archive-toolbar">
-          <h2 class="blog-heading">Browse by categories</h2>
-
-          <div class="search-field">
-            <svg viewBox="0 0 20 20" width="16" height="16" fill="none" aria-hidden="true">
-              <circle cx="8.5" cy="8.5" r="6" stroke="currentColor" stroke-width="1.5" />
-              <path d="M17 17L13.5 13.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-            </svg>
-            <input type="search" id="writeup-search" placeholder="Search writeups" aria-label="Search writeups" />
+  <div class="container">
+    {sections.map((section) => (
+      <section class="block writeup-section" id={section.id} aria-labelledby={`${section.id}-heading`}>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">{section.count} writeups</p>
+            <h2 id={`${section.id}-heading`}>{section.label}</h2>
           </div>
         </div>
+        <p class="section-blurb">{section.blurb}</p>
 
-        <div class="category-pills" role="group" aria-label="Filter by category">
-          <button type="button" class="category-pill is-active" data-category="all">All</button>
-          {categoryPills.map(({ label, key }) => (
-            <button type="button" class="category-pill" data-category={key}>
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {archive.length > 0 ? (
-          <>
-            <div class="archive-grid" id="writeup-grid">
-              {archive.map((post) => (
-                <article class="archive-card" data-category={post.data.category} data-search={buildSearchIndex(post)}>
-                  <a class="archive-card-link" href={getWriteupUrl(post)}>
-                    {post.data.boxImage ? (
-                      <div class="media-frame">
-                        <img src={post.data.boxImage} alt="" loading="lazy" decoding="async" />
-                      </div>
-                    ) : (
-                      <div class="media-frame media-frame-empty">
-                        <span>{getCategoryLabel(post.data.category)}</span>
-                      </div>
-                    )}
-
-                    <div class="archive-card-body">
-                      <p class="card-meta-line">
-                        <time datetime={post.data.date.toISOString()}>{formatLongDate(post.data.date)}</time>
-                        <span>{getCategoryLabel(post.data.category)}</span>
-                      </p>
-
-                      <h3 class="archive-card-title">{post.data.title}</h3>
-
-                      {post.data.summary && <p class="archive-card-excerpt">{post.data.summary}</p>}
-
-                      <span class="read-more">Read more</span>
-                    </div>
+        {section.events.map((event) => (
+          <div class="event">
+            {section.events.length > 1 && (
+              <h3 class="event-name">{event.name}<span>{event.posts.length}</span></h3>
+            )}
+            <ul class="entry-list">
+              {event.posts.map((post) => (
+                <li>
+                  <a class="entry" href={getWriteupUrl(post)}>
+                    <span class="entry-title">{post.data.title}</span>
+                    <span class="entry-kind">{getCategoryLabel(post.data.category)}</span>
+                    <span class={`entry-level level-${post.data.difficulty}`}>{formatDifficulty(post.data.difficulty)}</span>
+                    <time datetime={post.data.date.toISOString()}>{formatShortDate(post.data.date)}</time>
                   </a>
-                </article>
+                </li>
               ))}
-            </div>
-
-            <p class="archive-empty" id="writeup-empty" hidden>No writeups match your search.</p>
-          </>
-        ) : (
-          <div class="empty-state">
-            <h2>No writeups available</h2>
-            <p>Writeups are currently being prepared.</p>
+            </ul>
           </div>
-        )}
+        ))}
+      </section>
+    ))}
+
+    {posts.length === 0 && (
+      <div class="empty-state block">
+        <h2>No writeups published</h2>
+        <p>Writeups appear here once they are published.</p>
       </div>
-    </section>
+    )}
   </div>
 </BaseLayout>
 
 <style>
-  .blog-top {
-    border-bottom: 1px solid var(--border);
+  .jump {
+    margin-top: 1.25rem;
   }
 
-  .blog-heading {
-    margin: 0 0 clamp(1.25rem, 3vw, 1.75rem);
-    font-size: clamp(1.35rem, 2.4vw, 1.75rem);
-    font-weight: 600;
-  }
-
-  .blog-top-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(260px, 5fr);
-    gap: clamp(2rem, 5vw, 3.5rem);
-    align-items: start;
-  }
-
-  .media-frame {
-    aspect-ratio: 16 / 10;
-    overflow: hidden;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: var(--bg-code);
-  }
-
-  .media-frame img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    transition: transform var(--motion-enter);
-  }
-
-  .media-frame-empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .media-frame-empty span {
-    color: var(--text-faint);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-  }
-
-  .card-meta-line {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    margin: 0 0 0.4rem;
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
-
-  .card-meta-line time {
-    color: var(--text-muted);
-  }
-
-  .card-meta-line span {
-    color: var(--accent-strong);
-  }
-
-  .read-more {
+  .jump .filter-pill {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    margin-top: auto;
-    color: var(--accent-strong);
+  }
+
+  .writeup-section {
+    scroll-margin-top: 80px;
+  }
+
+  .section-blurb {
+    max-width: 68ch;
+    margin: -0.5rem 0 1rem;
+    color: var(--text-2);
+    font-size: var(--text-sm);
+  }
+
+  .event + .event {
+    margin-top: 1.5rem;
+  }
+
+  .event-name {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    margin-bottom: 0.5rem;
     font-family: var(--font-mono);
-    font-size: 0.76rem;
+    font-size: var(--text-md);
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
   }
 
-  .read-more::after {
-    content: "->";
+  .event-name::before {
+    content: ">";
+    color: var(--accent);
   }
 
-  .featured-card {
-    display: flex;
-    flex-direction: column;
-    color: inherit;
-    text-decoration: none;
-  }
-
-  .featured-card:hover .media-frame img {
-    transform: scale(1.03);
-  }
-
-  .featured-title {
-    margin: 1rem 0 0.5rem;
-    font-size: clamp(1.5rem, 3vw, 2rem);
-  }
-
-  .featured-card:hover .featured-title {
-    color: var(--accent-strong);
-  }
-
-  .featured-excerpt {
-    max-width: 62ch;
-    margin: 0 0 0.85rem;
-    color: var(--text-soft);
-  }
-
-  .top-reads-list {
-    display: grid;
-    gap: 0.9rem;
-  }
-
-  .top-read-row {
-    display: grid;
-    grid-template-columns: 72px minmax(0, 1fr);
-    gap: 0.85rem;
-    align-items: center;
-    padding: 0.6rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: var(--bg-panel);
-    color: inherit;
-    text-decoration: none;
-    transition: border-color var(--motion), background-color var(--motion);
-  }
-
-  .top-read-row:hover {
-    border-color: var(--accent);
-    background: var(--bg-raised);
-  }
-
-  .top-read-thumb {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    aspect-ratio: 16 / 12;
-    overflow: hidden;
-    border-radius: var(--radius);
-    background: var(--bg-code);
-  }
-
-  .top-read-thumb img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-
-  .top-read-thumb span {
+  .event-name span {
     color: var(--text-faint);
-    font-family: var(--font-mono);
-    font-size: 0.66rem;
-    font-weight: 600;
-    text-transform: uppercase;
+    font-size: var(--text-xs);
+    font-weight: 400;
   }
 
-  .top-read-copy {
-    min-width: 0;
-  }
-
-  .top-read-title {
-    margin: 0 0 0.3rem;
-    font-size: 1rem;
-    line-height: 1.3;
-  }
-
-  .top-read-row:hover .top-read-title {
-    color: var(--accent-strong);
-  }
-
-  .top-read-meta {
-    display: flex;
-    gap: 0.5rem;
-    margin: 0;
-    font-family: var(--font-mono);
-    font-size: 0.68rem;
-    text-transform: uppercase;
-  }
-
-  .top-read-meta time {
-    color: var(--text-muted);
-  }
-
-  .top-read-meta span {
-    color: var(--accent-strong);
-  }
-
-  .blog-archive {
-    padding-top: clamp(2.5rem, 6vw, 4rem);
-  }
-
-  .archive-toolbar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.25rem;
-    margin-bottom: 1.25rem;
-  }
-
-  .archive-toolbar .blog-heading {
-    margin: 0;
-  }
-
-  .search-field {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    min-width: 240px;
-    padding: 0.5rem 0.95rem;
-    border: 1px solid var(--border-strong);
-    border-radius: 999px;
-    background: var(--bg-soft);
-    color: var(--text-faint);
-    transition: border-color var(--motion);
-  }
-
-  .search-field:focus-within {
-    border-color: var(--accent);
-  }
-
-  .search-field input {
-    flex: 1;
-    min-width: 0;
-    border: 0;
-    background: transparent;
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 0.9rem;
-  }
-
-  .search-field input::placeholder {
-    color: var(--text-faint);
-  }
-
-  .category-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: clamp(1.5rem, 4vw, 2.25rem);
-  }
-
-  .category-pill {
-    padding: 0.4rem 0.95rem;
-    border: 1px solid var(--border-strong);
-    border-radius: 999px;
-    background: transparent;
-    color: var(--text-muted);
-    cursor: pointer;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    transition: border-color var(--motion), color var(--motion), background-color var(--motion);
-  }
-
-  .category-pill:hover {
-    border-color: var(--accent);
-    color: var(--text);
-  }
-
-  .category-pill.is-active {
-    border-color: var(--text);
-    background: var(--text);
-    color: var(--bg);
-  }
-
-  .archive-grid {
+  .entry-list {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(1.25rem, 3vw, 1.75rem);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 700px), 1fr));
+    column-gap: 3rem;
+    padding: 0;
+    border-top: 1px solid var(--border);
+    list-style: none;
   }
 
-  .archive-card-link {
-    display: flex;
-    height: 100%;
-    flex-direction: column;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    background: var(--bg-panel);
-    overflow: hidden;
-    color: inherit;
-    text-decoration: none;
-    transition: border-color var(--motion), background-color var(--motion);
-  }
-
-  .archive-card-link:hover {
-    border-color: var(--accent);
-    background: var(--bg-raised);
-  }
-
-  .archive-card-link:hover .media-frame img {
-    transform: scale(1.04);
-  }
-
-  .archive-card-link:hover .archive-card-title {
-    color: var(--accent-strong);
-  }
-
-  .archive-card-link .media-frame {
-    border: 0;
+  .entry {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 7rem 4.5rem 6.5rem;
+    gap: 1rem;
+    min-height: 46px;
+    align-items: center;
+    padding: 0.5rem 0.6rem;
     border-bottom: 1px solid var(--border);
-    border-radius: 0;
+    color: var(--text-2);
+    font-size: var(--text-xs);
+    text-decoration: none;
+    transition: background-color var(--motion);
   }
 
-  .archive-card-body {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    padding: 1rem 1.1rem 1.2rem;
+  .entry:hover,
+  .entry:focus-visible {
+    background: var(--surface);
+    color: var(--text-2);
   }
 
-  .archive-card-title {
-    margin: 0 0 0.5rem;
-    font-size: 1.15rem;
-    line-height: 1.3;
+  .entry-title {
+    color: var(--text);
+    font-size: var(--text-md);
+    font-weight: 500;
   }
 
-  .archive-card-excerpt {
-    display: -webkit-box;
-    margin: 0 0 0.9rem;
-    overflow: hidden;
-    color: var(--text-muted);
-    font-size: 0.88rem;
-    line-height: 1.6;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
+  .entry:hover .entry-title {
+    text-decoration: underline;
+    text-decoration-color: var(--accent);
+    text-underline-offset: 4px;
   }
 
-  .archive-card[hidden] {
-    display: none;
+  .level-hard,
+  .level-insane {
+    color: var(--text);
   }
 
-  .archive-empty {
-    padding: 2.5rem 0;
-    color: var(--text-muted);
-    text-align: center;
+  .entry time {
+    text-align: right;
+    white-space: nowrap;
   }
 
-  @media (max-width: 900px) {
-    .blog-top-grid {
-      grid-template-columns: 1fr;
+  @media (max-width: 720px) {
+    .entry {
+      grid-template-columns: 1fr auto auto;
+      gap: 0.2rem 1rem;
     }
 
-    .archive-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (max-width: 640px) {
-    .archive-toolbar {
-      flex-direction: column;
-      align-items: stretch;
+    .entry-title {
+      grid-column: 1 / -1;
     }
 
-    .archive-grid {
-      grid-template-columns: 1fr;
+    .entry time {
+      text-align: left;
     }
   }
 </style>
-
-<script>
-  const grid = document.getElementById('writeup-grid');
-  const cards = grid ? Array.from(grid.querySelectorAll('.archive-card')) : [];
-  const searchInput = document.getElementById('writeup-search');
-  const pills = Array.from(document.querySelectorAll<HTMLButtonElement>('.category-pill'));
-  const emptyState = document.getElementById('writeup-empty');
-
-  let activeCategory = 'all';
-
-  function applyFilters() {
-    const query = searchInput instanceof HTMLInputElement ? searchInput.value.trim().toLowerCase() : '';
-    let visibleCount = 0;
-
-    cards.forEach((card) => {
-      if (!(card instanceof HTMLElement)) return;
-      const matchesCategory =
-        activeCategory === 'all' || activeCategory.split(',').includes(card.dataset.category ?? '');
-      const matchesSearch = !query || (card.dataset.search ?? '').includes(query);
-      const isVisible = matchesCategory && matchesSearch;
-      card.hidden = !isVisible;
-      if (isVisible) visibleCount += 1;
-    });
-
-    if (emptyState instanceof HTMLElement) emptyState.hidden = visibleCount !== 0;
-  }
-
-  pills.forEach((pill) => {
-    pill.addEventListener('click', () => {
-      activeCategory = pill.dataset.category ?? 'all';
-      pills.forEach((p) => p.classList.toggle('is-active', p === pill));
-      applyFilters();
-    });
-  });
-
-  if (searchInput instanceof HTMLInputElement) {
-    searchInput.addEventListener('input', applyFilters);
-  }
-</script>

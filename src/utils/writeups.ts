@@ -113,3 +113,38 @@ export function sortWriteupsNewestFirst(a: WriteupEntry, b: WriteupEntry) {
 export function sortEventsByName(a: { name: string }, b: { name: string }) {
   return a.name.localeCompare(b.name);
 }
+
+export type Section = 'htb' | 'sherlock' | 'ctf' | 'lab';
+
+export const sectionLabels: Record<Section, string> = {
+  htb: 'HTB Machines',
+  sherlock: 'HTB Sherlocks',
+  ctf: 'CTF Events',
+  lab: 'Labs & Research'
+};
+
+const labEvents = new Set(['dfir-labs', 'wireless-labs', 'malware-analysis', 'letsdefend', 'tryhackme']);
+
+export function getSection(post: WriteupEntry): Section {
+  const eventSlug = getEventSlug(post);
+  if (eventSlug === 'hack-the-box-machines') return 'htb';
+  if (eventSlug === 'hack-the-box-sherlocks') return 'sherlock';
+  if (labEvents.has(eventSlug) || post.data.category === 'research') return 'lab';
+  return 'ctf';
+}
+
+export function getReadMinutes(post: WriteupEntry) {
+  const words = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
+  return Math.max(1, Math.round(words / 200));
+}
+
+export function formatShortDate(date: Date) {
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${date.getUTCDate()} ${months[date.getUTCMonth()]} ${date.getUTCFullYear()}`;
+}
+
+export function getSearchText(post: WriteupEntry) {
+  return [post.data.title, post.data.summary ?? '', post.data.tags.join(' '), getEventName(getEventSlug(post)), getCategoryLabel(post.data.category)]
+    .join(' ')
+    .toLowerCase();
+}

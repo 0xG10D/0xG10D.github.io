@@ -7,7 +7,10 @@ import {
   formatArchiveDate,
   getCategoryLabel,
   getChallengeType,
-  getWriteupUrl
+  getReadMinutes,
+  getSection,
+  getWriteupUrl,
+  sectionLabels
 } from '../utils/writeups';
 
 interface Heading {
@@ -41,8 +44,8 @@ const formatDate = (date: Date) =>
 const categoryLabel = getCategoryLabel(post.data.category);
 const difficultyLabel = difficultyLabels[post.data.difficulty] ?? post.data.difficulty;
 
-const wordCount = post.body ? post.body.trim().split(/\s+/).filter(Boolean).length : 0;
-const readMinutes = Math.max(1, Math.round(wordCount / 200));
+const readMinutes = getReadMinutes(post);
+const section = getSection(post);
 
 const allWriteups = await getCollection('writeups', ({ data }) => !data.draft);
 const sameCategory = allWriteups
@@ -62,11 +65,11 @@ const related = [...sameCategory, ...others].slice(0, 3);
         <svg class="crumb-chevron" viewBox="0 0 12 12" width="10" height="10" fill="none" aria-hidden="true">
           <path d="M4.5 2.5L8 6l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
-        <a href="/writeups/">Archive</a>
+        <a href="/blog/">Blog</a>
         <svg class="crumb-chevron" viewBox="0 0 12 12" width="10" height="10" fill="none" aria-hidden="true">
           <path d="M4.5 2.5L8 6l-3.5 3.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
-        <span class="crumb-current">{categoryLabel}</span>
+        <a class="crumb-current" href={section === 'lab' ? '/research/' : `/writeups/#${section}`}>{sectionLabels[section]}</a>
       </div>
     </nav>
 
@@ -84,6 +87,7 @@ const related = [...sameCategory, ...others].slice(0, 3);
       </div>
 
       <div class="writeup-hero-pills" aria-label="Writeup details">
+        <span class="hero-pill hero-pill-accent">{categoryLabel}</span>
         <span class="hero-pill hero-pill-accent">{difficultyLabel}</span>
         {post.data.tags.map((tag) => <span class="hero-pill">#{tag}</span>)}
       </div>
@@ -92,7 +96,7 @@ const related = [...sameCategory, ...others].slice(0, 3);
     {post.data.boxImage && (
       <div class="writeup-featured">
         <div class="writeup-featured-frame">
-          <img src={post.data.boxImage} alt={`${post.data.title} reference image`} loading="eager" decoding="async" />
+          <img src={post.data.boxImage} alt={`${post.data.title} reference image`} loading="eager" decoding="async" fetchpriority="high" />
         </div>
       </div>
     )}
@@ -159,8 +163,7 @@ const related = [...sameCategory, ...others].slice(0, 3);
 
   .writeup-breadcrumb-inner {
     display: flex;
-    max-width: 72rem;
-    margin: 0 auto;
+    margin: 0;
     padding: 0 var(--gutter);
     align-items: center;
     gap: 0.5rem;
@@ -204,16 +207,17 @@ const related = [...sameCategory, ...others].slice(0, 3);
   .writeup-hero h1 {
     max-width: none;
     margin-bottom: 1.25rem;
-    font-size: clamp(2.1rem, 4.6vw, 3.2rem);
+    font-size: clamp(1.9rem, 4.2vw, 2.8rem);
+    font-weight: 700;
     line-height: 1.14;
   }
 
   .writeup-hero-excerpt {
     max-width: 60ch;
     margin: 0 auto 2rem;
-    color: var(--text-soft);
-    font-size: clamp(1.05rem, 1.8vw, 1.18rem);
-    line-height: 1.75;
+    color: var(--text-2);
+    font-size: var(--text-md);
+    line-height: 1.7;
   }
 
   .writeup-hero-meta {
@@ -258,8 +262,8 @@ const related = [...sameCategory, ...others].slice(0, 3);
   }
 
   .hero-pill-accent {
-    border-color: color-mix(in srgb, var(--accent-strong) 45%, transparent);
-    color: var(--accent-strong);
+    border-color: var(--border-bright);
+    color: var(--text);
   }
 
   /* ----- featured image ----- */
@@ -271,19 +275,9 @@ const related = [...sameCategory, ...others].slice(0, 3);
   }
 
 .writeup-featured {
-  position: relative;
-  left: 50%;
-  width: min(1496px, calc(100vw - 32px));
-  max-width: none;
-  margin: clamp(2rem, 55vw, 3rem) 0 0;
-  padding: clamp(24px, 3vw, 40px) clamp(24px, 7vw, 140px);
-  transform: translateX(-50%);
-
-  box-sizing: border-box;
-  border: 1px solid var(--border);
-  border-radius: calc(var(--radius-lg) + 4px);
-  background: color-mix(in srgb, var(--bg-code) 80%, transparent);
-  box-shadow: 0 20px 60px rgb(0 0 0 / 25%);
+  max-width: 52rem;
+  margin: clamp(1.75rem, 4vw, 2.5rem) auto 0;
+  padding: 0 var(--gutter);
 }
 
 .writeup-featured-frame {
@@ -307,16 +301,15 @@ const related = [...sameCategory, ...others].slice(0, 3);
 
 .writeup-main {
   display: grid;
-  max-width: 72rem;
-  margin: 0 auto;
+  grid-template-columns: minmax(0, 1fr);
   padding: clamp(2.5rem, 6vw, 4rem) var(--gutter);
   gap: clamp(2rem, 4vw, 3rem);
 }
 
 /* Normal desktop */
-@media (min-width: 1024px) and (max-width: 1599px) {
+@media (min-width: 1024px) {
   .writeup-main {
-    grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+    grid-template-columns: clamp(260px, 20vw, 360px) minmax(0, 1fr);
     align-items: start;
   }
 
@@ -331,34 +324,61 @@ const related = [...sameCategory, ...others].slice(0, 3);
   }
 }
 
-@media (min-width: 1600px) {
-  .writeup-main {
-    width: min(1520px, calc(100vw - 80px));
-    max-width: none;
-    margin-inline: auto;
-    padding-inline: 0;
-
-    grid-template-columns: 340px minmax(0, 72rem);
-    column-gap: 28px;
-    align-items: start;
-    justify-content: center;
-  }
-
-  .writeup-aside {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .writeup-content {
-    grid-column: 2;
-    grid-row: 1;
-  }
+/* The page is full width; the prose column keeps a reading measure. */
+.writeup-content {
+  width: 100%;
+  max-width: var(--reading);
+  justify-self: center;
 }
 
   .writeup-aside-sticky {
     display: grid;
     gap: 1rem;
-    position: static;
+  }
+
+  /* Small screens: contents menu sits above the article, collapsed by script. */
+  @media (max-width: 1023px) {
+    .writeup-aside {
+      order: -1;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .writeup-aside {
+      position: sticky;
+      top: 84px;
+      max-height: calc(100vh - 104px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border-strong) transparent;
+    }
+  }
+
+  .writeup-content {
+    font-family: var(--font-read);
+    font-size: 1.06rem;
+  }
+
+  .writeup-content :global(.heading-anchor) {
+    margin-left: 0.5rem;
+    color: var(--text-faint);
+    font-family: var(--font-mono);
+    font-weight: 400;
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity var(--motion);
+  }
+
+  .writeup-content :global(:is(h2, h3, h4):hover .heading-anchor),
+  .writeup-content :global(.heading-anchor:focus-visible) {
+    color: var(--accent);
+    opacity: 1;
+  }
+
+  @media (hover: none) {
+    .writeup-content :global(.heading-anchor) {
+      opacity: 0.6;
+    }
   }
 
   .writeup-content :global(h2),
@@ -388,7 +408,7 @@ const related = [...sameCategory, ...others].slice(0, 3);
 
   .writeup-content :global(h4) {
     margin: 1.5rem 0 0.75rem;
-    color: var(--accent-strong);
+    color: var(--text-2);
     font-family: var(--font-mono);
     font-size: 0.82rem;
     font-weight: 700;
@@ -407,8 +427,9 @@ const related = [...sameCategory, ...others].slice(0, 3);
   }
 
   .writeup-content :global(a) {
-    color: var(--accent-strong);
+    color: var(--text);
     text-decoration: underline;
+    text-decoration-color: var(--accent);
     text-underline-offset: 3px;
   }
 
@@ -421,8 +442,9 @@ const related = [...sameCategory, ...others].slice(0, 3);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     background: var(--bg-code);
-    color: #d8cb98;
-    font-size: 0.88em;
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.86em;
   }
 
   .writeup-content :global(pre) {
@@ -440,9 +462,8 @@ const related = [...sameCategory, ...others].slice(0, 3);
   .writeup-content :global(blockquote) {
     margin: 1.75rem 0;
     padding: 0.5rem 0 0.5rem 1.5rem;
-    border-left: 3px solid var(--accent-strong);
+    border-left: 2px solid var(--accent);
     color: var(--text-soft);
-    font-style: italic;
   }
 
   .writeup-content :global(blockquote p:last-child) {
@@ -517,8 +538,6 @@ const related = [...sameCategory, ...others].slice(0, 3);
   /* ----- related writeups ----- */
 
   .writeup-related {
-    max-width: 72rem;
-    margin: 0 auto;
     padding: 0 var(--gutter) clamp(2rem, 5vw, 3rem);
   }
 
@@ -530,19 +549,8 @@ const related = [...sameCategory, ...others].slice(0, 3);
 
   .related-grid {
     display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
     gap: clamp(1.25rem, 3vw, 2rem);
-  }
-
-  @media (min-width: 640px) {
-    .related-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .related-grid {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
   }
 
   .related-card {
@@ -654,9 +662,8 @@ const related = [...sameCategory, ...others].slice(0, 3);
   /* ----- end note ----- */
 
   .writeup-disclaimer {
-    max-width: 72rem;
-    margin: 0 auto;
-    padding: clamp(1.5rem, 4vw, 2rem) var(--gutter) 0;
+    margin: 0 var(--gutter);
+    padding: clamp(1.5rem, 4vw, 2rem) 0 0;
     border-top: 1px solid var(--border);
     color: var(--text-faint);
     font-size: 0.85rem;

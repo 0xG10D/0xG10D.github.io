@@ -1,0 +1,140 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { projects } from '../../data/projects';
+
+const stackSize = new Set(projects.flatMap((project) => project.stack)).size;
+---
+
+<BaseLayout title="Projects" description="Defensive security tools and lab systems by 0xG10D, documented as technical case studies.">
+  <section class="page-hero">
+    <div class="container">
+      <p class="prompt">0xG10D://projects</p>
+      <h1>Projects</h1>
+      <p class="lede">
+        Defensive tools and lab systems documented as case studies: what they solve, how they work, and what still needs
+        improvement.
+      </p>
+      <p class="page-hero-stats">
+        <span><strong>{projects.length}</strong>projects</span>
+        <span><strong>{stackSize}</strong>technologies</span>
+      </p>
+    </div>
+  </section>
+
+  <section class="container block">
+    {projects.length > 0 ? (
+      <div class="project-list">
+        {projects.map((project) => (
+          <article class="project panel">
+            <header>
+              <p class="eyebrow">{project.type}</p>
+              <h2><a href={project.route}>{project.title}</a></h2>
+              <p class="project-summary">{project.summary}</p>
+            </header>
+
+            <ul class="project-features">
+              {project.features.slice(0, 3).map((feature) => <li>{feature}</li>)}
+            </ul>
+
+            <p class="project-stack-row">{project.stack.map((tech) => <span class="pill">{tech}</span>)}</p>
+
+            <footer>
+              <a class="more-link" href={project.route}>Read case study <Icon name="arrow" size={17} /></a>
+              {project.repoUrl && (
+                <a class="more-link repo" href={project.repoUrl} target="_blank" rel="noopener noreferrer">
+                  <Icon name="github" size={17} /> GitHub
+                </a>
+              )}
+            </footer>
+          </article>
+        ))}
+      </div>
+    ) : (
+      <div class="empty-state">
+        <h2>No projects published</h2>
+        <p>Project notes are listed here once public documentation is ready.</p>
+      </div>
+    )}
+  </section>
+</BaseLayout>
+
+<style>
+  .project-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr));
+    gap: 1.25rem;
+  }
+
+  .project {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+    padding: clamp(1.2rem, 3vw, 1.75rem);
+    border-color: var(--border-strong);
+    transition: border-color var(--motion);
+  }
+
+  .project:hover,
+  .project:focus-within {
+    border-color: var(--border-bright);
+  }
+
+  .project h2 {
+    margin: 0.2rem 0 0.6rem;
+    font-size: clamp(1.3rem, 2.6vw, 1.6rem);
+  }
+
+  .project h2 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .project-summary {
+    max-width: 62ch;
+    margin: 0;
+    color: var(--text-soft);
+    font-size: var(--text-md);
+  }
+
+  .project-features {
+    display: grid;
+    gap: 0.45rem;
+    padding: 0;
+    color: var(--text-2);
+    font-size: var(--text-sm);
+    list-style: none;
+  }
+
+  .project-features li {
+    position: relative;
+    padding-left: 1.3rem;
+  }
+
+  .project-features li::before {
+    content: ">";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+  }
+
+  .project-stack-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+  }
+
+  .project footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0 1.5rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .repo {
+    color: var(--text-2);
+  }
+</style>

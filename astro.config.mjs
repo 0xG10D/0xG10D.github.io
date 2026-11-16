@@ -3,6 +3,7 @@ import { unified } from '@astrojs/markdown-remark';
 import remarkObsidianLinks from './src/plugins/remark-obsidian-links.mjs';
 
 export default defineConfig({
+  site: 'https://0xg10d.my',
   markdown: {
     processor: unified({
       remarkPlugins: [remarkObsidianLinks]

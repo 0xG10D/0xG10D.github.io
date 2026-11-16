@@ -1,7 +1,9 @@
 ---
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import '../styles/tokens.css';
 import '../styles/global.css';
+import '../styles/ui.css';
 
 interface Props {
   title: string;
@@ -13,6 +15,8 @@ const {
   description = 'Personal cybersecurity archive documenting penetration testing, CTF challenges, DFIR notes, malware analysis, and security tool development.'
 } = Astro.props;
 const pageTitle = `${title} | 0xG10D`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const socialImage = new URL('/images/brand/mascot-original.png', Astro.site);
 ---
 
 <!doctype html>
@@ -31,17 +35,21 @@ const pageTitle = `${title} | 0xG10D`;
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="en_US" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={socialImage} />
+    <link rel="canonical" href={canonical} />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <title>{pageTitle}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Lora:ital,wght@0,400..700;1,400..700&family=Playfair+Display:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500;700&family=Oxanium:wght@600;700&display=swap" rel="stylesheet">
 
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#050505" />
     <meta name="color-scheme" content="dark" />
 
     <script type="application/ld+json" is:inline>
@@ -50,7 +58,7 @@ const pageTitle = `${title} | 0xG10D`;
         "@type": "WebSite",
         "name": "0xG10D",
         "description": "Personal cybersecurity archive documenting CTF writeups, DFIR notes, penetration testing methodology, and security tool development.",
-        "url": "https://0xg10d.github.io",
+        "url": "https://0xg10d.my",
         "author": {
           "@type": "Person",
           "name": "0xG10D"

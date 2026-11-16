@@ -16,8 +16,9 @@ const { headings } = Astro.props;
   <div class="toc-progress" role="presentation">
     <div class="toc-progress-fill" data-toc-progress></div>
   </div>
-  <h2>Table of Contents</h2>
-  <ul>
+  <h2 class="toc-title">Table of Contents</h2>
+  <button class="toc-toggle" type="button" aria-expanded="false" aria-controls="toc-list">Table of Contents</button>
+  <ul id="toc-list">
     {headings.map((heading) => (
       <li class={`toc-depth-${heading.depth}`}>
         <a href={`#${heading.slug}`} class="toc-link">{heading.text}</a>
@@ -28,7 +29,7 @@ const { headings } = Astro.props;
 
 <style>
   .toc {
-    padding: 1.5rem;
+    padding: 1.1rem 1.25rem;
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     background: var(--bg-soft);
@@ -45,13 +46,22 @@ const { headings } = Astro.props;
   .toc-progress-fill {
     width: 0%;
     height: 100%;
-    background: var(--accent-strong);
+    background: var(--accent);
     transition: width 120ms linear;
   }
 
-  .toc h2 {
-    margin: 0 0 1rem;
-    color: var(--accent-strong);
+  .toc-title,
+  .toc-toggle {
+    display: flex;
+    width: 100%;
+    min-height: 32px;
+    margin: 0 0 0.8rem;
+    padding: 0;
+    align-items: center;
+    justify-content: space-between;
+    border: 0;
+    background: none;
+    color: var(--text);
     font-family: var(--font-mono);
     font-size: 0.68rem;
     font-weight: 700;
@@ -59,9 +69,43 @@ const { headings } = Astro.props;
     letter-spacing: 0.2em;
   }
 
+  .toc-toggle {
+    display: none;
+    cursor: pointer;
+  }
+
+  .toc-toggle::after {
+    content: "+";
+    font-size: 1rem;
+    letter-spacing: 0;
+  }
+
+  .toc-toggle[aria-expanded="true"]::after {
+    content: "\2212";
+  }
+
+  @media (max-width: 1023px) {
+    .toc-title {
+      display: none;
+    }
+
+    .toc-toggle {
+      display: flex;
+      margin-bottom: 0;
+    }
+
+    .toc-toggle[aria-expanded="false"] + ul {
+      display: none;
+    }
+
+    .toc-toggle[aria-expanded="true"] + ul {
+      margin-top: 0.8rem;
+    }
+  }
+
   .toc ul {
     display: grid;
-    gap: 0.55rem;
+    gap: 0.3rem;
     height: auto;
     max-height: none;
     margin: 0;
@@ -76,12 +120,13 @@ const { headings } = Astro.props;
 
   .toc-link {
     display: block;
-    padding: 0.1rem 0 0.1rem 0.75rem;
+    min-height: 24px;
+    padding: 0.2rem 0 0.2rem 0.75rem;
     border-left: 2px solid transparent;
     color: var(--text-muted);
     font-family: var(--font-body);
-    font-size: 0.92rem;
-    line-height: 1.4;
+    font-size: 0.8rem;
+    line-height: 1.45;
     overflow-wrap: anywhere;
     text-decoration: none;
     transition: color var(--motion), border-color var(--motion);
@@ -93,8 +138,8 @@ const { headings } = Astro.props;
   }
 
   .toc-link-active {
-    border-left-color: var(--accent-strong);
-    color: var(--accent-strong);
+    border-left-color: var(--accent);
+    color: var(--text);
   }
 
   .toc-depth-3 .toc-link {
@@ -112,6 +157,12 @@ const { headings } = Astro.props;
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
+    // Small screens get the contents menu collapsed above the article.
+    const tocToggle = document.querySelector<HTMLButtonElement>('.toc-toggle');
+    const setTocOpen = (open: boolean) => tocToggle?.setAttribute('aria-expanded', String(open));
+    tocToggle?.addEventListener('click', () => setTocOpen(tocToggle.getAttribute('aria-expanded') !== 'true'));
+    document.querySelectorAll('.toc-link').forEach((link) => link.addEventListener('click', () => setTocOpen(false)));
+
     const tocLinks = Array.from(document.querySelectorAll('.toc-link'))
       .filter((link): link is HTMLAnchorElement => link instanceof HTMLAnchorElement);
     const headings = Array.from(document.querySelectorAll('.writeup-content h2[id], .writeup-content h3[id], .writeup-content h4[id], .writeup-content h5[id], .writeup-content h6[id]'))

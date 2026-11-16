@@ -1,0 +1,56 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PostRow from '../components/PostRow.astro';
+import { getEventName, getEventSlug, getSection, sortWriteupsNewestFirst } from '../utils/writeups';
+
+const notes = (await getCollection('writeups', ({ data }) => !data.draft))
+  .filter((post) => getSection(post) === 'lab')
+  .sort(sortWriteupsNewestFirst);
+
+const groups = [...new Set(notes.map(getEventSlug))].map((slug) => ({
+  slug,
+  name: getEventName(slug),
+  posts: notes.filter((post) => getEventSlug(post) === slug)
+}));
+---
+
+<BaseLayout title="Research" description="Lab notes and technical research: DFIR acquisitions and analysis, wireless network labs, and malware analysis.">
+  <section class="page-hero">
+    <div class="container">
+      <p class="prompt">0xG10D://research</p>
+      <h1>Research</h1>
+      <p class="lede">
+        Hands-on lab notes outside competitions: forensic acquisition and analysis, wireless network labs, and malware analysis.
+      </p>
+      <p class="page-hero-stats">
+        <span><strong>{notes.length}</strong>notes</span>
+        <span><strong>{groups.length}</strong>tracks</span>
+      </p>
+    </div>
+  </section>
+
+  <div class="container">
+    {groups.map((group) => (
+      <section class="block" aria-labelledby={`track-${group.slug}`}>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Track</p>
+            <h2 id={`track-${group.slug}`}>{group.name}</h2>
+          </div>
+          <span class="meta">{group.posts.length} {group.posts.length === 1 ? 'note' : 'notes'}</span>
+        </div>
+        <div class="post-list">
+          {group.posts.map((post) => <PostRow post={post} />)}
+        </div>
+      </section>
+    ))}
+
+    {notes.length === 0 && (
+      <div class="empty-state block">
+        <h2>No research notes yet</h2>
+        <p>Lab notes appear here once they are published. Browse the <a href="/blog/">blog</a> in the meantime.</p>
+      </div>
+    )}
+  </div>
+</BaseLayout>

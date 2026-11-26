@@ -1,7 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import achievementContent from '../content/achievements/certifications.json';
-import SecurityIcon from '../components/SecurityIcon.astro';
+import CertificateGallery from '../components/CertificateGallery.astro';
+import certificates from '../content/achievements/certificate-gallery.json';
 import { parseAchievementDate, formatAchievementYear } from '../utils/achievements';
 
 type Certification = {
@@ -37,16 +38,6 @@ type AchievementContent = {
 
 const data = achievementContent as AchievementContent;
 
-const allCertifications = [
-  ...data.certifications.networkingSecurity.map((cert) => ({ ...cert, category: 'Networking & Infrastructure' })),
-  ...data.certifications.cybersecurity.map((cert) => ({ ...cert, category: 'Cybersecurity' })),
-  ...data.currentlyPursuing.map((cert) => ({ ...cert, category: 'In Progress', status: 'in-progress' as const }))
-];
-
-const certTimeline = allCertifications
-  .map((cert) => ({ ...cert, sortDate: parseAchievementDate(cert.date ?? '') }))
-  .sort((a, b) => b.sortDate.valueOf() - a.sortDate.valueOf());
-
 const hasMonth = (value: string) => /([A-Za-z]{3,})\s+(\d{4})/.test(value);
 
 const ctfTimeline = data.ctfCompetitions
@@ -71,9 +62,9 @@ for (const ctf of ctfTimeline) {
 
 const stats = [
   {
-    label: 'Certifications',
-    value: data.certifications.networkingSecurity.length + data.certifications.cybersecurity.length,
-    description: 'verified credentials'
+    label: 'Certificates',
+    value: certificates.length,
+    description: 'visual archive'
   },
   {
     label: 'CTF events',
@@ -87,11 +78,6 @@ const stats = [
   }
 ];
 
-const statusLabels = {
-  verified: 'Verified',
-  'in-progress': 'In progress',
-  planned: 'Planned'
-};
 ---
 
 <BaseLayout title="Achievements">
@@ -99,11 +85,10 @@ const statusLabels = {
     <section class="achievements-hero section">
       <div class="container hero-grid">
         <div>
-          <p class="hero-eyebrow">// technical credentials</p>
+          <p class="hero-eyebrow">// technical archive</p>
           <h1>Achievements</h1>
           <p>
-            Certification records, CTF participation, and current learning tracks.
-            Verified work stays separate from plans and in-progress study.
+            A visual archive of credentials, courses, competitions, and contributions.
           </p>
         </div>
 
@@ -118,67 +103,15 @@ const statusLabels = {
       </div>
     </section>
 
-    <section class="section profile-section">
-      <div class="container profile-grid">
-        <article class="profile-card">
-          <h2>Profile</h2>
-          <p>{data.overview.summary}</p>
-          <div class="focus-tags" aria-label="Focus areas">
-            {data.overview.focusAreas.map((area) => <span class="focus-tag">{area}</span>)}
-          </div>
-        </article>
-
-        <aside class="status-card" aria-label="Learning status">
-          <h2>Status</h2>
-          <dl>
-            <div><dt>Verified</dt><dd>{data.certifications.networkingSecurity.length + data.certifications.cybersecurity.length} credentials</dd></div>
-            <div><dt>In progress</dt><dd>{data.currentlyPursuing.length} tracks</dd></div>
-            <div><dt>Practice</dt><dd>Continuous</dd></div>
-          </dl>
-        </aside>
-      </div>
-    </section>
-
-    <section class="section snapshot-section">
-      <div class="container snapshot-grid">
-        <article class="snapshot-card reveal">
-          <SecurityIcon name="award" size={22} />
-          <h2>Credential record</h2>
-          <p>Certifications are grouped by domain and status for quick scanning.</p>
-        </article>
-        <article class="snapshot-card reveal" data-reveal-delay="60">
-          <SecurityIcon name="target" size={22} />
-          <h2>Competitive practice</h2>
-          <p>CTF records keep placement, organizer, team, and date facts intact.</p>
-        </article>
-        <article class="snapshot-card reveal" data-reveal-delay="120">
-          <SecurityIcon name="radar" size={22} />
-          <h2>Learning roadmap</h2>
-          <p>Current tracks are separated from verified credentials.</p>
-        </article>
-      </div>
-    </section>
-
-    <section class="section certifications-section">
+    <section class="section certificates-section" aria-labelledby="certificate-archive-title">
       <div class="container">
         <div class="field-head">
           <span class="field-num">(01)</span>
           <span class="field-rule" aria-hidden="true"></span>
-          <span class="field-label">Certifications</span>
+          <h2 class="field-label" id="certificate-archive-title">Certificate archive</h2>
         </div>
-
-        <div class="ach-timeline">
-          {certTimeline.map((cert, index) => {
-            const status = (cert.status || 'verified') as keyof typeof statusLabels;
-            return (
-              <article class="ach-item reveal" data-reveal-delay={Math.min(index * 20, 240)} data-status={status}>
-                <p class="ach-year">{cert.date ? `${cert.date} • ${statusLabels[status]}` : statusLabels[status]}</p>
-                <h3 class="ach-title">{cert.name}</h3>
-                <p class="ach-meta">{cert.provider} — {cert.category}</p>
-              </article>
-            );
-          })}
-        </div>
+        <p class="archive-intro">Credentials, course completions, and participation records. Select a preview to enlarge it.</p>
+        <CertificateGallery certificates={certificates} />
       </div>
     </section>
 
@@ -251,20 +184,29 @@ const statusLabels = {
 
 <style>
   .achievements-hero {
+    padding-block: clamp(1.25rem, 3vw, 2rem);
     border-bottom: 1px solid var(--border);
   }
 
-  .hero-grid,
-  .profile-grid {
+  .certificates-section {
+    padding-top: 1.5rem;
+    padding-bottom: 2rem;
+  }
+
+  .certificates-section .field-head {
+    margin-bottom: 1rem;
+  }
+
+  .hero-grid {
     display: grid;
     grid-template-columns: minmax(0, 1fr) minmax(260px, 0.38fr);
-    gap: clamp(2rem, 6vw, 4rem);
+    gap: clamp(1rem, 3vw, 2rem);
     align-items: start;
   }
 
   .hero-eyebrow,
   .section-kicker {
-    margin: 0 0 0.9rem;
+    margin: 0 0 0.5rem;
     color: var(--steel);
     font-family: var(--font-mono);
     font-size: 0.76rem;
@@ -274,16 +216,18 @@ const statusLabels = {
   }
 
   .achievements-hero h1 {
-    margin-bottom: 1rem;
+    margin-bottom: 0.65rem;
   }
 
   .achievements-hero p:not(.hero-eyebrow) {
     max-width: 70ch;
-    font-size: 1.08rem;
+    margin: 0;
+    font-size: 1rem;
   }
 
   .achievement-stats {
     display: grid;
+    margin: 0;
     border-top: 1px solid var(--border);
     border-bottom: 1px solid var(--border);
   }
@@ -292,7 +236,7 @@ const statusLabels = {
     display: grid;
     grid-template-columns: 8rem 1fr;
     gap: 1rem;
-    padding: 0.82rem 0;
+    padding: 0.5rem 0;
     border-bottom: 1px solid var(--border);
   }
 
@@ -325,68 +269,10 @@ const statusLabels = {
     font-size: 0.78rem;
   }
 
-  .profile-card,
-  .status-card,
-  .snapshot-card,
-  .certification-card,
-  .ctf-card,
-  .roadmap-item {
-    padding: 1.15rem;
-  }
-
-  .profile-card h2,
-  .status-card h2,
-  .snapshot-card h2 {
-    margin-bottom: 0.6rem;
-    font-size: 1.35rem;
-  }
-
-  .profile-card p {
+  .archive-intro {
+    max-width: 80ch;
     margin-bottom: 1rem;
-  }
-
-  .focus-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.45rem;
-  }
-
-  .status-card dl {
-    display: grid;
-    gap: 0.6rem;
-    padding: 0;
-  }
-
-  .status-card dl div {
-    display: grid;
-    grid-template-columns: minmax(6rem, 0.35fr) 1fr;
-    gap: 0.75rem;
-  }
-
-  dt {
     color: var(--text-muted);
-    font-family: var(--font-mono);
-    font-size: 0.72rem;
-    text-transform: uppercase;
-  }
-
-  dd {
-    margin: 0;
-    color: var(--text-soft);
-  }
-
-  .snapshot-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
-    gap: 1rem;
-  }
-
-  .snapshot-card svg {
-    color: var(--steel);
-  }
-
-  .snapshot-card p {
-    margin: 0;
   }
 
   .ach-groups {
@@ -412,13 +298,42 @@ const statusLabels = {
   }
 
   @media (max-width: 820px) {
-    .hero-grid,
-    .profile-grid {
+    .hero-grid {
       grid-template-columns: 1fr;
     }
 
     .achievement-stats dd {
       text-align: left;
+    }
+
+    .achievement-stats {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+
+    .achievement-stats div {
+      display: block;
+      border-bottom: 0;
+    }
+
+    .achievement-stats dt {
+      font-size: 0.65rem;
+    }
+
+    .achievement-stats dd {
+      margin-top: 0.35rem;
+    }
+
+    .achievement-stats span {
+      font-size: 0.68rem;
+      line-height: 1.5;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .achievement-stats,
+    .archive-intro {
+      display: none;
     }
   }
 </style>
